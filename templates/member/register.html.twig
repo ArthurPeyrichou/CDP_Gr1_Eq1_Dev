@@ -1,0 +1,48 @@
+{{msg | default('')}}
+<div id="register-container">
+    <h3>Création de compte:</h3>
+    <form id="register-formular" action="register" method="POST" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>Pseudo:</td>
+                <td>
+                    <input id="pseudo" name="pseudo" type="text" minlength="8" maxlength="50" required />                                       
+                </td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>
+                    <input id="email" name="email" type="email" minlength="5" maxlength="50" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Mot de passe:</td>
+                <td>
+                    <input id="password" name="password" type="password" minlength="8" maxlength="50" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Confirmer mot de passe:</td>
+                <td>
+                    <input id="password-confirm" name="password-confirm" type="password" minlength="8" maxlength="50" required />
+                </td>
+            </tr>
+       </table>
+       <button id="register-button" type="submit"></button> 
+    </form>
+</div>
+<script defer>
+    let password = document.getElementById("password")
+    let password_confirm = document.getElementById("password_confirm");
+
+    function validatePassword(){
+      if(password.value != password_confirm.value) {
+        password_confirm.setCustomValidity("Les mots de passe sont différents");
+      } else {
+        password_confirm.setCustomValidity('');
+      }
+    }
+
+    password.onchange = validatePassword;
+    password_confirm.onkeyup = validatePassword;
+</script>
