@@ -24,7 +24,6 @@ class IdentificationController extends AbstractController {
         //On enregistre le nouveau membre en l'ajoutant dans la base de données
         $member = new MEMBER($request->get('pseudo'), $request->get('email'), $request->get('password') );
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($member);
         $entityManager->flush();
         
@@ -52,11 +51,7 @@ class IdentificationController extends AbstractController {
             'PASSWORD' => $password,
         ]);
 
-        if (!$member) {
-            throw $this->createNotFoundException('No member found with this email and password');
-        }
-        
-        return $this->render('member/login.html.twig', ["msg"=> "Hello " . $member->getPSEUDO()]);
+        return (!$member) ? $this->render('member/login.html.twig', ["msg"=> "No member found with this email and password"]) : $this->redirect( 'home' );
     }
 
 }

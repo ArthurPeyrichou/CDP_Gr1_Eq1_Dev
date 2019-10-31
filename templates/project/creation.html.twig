@@ -1,0 +1,21 @@
+{{msg | default('')}}
+<div id="project-container">
+    <h3>Création d'un projet:</h3>
+    <form id="project-formular" action="new_project" method="POST" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>Titre:</td>
+                <td>
+                    <input id="title" name="title" type="text" minlength="8" maxlength="30" required />                                       
+                </td>
+            </tr>
+            <tr>
+                <td>Description:</td>
+                <td>
+                    <textarea id="desc" name="desc" type="desc" minlength="5" maxlength="128" required></textarea>
+                </td>
+            </tr>
+       </table>
+       <button id="project-button" type="submit">Créer le Projet</button> 
+    </form>
+</div>
