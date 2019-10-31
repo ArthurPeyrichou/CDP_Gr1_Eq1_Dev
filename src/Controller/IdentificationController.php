@@ -23,6 +23,10 @@ class IdentificationController extends AbstractController {
     public function registerSubmit(Request $request) {
         //On enregistre le nouveau membre en l'ajoutant dans la base de données
         $member = new MEMBER($request->get('pseudo'), $request->get('email'), $request->get('password') );
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($member);
+        $entityManager->flush();
         
         return $this->render('member/register.html.twig', ["msg"=>"Formulaire envoyé!"]);
     }
