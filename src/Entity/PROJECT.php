@@ -39,8 +39,11 @@ class PROJECT
      */
     private $members;
 
-    public function __construct()
+    public function __construct($MANAGER_ID, $NAME, $DESCRIPTION)
     {
+        $this->MANAGER_ID = $MANAGER_ID;
+        $this->NAME = $NAME;
+        $this->DESCRIPTION = $DESCRIPTION;
         $this->members = new ArrayCollection();
     }
 

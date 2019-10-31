@@ -43,8 +43,11 @@ class MEMBER
      */
     private $projects;
 
-    public function __construct()
+    public function __construct($PSEUDO, $MAIL, $PASSWORD)
     {
+        $this->PSEUDO = $PSEUDO;
+        $this->MAIL = $MAIL;
+        $this->PASSWORD = $PASSWORD;
         $this->projects = new ArrayCollection();
     }
 

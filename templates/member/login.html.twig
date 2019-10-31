@@ -1,0 +1,21 @@
+{{msg | default('')}}
+<div id="login-container">
+    <h3>Connexion:</h3>
+    <form id="login-formular" action="login" method="POST" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>Email:</td>
+                <td>
+                    <input id="email" name="email" type="email" minlength="5" maxlength="50" required />
+                </td>
+            </tr>
+            <tr>
+                <td>Mot de passe:</td>
+                <td>
+                    <input id="password" name="password" type="password" minlength="8" maxlength="50" required />
+                </td>
+            </tr>
+       </table>
+       <button id="login-button" type="submit">Se connecter</button> 
+    </form>
+</div>
