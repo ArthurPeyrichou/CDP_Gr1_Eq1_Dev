@@ -1,36 +1,52 @@
 {{msg | default('')}}
+
+<head>
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+        <title>Inscription</title>
+</head>
+<body>
+<nav class="cyan darken-4">
+    <div class="nav-wrapper" >
+        <a href="" class="brand-logo">Gestion de projets</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="login">Se connecter</a></li>
+        </ul>
+    </div>
+</nav>
 <div id="register-container">
-    <h3>Création de compte:</h3>
+    <div class="row">
+
     <form id="register-formular" action="register" method="POST" enctype="multipart/form-data">
-        <table>
-            <tr>
-                <td>Pseudo:</td>
-                <td>
-                    <input id="pseudo" name="pseudo" type="text" minlength="8" maxlength="50" required />                                       
-                </td>
-            </tr>
-            <tr>
-                <td>Email:</td>
-                <td>
-                    <input id="email" name="email" type="email" minlength="5" maxlength="50" required />
-                </td>
-            </tr>
-            <tr>
-                <td>Mot de passe:</td>
-                <td>
-                    <input id="password" name="password" type="password" minlength="8" maxlength="50" required />
-                </td>
-            </tr>
-            <tr>
-                <td>Confirmer mot de passe:</td>
-                <td>
-                    <input id="password-confirm" name="password-confirm" type="password" minlength="8" maxlength="50" required />
-                </td>
-            </tr>
-       </table>
-       <button id="register-button" type="submit">S'enregister</button> 
+        <div class="row">
+            <div class="col s12 m6 offset-m3">
+                <div class="card center-align mg">
+                    <div class="card-content">
+                        <span class="card-title">Inscription</span>
+                        <div class="input-field">
+                            <input id="pseudo" name="pseudo" type="text" class="validate" placeholder="votre pseudo" minlength="8" maxlength="50" required />
+                        </div>
+                        <div class="input-field">
+                            <input id="email" name="email" type="email" minlength="5" maxlength="50" class="validate" placeholder="votre Email" required />
+                        </div>
+                        <div class="input-field" >
+                            <input id="password" name="password" type="password" minlength="8" maxlength="50" class="validate" placeholder="votre mot de passe"required />
+                        </div>
+                        <div class="input-field" >
+                            <input id="password-confirm" name="password-confirm" type="password" minlength="8" maxlength="50" class="validate" placeholder="confirmez votre mot de passe"required />
+                        </div>
+
+        <button id="register-button" class="btn waves-effect waves-light"  type="submit">S'enregister</button>
+                        <a class="btn waves-effect waves-light red" href="/">Annuler</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
+</div>
+</body>
 <script defer>
     let password = document.getElementById("password")
     let password_confirm = document.getElementById("password_confirm");

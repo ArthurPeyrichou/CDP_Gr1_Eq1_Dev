@@ -5,7 +5,10 @@
         "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "backstrap/hammerjs": "dev-master",
+        "components/jquery": "^3.4",
         "sensio/framework-extra-bundle": "^5.5",
+        "symfony/asset": "4.3.*",
         "symfony/console": "4.3.*",
         "symfony/dotenv": "4.3.*",
         "symfony/flex": "^1.3.1",
@@ -13,6 +16,7 @@
         "symfony/orm-pack": "^1.0",
         "symfony/twig-bundle": "4.3.*",
         "symfony/yaml": "4.3.*",
+        "twbs/bootstrap": "4.3.1",
         "twig/twig": "^2.0"
     },
     "require-dev": {

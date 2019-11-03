@@ -1,21 +1,40 @@
 {{msg | default('')}}
+<head>
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Création de projet</title>
+</head>
+<body>
+<nav class="cyan darken-4">
+    <div class="nav-wrapper" >
+        <a href="" class="brand-logo">Gestion de projets</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="">Mes projets</a></li>
+        </ul>
+    </div>
+</nav>
 <div id="project-container">
-    <h3>Création d'un projet:</h3>
+    <div class="row">
     <form id="project-formular" action="new_project" method="POST" enctype="multipart/form-data">
-        <table>
-            <tr>
-                <td>Titre:</td>
-                <td>
-                    <input id="title" name="title" type="text" minlength="8" maxlength="30" required />                                       
-                </td>
-            </tr>
-            <tr>
-                <td>Description:</td>
-                <td>
-                    <textarea id="desc" name="desc" type="desc" minlength="5" maxlength="128" required></textarea>
-                </td>
-            </tr>
-       </table>
-       <button id="project-button" type="submit">Créer le Projet</button> 
+        <div class="row">
+            <div class="col s12 m6 offset-m3">
+                <div class="card center-align mg">
+                    <div class="card-content">
+                        <span class="card-title">Création d'un projet</span>
+                        <div class="input-field">
+                            <input id="title" name="title" type="text" minlength="8" maxlength="30" class="validate" placeholder="le nom de votre projet" required />
+                        </div>
+                        <div class="input-field">
+                            <textarea id="desc" name="desc" type="desc" minlength="5" maxlength="128" class="validate" placeholder="description de votre projet" required></textarea>
+                        </div>
+    <button id="project-button" class="btn waves-effect waves-light"  type="submit">Créer le Projet</button>
+                        <a class="btn waves-effect waves-light red" href="/">Annuler</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
+</div>
+</body>

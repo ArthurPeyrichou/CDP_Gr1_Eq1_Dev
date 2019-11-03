@@ -27,7 +27,7 @@ class IdentificationController extends AbstractController {
         $entityManager->persist($member);
         $entityManager->flush();
         
-        return $this->render('member/register.html.twig', ["msg"=>"Formulaire envoyé!"]);
+        return $this->render('member/login.html.twig');
     }
 
     /**

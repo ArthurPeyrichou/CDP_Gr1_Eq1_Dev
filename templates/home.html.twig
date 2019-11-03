@@ -3,14 +3,21 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-
+    <nav class="cyan darken-4">
+        <div class="nav-wrapper" >
+            <a href="" class="brand-logo">Gestion de projets</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="new_project">créer nouveau projet</a></li>
+            </ul>
+        </div>
+    </nav>
 {% if projects %}    
     {% for project in projects %}
         <li><b>{{ project.getNAME() }}</b> / Description :{{ project.getDESCRIPTION() }} </li>
     {% endfor %}
 {% else %}
     <p> Vous n'avez pour l'instant aucun projet.
-        <a href="new_project" class="button">En créer un dès maintenant</a>
+
     </p>
 {% endif %}
 
