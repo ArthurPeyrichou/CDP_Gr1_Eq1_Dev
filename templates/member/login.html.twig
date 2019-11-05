@@ -12,25 +12,26 @@
         </div>
     </nav>
     <div id="login-container" style="margin-top:10%;">
-        <form id="login-formular" action="login" method="POST" enctype="multipart/form-data">
+        <form id="login-formular" action="/login" method="POST">
             <div class="row">
                 <div class="col s12 m6 offset-m3">
                     <div class="card center-align mg">
                         <div class="card-content">
                             <span class="card-title">Connexion</span>
                             <div class="input-field">
-                                <input id="email" name="email" type="email" minlength="5" maxlength="50" class="validate" placeholder="votre Email" required />
+                                <input id="email" value="{{ last_typed_email }}" name="emailAddress" type="email" minlength="5" maxlength="128" class="validate" placeholder="Votre Email" required />
                             </div>
                             <div class="input-field">
-                                <input id="password" name="password" type="password" minlength="8" maxlength="50" class="validate" placeholder="votre mot de passe"required />
+                                <input id="password" name="password" type="password" minlength="8" maxlength="50" class="validate" placeholder="Votre mot de passe" required />
                             </div>
                             <button id="login-button" class="btn waves-effect waves-light"  type="submit">Se connecter</button>
                             <a class="btn waves-effect waves-light red" href="/">Annuler</a>
-                            {{msg | default('')}}
+                            {{error | default('')}}
                         </div>
                     </div>
                 </div>
             </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
         </form>
     </div>
 {% endblock %}

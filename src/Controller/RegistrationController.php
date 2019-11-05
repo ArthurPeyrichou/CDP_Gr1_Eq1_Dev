@@ -31,7 +31,7 @@ class RegistrationController extends AbstractController {
         $entityManager->persist($member);
         $entityManager->flush();
 
-        return $this->render('member/login.html.twig');
+        return $this->redirectToRoute('login');
     }
 
     /**
@@ -47,7 +47,7 @@ class RegistrationController extends AbstractController {
             $password = '';
             try {
                 $registrationService->registerUser($name, $emailAddress, $password);
-                return $this->redirectToRoute('loginPost');
+                return $this->redirectToRoute('login');
             }
             catch (MemberNameInUseException $e) {
                 $error = 'Le nom d\'utilisateur choisi existe déjà';
