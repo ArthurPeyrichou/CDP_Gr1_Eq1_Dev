@@ -10,16 +10,25 @@
                 <li><a href="new_project">créer nouveau projet</a></li>
             </ul>
         </div>
-    </nav>
-{% if projects %}    
-    {% for project in projects %}
-        <li><b>{{ project.getNAME() }}</b> / Description :{{ project.getDESCRIPTION() }} </li>
-    {% endfor %}
-{% else %}
-    <p> Vous n'avez pour l'instant aucun projet.
-
-    </p>
-{% endif %}
+    </nav>   
+    <div id="project-list-container" style="margin-top:10%;">
+        <div class="row">
+            <div class="col s12 m6 offset-m3">
+                <div class="card center-align mg">
+                        {% if projects %}  
+                            <div class="collection">
+                                {% for project in projects %}
+                                    <a href="#" class="collection-item"><b>{{ project.getNAME() }}</b> : {{ project.getDESCRIPTION() }} </a>
+                                {% endfor %}
+                            </div> 
+                        {% else %}
+                            <p> Vous n'avez pour l'instant aucun projet.</p>
+                            <a class="btn waves-effect waves-light" href="/new_project">Créer mon projet</a>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
