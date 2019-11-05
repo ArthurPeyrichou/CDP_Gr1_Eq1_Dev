@@ -18,10 +18,18 @@ class ProjectController extends AbstractController {
     public function viewHome(Request $request) {
 
         $repository = $this->getDoctrine()->getRepository(PROJECT::class);
-        $projects = $repository->findAll();
+        $myProjects = $repository->findBy([
+            'MANAGER_ID' => $this->get('session')->get('id')
+        ]);
+        //Remplacer la requette pour selectionner les projet lié et non les projet enfants
+        $myLinkedProjects = $repository->findBy([
+            'MANAGER_ID' => $this->get('session')->get('id')
+        ]);
         $pseudo = $this->get('session')->get('pseudo');
 
-    	return ($pseudo == null) ? $this->redirect( 'login') : $this->render('home.html.twig', ["projects"=> $projects, "pseudo"=> $pseudo]);
+        return ($pseudo == null) ? $this->redirect( 'login') : $this->render('home.html.twig', ["myProjects"=> $myProjects,
+                                                                                                "myLinkedProjects"=> $myLinkedProjects, 
+                                                                                                "pseudo"=> $pseudo]);
     }
 
     /**
@@ -44,6 +52,25 @@ class ProjectController extends AbstractController {
         $entityManager->flush();
         
         return $this->redirect( 'home');
+    }
+
+    /**
+     * @Route("/project/{id_project}", name = "projectOverviewGet", methods = {"GET"})
+     */
+    public function viewProject(Request $request) {
+        $pseudo = $this->get('session')->get('pseudo');
+        $repository = $this->getDoctrine()->getRepository(PROJECT::class);
+        $theProject = $repository->findOneBy([
+            'id' => $request->attributes->get('id_project')
+        ]);
+        $repository = $this->getDoctrine()->getRepository(MEMBER::class);
+        $owner = $repository->findOneBy([
+            'id' => $theProject->getMANAGERID()
+        ]);
+        return ($pseudo == null) ? $this->redirect( 'login') : $this->render('project/project_details.html.twig', ["theProject"=> $theProject,
+                                                                                                                    "owner"=> $owner,
+                                                                                                                    "members"=> $theProject->getMembers(),
+                                                                                                                    "pseudo"=> $pseudo]);
     }
 
 }

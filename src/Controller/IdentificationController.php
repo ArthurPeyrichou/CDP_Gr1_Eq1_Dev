@@ -57,6 +57,7 @@ class IdentificationController extends AbstractController {
 
             // set and get session attributes
             $this->get('session')->set('pseudo', $member->getPSEUDO());
+            $this->get('session')->set('id', $member->getId());
             $this->get('session')->set('mail', $email);
         }
 

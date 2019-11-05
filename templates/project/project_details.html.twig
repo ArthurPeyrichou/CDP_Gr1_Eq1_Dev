@@ -1,0 +1,48 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Informations{% endblock %}
+
+{% block body %}
+
+    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+
+    <nav class="cyan darken-4">
+        <div class="nav-wrapper" >
+            <a href="/home" class="brand-logo">Retour</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="new_project">créer nouveau projet</a></li>
+            </ul>
+        </div>
+    </nav>   
+
+    <div id="login-container" style="margin-top:10%;">
+        <div class="row">
+            <div class="col s12 m6 offset-m3">
+                <div class="card center-align mg">
+                    <div class="card-content">
+                        <h3>{{ theProject.getNAME() }}</h3>
+                        <p>{{ theProject.getDESCRIPTION() }}</p>
+                        <p>Propriétaire du projet :</p>
+                        <a href="mailto:{{ owner.getMail() }}" class="collection-item"><b>{{ owner.getPSEUDO() }}</b></a>
+                        <p>Collaborateurs du projet :</p>
+                        {% if members is not empty %}  
+                            <div class="collection">
+                                {% for member in members %}
+                                    <a href="mailto:{{ member.getMail() }}" class="collection-item"><b>{{ member.getPSEUDO() }}</b></a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>Aucun collaborateurs.</p>
+                        {% endif %}
+                        <a class="btn waves-effect waves-light" href="/project/{{ theProject.getId() }}/edit">Editer</a>
+                        <a class="btn waves-effect waves-light red" href="/project/{{ theProject.getId() }}/delete">Supprimer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+
+{% endblock %}
+
