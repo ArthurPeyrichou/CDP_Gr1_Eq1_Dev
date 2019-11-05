@@ -5,16 +5,14 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\UniqueConstraint;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\MEMBERRepository")
- * @ORM\Table(name="member",uniqueConstraints={@UniqueConstraint(columns={"PSEUDO", "MAIL"})})
+ * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
  */
 
-class MEMBER
+class Member implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -26,28 +24,28 @@ class MEMBER
     /**
      * @ORM\Column(type="string", length=50,  unique=true )
      */
-    private $PSEUDO;
+    private $name;
 
     /**
-     * @ORM\Column(type="string", length=50,  unique=true)
+     * @ORM\Column(type="string", length=128, unique=true)
      */
-    private $MAIL;
+    private $emailAddress;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string")
      */
-    private $PASSWORD;
+    private $password;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\PROJECT", inversedBy="members")
      */
     private $projects;
 
-    public function __construct($PSEUDO, $MAIL, $PASSWORD)
+    public function __construct($name, $emailAddress, $password)
     {
-        $this->PSEUDO = $PSEUDO;
-        $this->MAIL = $MAIL;
-        $this->PASSWORD = $PASSWORD;
+        $this->name = $name;
+        $this->emailAddress = $emailAddress;
+        $this->password = $password;
         $this->projects = new ArrayCollection();
     }
 
@@ -56,40 +54,57 @@ class MEMBER
         return $this->id;
     }
 
-
-
-    public function getPSEUDO(): ?string
+    public function getRoles()
     {
-        return $this->PSEUDO;
+        return [
+            'ROLE_MEMBER'
+        ];
     }
 
-    public function setPSEUDO(string $PSEUDO): self
+    public function getSalt()
     {
-        $this->PSEUDO = $PSEUDO;
+        return null;
+    }
+
+    public function getUsername()
+    {
+        return $this->emailAddress;
+    }
+
+    public function eraseCredentials() {}
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getMAIL(): ?string
+    public function getEmailAddress(): ?string
     {
-        return $this->MAIL;
+        return $this->emailAddress;
     }
 
-    public function setMAIL(string $MAIL): self
+    public function setEmailAddress(string $emailAddress): self
     {
-        $this->MAIL = $MAIL;
+        $this->emailAddress = $emailAddress;
 
         return $this;
     }
 
-    public function getPASSWORD(): ?string
+    public function getPassword(): ?string
     {
-        return $this->PASSWORD;
+        return $this->password;
     }
 
-    public function setPASSWORD(string $PASSWORD): self
+    public function setPassword(string $password): self
     {
-        $this->PASSWORD = $PASSWORD;
+        $this->password = $password;
 
         return $this;
     }

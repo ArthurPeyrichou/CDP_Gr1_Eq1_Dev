@@ -35,7 +35,7 @@ class PROJECT
     private $MANAGER_ID;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\MEMBER", mappedBy="projects")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Member", mappedBy="projects")
      */
     private $members;
 
@@ -90,14 +90,14 @@ class PROJECT
     }
 
     /**
-     * @return Collection|MEMBER[]
+     * @return Collection|Member[]
      */
     public function getMembers(): Collection
     {
         return $this->members;
     }
 
-    public function addMember(MEMBER $member): self
+    public function addMember(Member $member): self
     {
         if (!$this->members->contains($member)) {
             $this->members[] = $member;
@@ -107,7 +107,7 @@ class PROJECT
         return $this;
     }
 
-    public function removeMember(MEMBER $member): self
+    public function removeMember(Member $member): self
     {
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);

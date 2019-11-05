@@ -41,7 +41,7 @@ class INVITATION
     private $project;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\MEMBER", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Member", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $member;
@@ -115,12 +115,12 @@ class INVITATION
         return $this;
     }
 
-    public function getMember(): ?MEMBER
+    public function getMember(): ?Member
     {
         return $this->member;
     }
 
-    public function setMember(MEMBER $member): self
+    public function setMember(Member $member): self
     {
         $this->member = $member;
 

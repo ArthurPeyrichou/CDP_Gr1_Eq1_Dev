@@ -2,7 +2,7 @@
 // src/Controller/ProjectController.php
 namespace App\Controller;
 
-use App\Entity\MEMBER;
+use App\Entity\Member;
 use App\Entity\INVITATION;
 use App\Entity\PROJECT;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,7 +63,7 @@ class ProjectController extends AbstractController {
         $theProject = $repository->findOneBy([
             'id' => $request->attributes->get('id_project')
         ]);
-        $repository = $this->getDoctrine()->getRepository(MEMBER::class);
+        $repository = $this->getDoctrine()->getRepository(Member::class);
         $owner = $repository->findOneBy([
             'id' => $theProject->getMANAGERID()
         ]);
