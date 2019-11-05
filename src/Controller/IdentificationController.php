@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class IdentificationController extends AbstractController {
     
@@ -51,7 +52,23 @@ class IdentificationController extends AbstractController {
             'PASSWORD' => $password,
         ]);
 
+        if($member) {
+            $this->get('session')->start();
+
+            // set and get session attributes
+            $this->get('session')->set('pseudo', $member->getPSEUDO());
+            $this->get('session')->set('mail', $email);
+        }
+
         return (!$member) ? $this->render('member/login.html.twig', ["msg"=> "No member found with this email and password"]) : $this->redirect( 'home' );
+    }
+
+    /**
+     * @Route("/logout", name = "logoutGet", methods = {"GET"})
+     */
+    public function viewLogout() {
+        $this->get('session')->clear();
+        return $this->redirect( 'login');
     }
 
 }

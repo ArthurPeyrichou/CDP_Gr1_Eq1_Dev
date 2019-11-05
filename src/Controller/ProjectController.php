@@ -19,15 +19,17 @@ class ProjectController extends AbstractController {
 
         $repository = $this->getDoctrine()->getRepository(PROJECT::class);
         $projects = $repository->findAll();
+        $pseudo = $this->get('session')->get('pseudo');
 
-    	return $this->render('home.html.twig', ["projects"=> $projects]);
+    	return ($pseudo == null) ? $this->redirect( 'login') : $this->render('home.html.twig', ["projects"=> $projects, "pseudo"=> $pseudo]);
     }
 
     /**
      * @Route("/new_project", name = "newProjectGet", methods = {"GET"})
      */
     public function viewCreationProject(Request $request) {
-    	return $this->render('project/creation.html.twig');
+    	$pseudo = $this->get('session')->get('pseudo');
+    	return ($pseudo == null) ? $this->redirect( 'login') : $this->render('project/creation.html.twig', ["pseudo"=> $pseudo]);
     }
 
     /**
