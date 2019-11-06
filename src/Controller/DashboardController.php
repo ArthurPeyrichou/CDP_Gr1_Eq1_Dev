@@ -17,7 +17,7 @@ class DashboardController extends AbstractController {
      */
     public function viewDashboard(Request $request) {
         $member = $this->getUser();
-        $repository = $this->getDoctrine()->getRepository(PROJECT::class);
+        $repository = $this->getDoctrine()->getRepository(Project::class);
         $myProjects = $repository->findBy([
             'MANAGER_ID' => $member->getId()
         ]);

@@ -41,12 +41,12 @@ class Member
 
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PROJECT", mappedBy="owner")
+     * @ORM\OneToMany(targetEntity="App\Entity\Project", mappedBy="owner")
      */
     private $ownedProjects;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\PROJECT", inversedBy="members")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Project", inversedBy="members")
      */
     private $contributedProjects;
 
@@ -107,14 +107,14 @@ class Member
 
 
     /**
-     * @return Collection|PROJECT[]
+     * @return Collection|Project[]
      */
     public function getOwnedProjects(): Collection
     {
         return $this->ownedProjects;
     }
 
-    public function addOwnedProject(PROJECT $ownedProject): self
+    public function addOwnedProject(Project $ownedProject): self
     {
         if (!$this->ownedProjects->contains($ownedProject)) {
             $this->ownedProjects[] = $ownedProject;
@@ -124,7 +124,7 @@ class Member
         return $this;
     }
 
-    public function removeOwnedProject(PROJECT $ownedProject): self
+    public function removeOwnedProject(Project $ownedProject): self
     {
         if ($this->ownedProjects->contains($ownedProject)) {
             $this->ownedProjects->removeElement($ownedProject);
@@ -138,14 +138,14 @@ class Member
     }
 
     /**
-     * @return Collection|PROJECT[]
+     * @return Collection|Project[]
      */
     public function getContributedProjects(): Collection
     {
         return $this->contributedProjects;
     }
 
-    public function addContributedProject(PROJECT $contributedProject): self
+    public function addContributedProject(Project $contributedProject): self
     {
         if (!$this->contributedProjects->contains($contributedProject)) {
             $this->contributedProjects[] = $contributedProject;
@@ -154,7 +154,7 @@ class Member
         return $this;
     }
 
-    public function removeContributedProject(PROJECT $contributedProject): self
+    public function removeContributedProject(Project $contributedProject): self
     {
         if ($this->contributedProjects->contains($contributedProject)) {
             $this->contributedProjects->removeElement($contributedProject);

@@ -46,13 +46,13 @@ class Project
      */
     private $members;
 
-    public function __construct($owner, $NAME, $DESCRIPTION)
+    public function __construct($owner, $NAME, $DESCRIPTION,$CreationDate)
     {
-        $this->$owner = $owner;
+        $this->owner = $owner;
         $this->NAME = $NAME;
         $this->DESCRIPTION = $DESCRIPTION;
         $this->members = new ArrayCollection();
-
+        $this->CreationDate=$CreationDate;
     }
 
     public function getId(): ?int

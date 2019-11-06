@@ -15,12 +15,16 @@ class Invitation
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")
+     * @ORM\OneToOne(targetEntity="App\Entity\Member", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $MEMBER_ID;
 
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")
+     * @ORM\OneToOne(targetEntity="App\Entity\Project", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $PROJECT_ID;
 
@@ -34,17 +38,7 @@ class Invitation
      */
     private $INV_KEY;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\PROJECT", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $project;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Member", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $member;
 
     public function __construct($MEMBER_ID, $PROJECT_ID)
     {
@@ -103,29 +97,6 @@ class Invitation
         return $this;
     }
 
-    public function getProject(): ?PROJECT
-    {
-        return $this->project;
-    }
-
-    public function setProject(PROJECT $project): self
-    {
-        $this->project = $project;
-
-        return $this;
-    }
-
-    public function getMember(): ?Member
-    {
-        return $this->member;
-    }
-
-    public function setMember(Member $member): self
-    {
-        $this->member = $member;
-
-        return $this;
-    }
 
     private function addRandomPassword(): string
     {

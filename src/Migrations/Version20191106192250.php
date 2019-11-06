@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20191030181250 extends AbstractMigration
+final class Version20191106192250 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,8 +22,7 @@ final class Version20191030181250 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE invitation ADD CONSTRAINT FK_F11D61A2166D1F9C FOREIGN KEY (project_id) REFERENCES project (id)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_F11D61A2166D1F9C ON invitation (project_id)');
+        $this->addSql('ALTER TABLE project CHANGE creation_date creation_date DATE DEFAULT \'CURRENT_TIMESTAMP\' NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -31,7 +30,6 @@ final class Version20191030181250 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE invitation DROP FOREIGN KEY FK_F11D61A2166D1F9C');
-        $this->addSql('DROP INDEX UNIQ_F11D61A2166D1F9C ON invitation');
+        $this->addSql('ALTER TABLE project CHANGE creation_date creation_date DATE NOT NULL');
     }
 }

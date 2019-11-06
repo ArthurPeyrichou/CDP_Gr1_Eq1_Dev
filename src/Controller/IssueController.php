@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Member;
 use App\Entity\Invitation;
-use App\Entity\PROJECT;
-use App\Entity\ISSUE;
+use App\Entity\Project;
+use App\Entity\Issue;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +18,7 @@ class IssueController extends AbstractController {
      */
     public function viewIssues(Request $request) {
         $member = $this->getUser();
-        $repository = $this->getDoctrine()->getRepository(PROJECT::class);
+        $repository = $this->getDoctrine()->getRepository(Project::class);
         $myProject = $repository->findOneBy([
             'id' => $request->attributes->get('id_project')
         ]);
