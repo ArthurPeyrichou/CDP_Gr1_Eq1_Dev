@@ -1,0 +1,42 @@
+{% extends "base.html.twig" %}
+
+{% block title %}List des issues{% endblock %}
+
+{% block body %}
+
+    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+
+    <nav class="cyan darken-4">
+        <div class="nav-wrapper" >
+            <a href="" class="brand-logo">Gestion de issues</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="new_project">créer nouveau projet</a></li>
+            </ul>
+        </div>
+    </nav>   
+    
+    <div id="issue-list-container" style="margin-top:10%;">
+        <div class="row">
+            <div class="col s12 m6 offset-m3">
+                <div class="card center-align mg">
+                    <p style="display:inline-block;">Issues :</p>
+                    {% if myIssues is not empty %}  
+                        <div class="collection">
+                            {% for issue in myIssues %}
+                                <p class="collection-item">
+                                    <a href="/project/{{ myProject.getId() }}/issue/{{ issue.getId() }}/edit"><b>{{ issue.getName() }}</b>{{ issue.getDescription() }} Difficulté: {{ issue.getDifficulty() }} Statut: {{ issue.getStatus() }} Priorité: {{ issue.getPriority() }}</a>
+                                    <a href="/project/{{ myProject.getId() }}/issue/{{ issue.getId() }}/delete" class="btn waves-effect waves-light red"></a>
+                                </p>
+                            {% endfor %}
+                        </div> 
+                    {% else %}
+                        <p> Vous n'avez pour l'instant créé aucune issue.</p>
+                        <a class="btn waves-effect waves-light" href="/new_project">Créer mon projet</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
