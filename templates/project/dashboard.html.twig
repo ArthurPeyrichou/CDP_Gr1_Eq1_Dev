@@ -1,30 +1,50 @@
-<div id="project-list-container" style="margin-top:10%;">
-    <div class="row">
-        <div class="col s12 m6 offset-m3">
-            <div class="card center-align mg">
-                <p style="display:inline-block;">Mes projets :</p>
-                {% if myProjects is not empty %}  
-                    <div class="collection">
-                        {% for project in myProjects %}
-                            <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getNAME() }}</b> : {{ project.getDESCRIPTION() }} </a>
-                        {% endfor %}
-                    </div> 
-                {% else %}
-                    <p> Vous n'avez pour l'instant créé aucun projet.</p>
-                    <a class="btn waves-effect waves-light" href="/new_project">Créer mon projet</a>
-                {% endif %}
-                <p>Mes projets associés :</p>
-                {% if myLinkedProjects is not empty %}  
-                    
-                    <div class="collection">
-                        {% for project in myLinkedProjects %}
-                            <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getNAME() }}</b> : {{ project.getDESCRIPTION() }} </a>
-                        {% endfor %}
-                    </div> 
-                {% else %}
-                    <p> Vous n'avez pour l'instant aucun projet associés.</p>
-                {% endif %}
+{% extends "base.html.twig" %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+
+    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+
+    <nav class="cyan darken-4">
+        <div class="nav-wrapper" >
+            <a href="" class="brand-logo">Gestion de projets</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="new_project">créer nouveau projet</a></li>
+            </ul>
+        </div>
+    </nav>   
+    
+    <div id="project-list-container" style="margin-top:10%;">
+        <div class="row">
+            <div class="col s12 m6 offset-m3">
+                <div class="card center-align mg">
+                    <p style="display:inline-block;">Mes projets :</p>
+                    {% if myProjects is not empty %}  
+                        <div class="collection">
+                            {% for project in myProjects %}
+                                <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getNAME() }}</b> : {{ project.getDESCRIPTION() }} </a>
+                            {% endfor %}
+                        </div> 
+                    {% else %}
+                        <p> Vous n'avez pour l'instant créé aucun projet.</p>
+                        <a class="btn waves-effect waves-light" href="/new_project">Créer mon projet</a>
+                    {% endif %}
+                    <p>Mes projets associés :</p>
+                    {% if myLinkedProjects is not empty %}  
+                        
+                        <div class="collection">
+                            {% for project in myLinkedProjects %}
+                                <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getNAME() }}</b> : {{ project.getDESCRIPTION() }} </a>
+                            {% endfor %}
+                        </div> 
+                    {% else %}
+                        <p> Vous n'avez pour l'instant aucun projet associés.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+{% endblock %}
+
