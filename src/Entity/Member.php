@@ -5,14 +5,16 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
+ * @ORM\Table(name="member",uniqueConstraints={@UniqueConstraint(columns={"PSEUDO", "MAIL"})})
  */
 
-class Member implements UserInterface
+class Member
 {
     /**
      * @ORM\Id()
@@ -24,29 +26,40 @@ class Member implements UserInterface
     /**
      * @ORM\Column(type="string", length=50,  unique=true )
      */
-    private $name;
+    private $PSEUDO;
 
     /**
-     * @ORM\Column(type="string", length=128, unique=true)
+     * @ORM\Column(type="string", length=50,  unique=true)
      */
-    private $emailAddress;
+    private $MAIL;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=50)
      */
-    private $password;
+    private $PASSWORD;
+
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PROJECT", mappedBy="owner")
+     */
+    private $ownedProjects;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\PROJECT", inversedBy="members")
      */
-    private $projects;
+    private $contributedProjects;
 
-    public function __construct($name, $emailAddress, $password)
+
+
+    public function __construct($PSEUDO, $MAIL, $PASSWORD)
     {
-        $this->name = $name;
-        $this->emailAddress = $emailAddress;
-        $this->password = $password;
-        $this->projects = new ArrayCollection();
+        $this->PSEUDO = $PSEUDO;
+        $this->MAIL = $MAIL;
+        $this->PASSWORD = $PASSWORD;
+        $this->ownedProjects = new ArrayCollection();
+        $this->contributedProjects = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -54,57 +67,72 @@ class Member implements UserInterface
         return $this->id;
     }
 
-    public function getRoles()
+
+
+    public function getPSEUDO(): ?string
     {
-        return [
-            'ROLE_MEMBER'
-        ];
+        return $this->PSEUDO;
     }
 
-    public function getSalt()
+    public function setPSEUDO(string $PSEUDO): self
     {
-        return null;
-    }
-
-    public function getUsername()
-    {
-        return $this->emailAddress;
-    }
-
-    public function eraseCredentials() {}
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
+        $this->PSEUDO = $PSEUDO;
 
         return $this;
     }
 
-    public function getEmailAddress(): ?string
+    public function getMAIL(): ?string
     {
-        return $this->emailAddress;
+        return $this->MAIL;
     }
 
-    public function setEmailAddress(string $emailAddress): self
+    public function setMAIL(string $MAIL): self
     {
-        $this->emailAddress = $emailAddress;
+        $this->MAIL = $MAIL;
 
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getPASSWORD(): ?string
     {
-        return $this->password;
+        return $this->PASSWORD;
     }
 
-    public function setPassword(string $password): self
+    public function setPASSWORD(string $PASSWORD): self
     {
-        $this->password = $password;
+        $this->PASSWORD = $PASSWORD;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection|PROJECT[]
+     */
+    public function getOwnedProjects(): Collection
+    {
+        return $this->ownedProjects;
+    }
+
+    public function addOwnedProject(PROJECT $ownedProject): self
+    {
+        if (!$this->ownedProjects->contains($ownedProject)) {
+            $this->ownedProjects[] = $ownedProject;
+            $ownedProject->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOwnedProject(PROJECT $ownedProject): self
+    {
+        if ($this->ownedProjects->contains($ownedProject)) {
+            $this->ownedProjects->removeElement($ownedProject);
+            // set the owning side to null (unless already changed)
+            if ($ownedProject->getOwner() === $this) {
+                $ownedProject->setOwner(null);
+            }
+        }
 
         return $this;
     }
@@ -112,26 +140,28 @@ class Member implements UserInterface
     /**
      * @return Collection|PROJECT[]
      */
-    public function getProjects(): Collection
+    public function getContributedProjects(): Collection
     {
-        return $this->projects;
+        return $this->contributedProjects;
     }
 
-    public function addProject(PROJECT $project): self
+    public function addContributedProject(PROJECT $contributedProject): self
     {
-        if (!$this->projects->contains($project)) {
-            $this->projects[] = $project;
+        if (!$this->contributedProjects->contains($contributedProject)) {
+            $this->contributedProjects[] = $contributedProject;
         }
 
         return $this;
     }
 
-    public function removeProject(PROJECT $project): self
+    public function removeContributedProject(PROJECT $contributedProject): self
     {
-        if ($this->projects->contains($project)) {
-            $this->projects->removeElement($project);
+        if ($this->contributedProjects->contains($contributedProject)) {
+            $this->contributedProjects->removeElement($contributedProject);
         }
 
         return $this;
     }
+
+
 }

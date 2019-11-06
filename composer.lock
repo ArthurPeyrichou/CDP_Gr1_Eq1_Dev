@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5bc4382c6775e3725e87c52c8c79adcb",
+    "content-hash": "553d6486dc013374a2f655facf087ed4",
     "packages": [
         {
             "name": "backstrap/hammerjs",

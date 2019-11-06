@@ -7,9 +7,9 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use \Datetime;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\INVITATIONRepository")
+ * @ORM\Entity(repositoryClass="InvitationRepository")
  */
-class INVITATION
+class Invitation
 {
 
     /**

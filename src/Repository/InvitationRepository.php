@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\INVITATION;
+use App\Entity\Invitation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method INVITATION|null find($id, $lockMode = null, $lockVersion = null)
- * @method INVITATION|null findOneBy(array $criteria, array $orderBy = null)
- * @method INVITATION[]    findAll()
- * @method INVITATION[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Invitation|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Invitation|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Invitation[]    findAll()
+ * @method Invitation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class INVITATIONRepository extends ServiceEntityRepository
+class InvitationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, INVITATION::class);
+        parent::__construct($registry, Invitation::class);
     }
 
     // /**
-    //  * @return INVITATION[] Returns an array of INVITATION objects
+    //  * @return Invitation[] Returns an array of Invitation objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class INVITATIONRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?INVITATION
+    public function findOneBySomeField($value): ?Invitation
     {
         return $this->createQueryBuilder('i')
             ->andWhere('i.exampleField = :val')

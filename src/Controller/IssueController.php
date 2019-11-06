@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Member;
-use App\Entity\INVITATION;
+use App\Entity\Invitation;
 use App\Entity\PROJECT;
 use App\Entity\ISSUE;
 use Symfony\Component\HttpFoundation\Response;

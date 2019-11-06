@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PROJECTRepository")
+ * @ORM\Entity(repositoryClass="ProjectRepository")
  */
-class PROJECT
+class Project
 {
     /**
      * @ORM\Id()
@@ -30,21 +30,29 @@ class PROJECT
     private $DESCRIPTION;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="date")
      */
-    private $MANAGER_ID;
+    private $CreationDate;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Member", mappedBy="projects")
+     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\MEMBER", inversedBy="ownedProjects")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $owner;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\MEMBER", mappedBy="contributedProjects")
      */
     private $members;
 
-    public function __construct($MANAGER_ID, $NAME, $DESCRIPTION)
+    public function __construct($owner, $NAME, $DESCRIPTION)
     {
-        $this->MANAGER_ID = $MANAGER_ID;
+        $this->$owner = $owner;
         $this->NAME = $NAME;
         $this->DESCRIPTION = $DESCRIPTION;
         $this->members = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -77,43 +85,58 @@ class PROJECT
         return $this;
     }
 
-    public function getMANAGERID(): ?int
+    public function getOwner(): ?int
     {
-        return $this->MANAGER_ID;
+        return $this->owner;
     }
 
-    public function setMANAGERID(int $MANAGER_ID): self
+    public function setOwner(int $owner): self
     {
-        $this->MANAGER_ID = $MANAGER_ID;
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+
+    public function getCreationDate(): ?\DateTimeInterface
+    {
+        return $this->CreationDate;
+    }
+
+    public function setCreationDate(\DateTimeInterface $CreationDate): self
+    {
+        $this->CreationDate = $CreationDate;
 
         return $this;
     }
 
     /**
-     * @return Collection|Member[]
+     * @return Collection|MEMBER[]
      */
     public function getMembers(): Collection
     {
         return $this->members;
     }
 
-    public function addMember(Member $member): self
+    public function addMember(MEMBER $member): self
     {
         if (!$this->members->contains($member)) {
             $this->members[] = $member;
-            $member->addProject($this);
+            $member->addContributedProject($this);
         }
 
         return $this;
     }
 
-    public function removeMember(Member $member): self
+    public function removeMember(MEMBER $member): self
     {
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);
-            $member->removeProject($this);
+            $member->removeContributedProject($this);
         }
 
         return $this;
     }
+
+
 }
