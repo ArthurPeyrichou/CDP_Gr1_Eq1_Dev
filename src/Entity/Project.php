@@ -22,12 +22,12 @@ class Project
      * @ORM\Column(type="string")
      */
 
-    private $NAME;
+    private $name;
 
     /**
      * @ORM\Column(type="string", length=200)
      */
-    private $DESCRIPTION;
+    private $description;
 
     /**
      * @ORM\Column(type="date")
@@ -51,11 +51,11 @@ class Project
      */
     private $issues;
 
-    public function __construct($owner, $NAME, $DESCRIPTION,$CreationDate)
+    public function __construct($owner, $name, $description,$CreationDate)
     {
         $this->owner = $owner;
-        $this->NAME = $NAME;
-        $this->DESCRIPTION = $DESCRIPTION;
+        $this->name = $name;
+        $this->description = $description;
         $this->members = new ArrayCollection();
         $this->CreationDate=$CreationDate;
         $this->issues = new ArrayCollection();
@@ -67,26 +67,26 @@ class Project
     }
 
 
-    public function getNAME(): ?string
+    public function getName(): ?string
     {
-        return $this->NAME;
+        return $this->name;
     }
 
-    public function setNAME(string $NAME): self
+    public function setName(string $name): self
     {
-        $this->NAME = $NAME;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getDESCRIPTION(): ?string
+    public function getDescription(): ?string
     {
         return $this->DESCRIPTION;
     }
 
-    public function setDESCRIPTION(string $DESCRIPTION): self
+    public function setDescription(string $description): self
     {
-        $this->DESCRIPTION = $DESCRIPTION;
+        $this->description = $description;
 
         return $this;
     }
@@ -104,7 +104,7 @@ class Project
     }
 
 
-    public function getCreationDate(): ?\DateTimeInterface
+    public function getCreationDate(): ?DateTimeInterface
     {
         return $this->CreationDate;
     }

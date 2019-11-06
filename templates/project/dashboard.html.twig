@@ -23,7 +23,7 @@
                     {% if myProjects is not empty %}  
                         <div class="collection">
                             {% for project in myProjects %}
-                                <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getNAME() }}</b> : {{ project.getDESCRIPTION() }} </a>
+                                <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getName() }}</b> : {{ project.getDecription() }} </a>
                             {% endfor %}
                         </div> 
                     {% else %}
@@ -35,7 +35,7 @@
                         
                         <div class="collection">
                             {% for project in myLinkedProjects %}
-                                <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getNAME() }}</b> : {{ project.getDESCRIPTION() }} </a>
+                                <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getName() }}</b> : {{ project.getDecription() }} </a>
                             {% endfor %}
                         </div> 
                     {% else %}
