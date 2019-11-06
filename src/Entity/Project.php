@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="ProjectRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ProjectRepository")
  */
 class Project
 {
@@ -21,7 +21,6 @@ class Project
     /**
      * @ORM\Column(type="string")
      */
-
     private $name;
 
     /**
@@ -32,17 +31,16 @@ class Project
     /**
      * @ORM\Column(type="date")
      */
-    private $CreationDate;
+    private $creationDate;
 
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="App\Entity\MEMBER", inversedBy="ownedProjects")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Member", inversedBy="ownedProjects")
      * @ORM\JoinColumn(nullable=false)
      */
     private $owner;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\MEMBER", mappedBy="contributedProjects")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Member", mappedBy="contributedProjects")
      */
     private $members;
 
@@ -51,13 +49,13 @@ class Project
      */
     private $issues;
 
-    public function __construct($owner, $name, $description,$CreationDate)
+    public function __construct($owner, $name, $description, $creationDate)
     {
         $this->owner = $owner;
         $this->name = $name;
         $this->description = $description;
         $this->members = new ArrayCollection();
-        $this->CreationDate=$CreationDate;
+        $this->creationDate = $creationDate;
         $this->issues = new ArrayCollection();
     }
 
@@ -81,7 +79,7 @@ class Project
 
     public function getDescription(): ?string
     {
-        return $this->DESCRIPTION;
+        return $this->description;
     }
 
     public function setDescription(string $description): self
@@ -96,7 +94,7 @@ class Project
         return $this->owner;
     }
 
-    public function setOwner(int $owner): self
+    public function setOwner(Member $owner): self
     {
         $this->owner = $owner;
 
@@ -104,27 +102,27 @@ class Project
     }
 
 
-    public function getCreationDate(): ?DateTimeInterface
+    public function getCreationDate(): ?\DateTimeInterface
     {
-        return $this->CreationDate;
+        return $this->creationDate;
     }
 
-    public function setCreationDate(\DateTimeInterface $CreationDate): self
+    public function setCreationDate(\DateTimeInterface $creationDate): self
     {
-        $this->CreationDate = $CreationDate;
+        $this->creationDate = $creationDate;
 
         return $this;
     }
 
     /**
-     * @return Collection|MEMBER[]
+     * @return Collection|Member[]
      */
     public function getMembers(): Collection
     {
         return $this->members;
     }
 
-    public function addMember(MEMBER $member): self
+    public function addMember(Member $member): self
     {
         if (!$this->members->contains($member)) {
             $this->members[] = $member;
@@ -134,7 +132,7 @@ class Project
         return $this;
     }
 
-    public function removeMember(MEMBER $member): self
+    public function removeMember(Member $member): self
     {
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);

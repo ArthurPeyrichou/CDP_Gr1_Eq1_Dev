@@ -20,7 +20,7 @@ class MemberRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return MEMBER[] Returns an array of MEMBER objects
+    //  * @return Member[] Returns an array of Member objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class MemberRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?MEMBER
+    public function findOneBySomeField($value): ?Member
     {
         return $this->createQueryBuilder('m')
             ->andWhere('m.exampleField = :val')

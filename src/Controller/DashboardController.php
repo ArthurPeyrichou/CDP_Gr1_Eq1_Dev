@@ -2,10 +2,7 @@
 // src/Controller/DashboardController.php
 namespace App\Controller;
 
-use App\Entity\Member;
-use App\Entity\Invitation;
-use App\Entity\PROJECT;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Project;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;

@@ -3,11 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use \Datetime;
 
 /**
- * @ORM\Entity(repositoryClass="InvitationRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\InvitationRepository")
  */
 class Invitation
 {
@@ -38,15 +36,13 @@ class Invitation
      */
     private $INV_KEY;
 
-
-
     public function __construct($MEMBER_ID, $PROJECT_ID)
     {
         $this->MEMBER_ID= $MEMBER_ID;
         $this->PROJECT_ID= $PROJECT_ID;
         $this->INV_KEY = $this->addRandomPassword();
         //Les dates seront affichées au format Français (jj/mm/aaaa) mais seront stockées et traitées par l'application au format US (yyyy-mm-dd).
-        $dt = new DateTime('now');
+        $dt = new \DateTime('now');
         $this->DATE = $dt;
     }
     public function getMEMBERID(): ?int
