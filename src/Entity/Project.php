@@ -46,6 +46,11 @@ class Project
      */
     private $members;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="project")
+     */
+    private $issues;
+
     public function __construct($owner, $NAME, $DESCRIPTION,$CreationDate)
     {
         $this->owner = $owner;
@@ -53,6 +58,7 @@ class Project
         $this->DESCRIPTION = $DESCRIPTION;
         $this->members = new ArrayCollection();
         $this->CreationDate=$CreationDate;
+        $this->issues = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -133,6 +139,37 @@ class Project
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);
             $member->removeContributedProject($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Issue[]
+     */
+    public function getIssues(): Collection
+    {
+        return $this->issues;
+    }
+
+    public function addIssue(Issue $issue): self
+    {
+        if (!$this->issues->contains($issue)) {
+            $this->issues[] = $issue;
+            $issue->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIssue(Issue $issue): self
+    {
+        if ($this->issues->contains($issue)) {
+            $this->issues->removeElement($issue);
+            // set the owning side to null (unless already changed)
+            if ($issue->getProject() === $this) {
+                $issue->setProject(null);
+            }
         }
 
         return $this;

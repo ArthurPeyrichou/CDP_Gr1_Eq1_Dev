@@ -18,6 +18,7 @@ class ProjectController extends AbstractController {
      * @Route("/new_project", name = "newProjectGet")
      */
 
+
     public function viewCreationProject(Request $request) : Response
     {
             $form = $this->createForm(ProjectType::class);
