@@ -11,16 +11,17 @@ class DashboardController extends AbstractController {
     
     /**
      * @Route("/dashboard", name = "dashboard", methods = {"GET"})
+     * @Route("/", name = "root", methods = {"GET"})
      */
     public function viewDashboard(Request $request) {
         $member = $this->getUser();
         $repository = $this->getDoctrine()->getRepository(Project::class);
         $myProjects = $repository->findBy([
-            'MANAGER_ID' => $member->getId()
+            'owner' => $member
         ]);
         //Remplacer la requette pour selectionner les projet lié et non les projet enfants
         $myLinkedProjects = $repository->findBy([
-            'MANAGER_ID' => $member->getId()
+            'owner' => $member
         ]);
         $pseudo = $member->getName();
 
