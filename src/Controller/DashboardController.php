@@ -14,15 +14,10 @@ class DashboardController extends AbstractController {
      * @Route("/", name = "root", methods = {"GET"})
      */
     public function viewDashboard(Request $request) {
+        /**@var $member Member */
         $member = $this->getUser();
-        $repository = $this->getDoctrine()->getRepository(Project::class);
-        $myProjects = $repository->findBy([
-            'owner' => $member
-        ]);
-        //Remplacer la requette pour selectionner les projet lié et non les projet enfants
-        $myLinkedProjects = $repository->findBy([
-            'owner' => $member
-        ]);
+        $myProjects = $member->getOwnedProjects();
+        $myLinkedProjects = $member->getContributedProjects();
         $pseudo = $member->getName();
 
         return $this->render('project/dashboard.html.twig', ["myProjects"=> $myProjects,
