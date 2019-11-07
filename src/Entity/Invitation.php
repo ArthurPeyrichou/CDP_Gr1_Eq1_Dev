@@ -9,86 +9,93 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Invitation
 {
-
     /**
      * @ORM\Id()
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
-     * @ORM\OneToOne(targetEntity="App\Entity\Member", cascade={"persist", "remove"})
+     */
+    private $id;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Member")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $MEMBER_ID;
+    private $member;
 
     /**
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\OneToOne(targetEntity="App\Entity\Project", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Project")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $PROJECT_ID;
+    private $project;
 
     /**
-     * @ORM\Column(type="datetime" ,options={"default": "CURRENT_TIMESTAMP"})
+     * @ORM\Column(type="datetime")
      */
-    private $DATE;
+    private $date;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, unique=true)
      */
-    private $INV_KEY;
+    private $invitationKey;
 
-    public function __construct($MEMBER_ID, $PROJECT_ID)
+    public function __construct($member, $project)
     {
-        $this->MEMBER_ID= $MEMBER_ID;
-        $this->PROJECT_ID= $PROJECT_ID;
-        $this->INV_KEY = $this->addRandomPassword();
-        //Les dates seront affichées au format Français (jj/mm/aaaa) mais seront stockées et traitées par l'application au format US (yyyy-mm-dd).
-        $dt = new \DateTime('now');
-        $this->DATE = $dt;
-    }
-    public function getMEMBERID(): ?int
-    {
-        return $this->MEMBER_ID;
+        $this->member= $member;
+        $this->project= $project;
+        $this->invitationKey = $this->addRandomPassword();
+        $dt = new \DateTime();
+        $this->date = $dt;
     }
 
-    public function setMEMBERID(int $MEMBER_ID): self
+    public function getId(): ?int
     {
-        $this->MEMBER_ID = $MEMBER_ID;
+
+    }
+
+    public function getMember(): ?Member
+    {
+        return $this->member;
+    }
+
+    public function setMember(Member $member): self
+    {
+        $this->member = $member;
 
         return $this;
     }
 
-    public function getPROJECTID(): ?int
+    public function getProject(): ?Project
     {
-        return $this->PROJECT_ID;
+        return $this->project;
     }
 
-    public function setPROJECTID(int $PROJECT_ID): self
+    public function setProject(Project $project): self
     {
-        $this->PROJECT_ID = $PROJECT_ID;
+        $this->project = $project;
 
         return $this;
     }
 
-    public function getDATE(): ?\DateTimeInterface
+    public function getDate(): ?\DateTimeInterface
     {
-        return $this->DATE;
+        return $this->date;
     }
 
-    public function setDATE(\DateTimeInterface $DATE): self
+    public function setDate(\DateTimeInterface $date): self
     {
-        $this->DATE = $DATE;
+        $this->date = $date;
 
         return $this;
     }
 
-    public function getINVKEY(): ?string
+    public function getInvitationKey(): ?string
     {
-        return $this->INV_KEY;
+        return $this->invitationKey;
     }
 
-    public function setINVKEY(string $INV_KEY): self
+    public function setInvitationKey(string $invitationKey): self
     {
-        $this->INV_KEY = $INV_KEY;
+        $this->invitationKey = $invitationKey;
 
         return $this;
     }
