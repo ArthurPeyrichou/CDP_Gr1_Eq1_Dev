@@ -15,4 +15,10 @@
     {% else %}
         <li class="collection-item">Aucun collaborateur</li>
     {% endif %}
+    <li class="collection-item">
+        <form action="{{ path('inviteToProject', {'id': project.id}) }}" method="POST">
+            <input type="text" placeholder="Inviter un membre" name="memberName">
+            <button type="submit" class="btn waves-effect">Inviter ce membre</button>
+        </form>
+    </li>
 </ul>
