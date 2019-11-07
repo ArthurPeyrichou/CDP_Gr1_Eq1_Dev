@@ -1,0 +1,18 @@
+<ul class="collection with-header">
+    <li class="collection-header"><h5>Liste des membres</h5></li>
+    {% if members is not empty %}
+        {% for member in members %}
+            <li class="collection-item">
+                <div>
+                    <a href="mailto:{{ member.emailAddress }}">
+                        {{ member.name }}
+                    </a>
+                    <a href="{{ path('deleteMember', {'projectId': project.id, 'memberId': member.id}) }}"
+                       class="secondary-content">&times;</a>
+                </div>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li class="collection-item">Aucun collaborateur</li>
+    {% endif %}
+</ul>
