@@ -2,6 +2,7 @@
 // src/Controller/ProjectController.php
 namespace App\Controller;
 
+use \DateTime;
 use App\Entity\Member;
 use App\Entity\Invitation;
 use App\Entity\Project;
@@ -23,17 +24,25 @@ class ProjectController extends AbstractController {
     {
             $form = $this->createForm(ProjectType::class);
             $form->handleRequest($request);
+
+            $error = '';
+
             if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
+                
+                $owner = $this->getUser();
                 $name = $data['name'];
                 $description= $data['description'];
-                $date=new \DateTime('now');
-                $project = new Project('1', $name, $description,$date);
+                $date= new DateTime('now');
+                $project = new Project($owner, $name, $description, $date);
+               
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($project);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('dashboard');
+                if($error == ''){
+                    return $this->redirectToRoute('dashboard');
+                }
             }
 
             return $this->render('project/creation.html.twig', ["form"=> $form->createView()] );
@@ -44,7 +53,7 @@ class ProjectController extends AbstractController {
          * @Route("/project/{id_project}", name = "projectOverviewGet", methods = {"GET"})
          */
         public function viewProject(Request $request) {
-        $pseudo = $this->get('session')->get('pseudo');
+        $pseudo = $this->getUser()->getName();
         $repository = $this->getDoctrine()->getRepository(Project::class);
         $theProject = $repository->findOneBy([
             'id' => $request->attributes->get('id_project')

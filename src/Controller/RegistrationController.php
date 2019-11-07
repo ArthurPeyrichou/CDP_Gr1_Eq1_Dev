@@ -23,7 +23,7 @@ class RegistrationController extends AbstractController {
         $form->handleRequest($request);
 
         $error = '';
-        //TODO Récupérer les infos depuis le formulaire quand il sera prêt
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
            
@@ -40,6 +40,9 @@ class RegistrationController extends AbstractController {
             }
             catch (EmailAddressInUseException $e) {
                 $error = 'L\'adresse email choisie est déjà utilisée';
+            }
+            if($error == ''){
+                return $this->redirectToRoute('login');
             }
         }
 

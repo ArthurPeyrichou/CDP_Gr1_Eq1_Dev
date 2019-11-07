@@ -15,11 +15,12 @@ class ProjectType extends AbstractType
     {
         $builder
             ->add('name',TextType::class,[
-                    'attr'=>['placeholder'=>'votre nom du projet'],
-                    'label'=>'Nom du Projet'
+                    'attr'=>['placeholder'=>'Le nom du projet'],
+                    'label'=>'Nom'
             ])
             ->add('description',TextareaType::class,[
-                'attr'=>['placeholder'=>'Description de votre projet']
+                'attr'=>['placeholder'=>'Description du projet'],
+                'label'=>'Description'
             ])
         ;
 
@@ -28,7 +29,7 @@ class ProjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Project::class,
+
         ]);
     }
 }
