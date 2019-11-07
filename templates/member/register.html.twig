@@ -3,14 +3,9 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <nav class="cyan darken-4">
-        <div class="nav-wrapper" >
-            <a href="" class="brand-logo">Gestion de projets</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="login">Se connecter</a></li>
-            </ul>
-        </div>
-    </nav>
+
+    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+
     <div id="register-container" style="margin-top:10%;">
         <div class="row">
                 <div class="row">

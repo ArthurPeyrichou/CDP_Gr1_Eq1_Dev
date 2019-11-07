@@ -1,10 +1,19 @@
 <header>
-    <nav class="black darken-4">
+    <nav class="cyan darken-4">
         <div class="nav-wrapper" >
-            <a href="" class="brand-logo">Connecté en tant que {{pseudo | default('')}}</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="/logout" class="right">Se déconnecter</a></li>
+            {% if pseudo is defined %}  
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="#">Connecté en tant que {{pseudo | default('')}}</a></li>
             </ul>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="/logout">Se déconnecter</a></li>
+            </ul>
+            {% else %} 
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="/login">Se connecté</a></li>
+                <li><a href="/register">Créer un compte</a></li>
+            </ul>
+            {% endif %} 
         </div>
     </nav> 
 </header>
