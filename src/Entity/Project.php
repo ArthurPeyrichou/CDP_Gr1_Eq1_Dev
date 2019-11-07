@@ -89,7 +89,7 @@ class Project
         return $this;
     }
 
-    public function getOwner(): ?int
+    public function getOwner(): ?Member
     {
         return $this->owner;
     }

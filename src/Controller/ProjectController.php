@@ -2,12 +2,12 @@
 // src/Controller/ProjectController.php
 namespace App\Controller;
 
+use App\Repository\MemberRepository;
+use App\Repository\ProjectRepository;
 use \DateTime;
 use App\Entity\Member;
-use App\Entity\Invitation;
 use App\Entity\Project;
 use App\Form\ProjectType;
-use App\Service\Project\ProjectService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,11 +16,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProjectController extends AbstractController {
 
     /**
-     * @Route("/new_project", name = "newProjectGet")
+     * @Route("/new_project", name="createProject")
      */
-
-
-    public function viewCreationProject(Request $request) : Response
+    public function createProject(Request $request) : Response
     {
             $form = $this->createForm(ProjectType::class);
             $form->handleRequest($request);
@@ -45,27 +43,28 @@ class ProjectController extends AbstractController {
                 }
             }
 
-            return $this->render('project/creation.html.twig', ["form"=> $form->createView()] );
+            return $this->render('project/creation.html.twig', [
+                'form' => $form->createView()
+            ]);
 
     }
 
         /**
-         * @Route("/project/{id_project}", name = "projectOverviewGet", methods = {"GET"})
+         * @Route("/project/{id}", name="projectDetails", methods={"GET"})
          */
-        public function viewProject(Request $request) {
+        public function viewProject(Request $request, ProjectRepository $projectRepository, $id): Response
+        {
         $pseudo = $this->getUser()->getName();
-        $repository = $this->getDoctrine()->getRepository(Project::class);
-        $theProject = $repository->findOneBy([
-            'id' => $request->attributes->get('id_project')
+        $theProject = $projectRepository->findOneBy([
+            'id' => intval($id)
         ]);
-        $repository = $this->getDoctrine()->getRepository(Member::class);
-        $owner = $repository->findOneBy([
-            'id' => $theProject->getMANAGERID()
+        $owner = $theProject->getOwner();
+        return $this->render('project/project_details.html.twig', [
+            'theProject' => $theProject,
+            'owner' => $owner,
+            'members' => $theProject->getMembers(),
+            'pseudo' => $pseudo
         ]);
-        return ($pseudo == null) ? $this->redirect( 'login') : $this->render('project/project_details.html.twig', ["theProject"=> $theProject,
-            "owner"=> $owner,
-            "members"=> $theProject->getMembers(),
-            "pseudo"=> $pseudo]);
     }
 
 }
