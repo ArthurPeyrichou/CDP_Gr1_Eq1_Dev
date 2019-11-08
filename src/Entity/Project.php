@@ -45,7 +45,7 @@ class Project
     private $members;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="project")
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="project", cascade={"persist", "delete"})
      */
     private $issues;
 
