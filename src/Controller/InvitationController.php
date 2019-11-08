@@ -4,22 +4,33 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\ProjectRepository;
+use App\Repository\MemberRepository;
+use App\Service\Invitation\InvitationService;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class InvitationController extends AbstractController
 {
-    /**
-     * @Route("/invit", name="create_invitation", methods = {"GET"})
-     */
-    public function createInvitation() {
-        // you can fetch the EntityManager via $this->getDoctrine()
-        // or you can add an argument to the action: createProduct(EntityManagerInterface $entityManager)
-        $entityManager = $this->getDoctrine()->getManager();
 
-        //$invitation = new Invitation(MEMBER_iD, PROJECT_iD);
-        //$entityManager->persist($invitation);
-        //$entityManager->flush();
-        //return $this->render('member/invitation.html.twig', ["msg"=>'Saved new invitation with id '.$invitation->getId()]);
-        
-        return $this->render('member/invitation.html.twig', ['user' => $this->getUser()]);
+     /**
+     * @Route("/project/{id}/sendInvitation", name="inviteToProject", methods={"POST"})
+     */
+    public function sendInvitationToProject(Request $request, InvitationService $invitationService, 
+                MemberRepository $memberRepository, ProjectRepository $projectRepository, $id)
+    {
+
+        $theMember = $memberRepository->findOneBy([
+            'emailAddress' =>  $request->get('memberEmail')
+        ]);
+
+        $myProject = $projectRepository->findOneBy([
+            'id' => $id
+        ]);
+       
+        $invitationService->inviteUser($theMember, $myProject);
+
+        return $this->redirectToRoute('dashboard');
     }
+
 }

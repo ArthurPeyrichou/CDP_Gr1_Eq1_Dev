@@ -82,15 +82,6 @@ class ProjectController extends AbstractController {
     }
 
     /**
-     * @Route("/project/{id}/sendInvitation", name="inviteToProject", methods={"POST"})
-     */
-    public function sendInvitationToProject(Request $request, $id)
-    {
-        throw new HttpException(500, 'TODO');
-    }
-
-
-    /**
      * @Route("/project/{projectId}/deleteMember/{memberId}", name="deleteMember")
      */
     public function deleteMember($projectId, $memberId): Response
