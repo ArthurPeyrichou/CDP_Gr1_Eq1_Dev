@@ -1,10 +1,10 @@
-{% extends   "base.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block title %}Création de projet{% endblock %}
 
 {% block body %}
 
-    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+    {% include 'app_header.html.twig' %}
 
     <div id="project-container" style="margin-top:10%;">
         <div class="row">
@@ -17,8 +17,8 @@
                                 {{ form_row(form.name) }}
                                 {{ form_row(form.description) }}
 
-                                <button id="project-button" class="btn waves-effect waves-light"  type="submit">Créer le Projet</button>
-                                <a class="btn waves-effect waves-light red" href="/home">Annuler</a>
+                                <button id="project-button" class="btn waves-effect waves-light" type="submit">Créer le Projet</button>
+                                <a class="btn waves-effect waves-light red" href="{{ path('dashboard') }}">Annuler</a>
                                 {{ form_end(form) }}
                             </div>
                          </div>

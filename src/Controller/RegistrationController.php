@@ -2,15 +2,14 @@
 // src/Controller/IdentificationController.php
 namespace App\Controller;
 
-use App\Entity\Member;
+use App\Form\RegistrationType;
 use App\Service\Registration\EmailAddressInUseException;
 use App\Service\Registration\MemberNameInUseException;
 use App\Service\Registration\RegistrationService;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Form\RegistrationType;
 
 class RegistrationController extends AbstractController {
 

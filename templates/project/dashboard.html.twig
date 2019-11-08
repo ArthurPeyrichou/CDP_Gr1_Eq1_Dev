@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+    {% include 'app_header.html.twig' %}
     
     <div id="project-list-container" style="margin-top:10%;">
         <div class="row">
@@ -14,7 +14,7 @@
                     {% if myProjects is not empty %}  
                         <div class="collection">
                             {% for project in myProjects %}
-                                <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getName() }}</b> : {{ project.getDescription() }} </a>
+                                <a href="{{ path('projectDetails', {'id': project.id}) }}" class="collection-item"><b>{{ project.name }}</b> : {{ project.description }} </a>
                             {% endfor %}
                         </div> 
                     {% else %}
@@ -26,7 +26,7 @@
                         
                         <div class="collection">
                             {% for project in myLinkedProjects %}
-                                <a href="/project/{{ project.getId() }}" class="collection-item"><b>{{ project.getName() }}</b> : {{ project.getDescription() }} </a>
+                                <a href="{{ path('projectDetails', {'id': project.id}) }}" class="collection-item"><b>{{ project.name }}</b> : {{ project.description }} </a>
                             {% endfor %}
                         </div> 
                     {% else %}

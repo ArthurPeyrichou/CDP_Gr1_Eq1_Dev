@@ -10,7 +10,7 @@
         <div class="nav-wrapper" >
             <a href="" class="brand-logo">Gestion de issues</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="new_project">créer nouveau projet</a></li>
+                <li><a href="{{ path('createProject') }}">créer nouveau projet</a></li>
             </ul>
         </div>
     </nav>   
@@ -24,14 +24,14 @@
                         <div class="collection">
                             {% for issue in myIssues %}
                                 <p class="collection-item">
-                                    <a href="/project/{{ myProject.getId() }}/issue/{{ issue.getId() }}/edit"><b>{{ issue.getName() }}</b>{{ issue.getDescription() }} Difficulté: {{ issue.getDifficulty() }} Statut: {{ issue.getStatus() }} Priorité: {{ issue.getPriority() }}</a>
-                                    <a href="/project/{{ myProject.getId() }}/issue/{{ issue.getId() }}/delete" class="btn waves-effect waves-light red"></a>
+                                    <a href="/project/{{ myProject.id }}/issue/{{ issue.id }}/edit"><b>{{ issue.name }}</b>{{ issue.description }} Difficulté: {{ issue.difficulty }} Statut: {{ issue.status }} Priorité: {{ issue.priority }}</a>
+                                    <a href="/project/{{ myProject.id }}/issue/{{ issue.id }}/delete" class="btn waves-effect waves-light red"></a>
                                 </p>
                             {% endfor %}
                         </div> 
                     {% else %}
                         <p> Vous n'avez pour l'instant créé aucune issue.</p>
-                        <a class="btn waves-effect waves-light" href="/new_project">Créer mon projet</a>
+                        <a class="btn waves-effect waves-light" href="{{ path('createProject') }}">Créer mon projet</a>
                     {% endif %}
                 </div>
             </div>

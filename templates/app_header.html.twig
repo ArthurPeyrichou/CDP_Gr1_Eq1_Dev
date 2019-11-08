@@ -4,15 +4,15 @@
             {% if pseudo is defined %}  
             <ul id="nav-mobile" class="left hide-on-med-and-down">
                 <li><a href="#">Connecté en tant que {{pseudo | default('')}}</a></li>
-                <li><a href="/dashboard">Liste des projets</a></li>
+                <li><a href="{{ path('dashboard') }}">Liste des projets</a></li>
             </ul>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="/logout">Se déconnecter</a></li>
+                <li><a href="{{ path('logout') }}">Se déconnecter</a></li>
             </ul>
             {% else %} 
             <ul id="nav-mobile" class="left hide-on-med-and-down">
-                <li><a href="/login">Se connecté</a></li>
-                <li><a href="/register">Créer un compte</a></li>
+                <li><a href="{{ path('login') }}">Se connecter</a></li>
+                <li><a href="{{ path('register') }}">Créer un compte</a></li>
             </ul>
             {% endif %} 
         </div>

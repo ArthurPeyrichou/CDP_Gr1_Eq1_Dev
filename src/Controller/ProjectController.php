@@ -2,15 +2,13 @@
 // src/Controller/ProjectController.php
 namespace App\Controller;
 
-use App\Repository\MemberRepository;
-use App\Repository\ProjectRepository;
-use \DateTime;
-use App\Entity\Member;
 use App\Entity\Project;
 use App\Form\ProjectType;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
+use App\Repository\ProjectRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,7 +17,7 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/new", name="createProject")
      */
-    public function createProject(Request $request) : Response
+    public function createProject(Request $request, EntityManagerInterface $entityManager) : Response
     {
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
@@ -32,10 +30,9 @@ class ProjectController extends AbstractController {
             $owner = $this->getUser();
             $name = $data['name'];
             $description= $data['description'];
-            $date= new DateTime('now');
+            $date= new \DateTime('now');
             $project = new Project($owner, $name, $description, $date);
 
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($project);
             $entityManager->flush();
 

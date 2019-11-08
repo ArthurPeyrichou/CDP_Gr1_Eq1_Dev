@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+    {% include 'app_header.html.twig' %}
 
     <div id="register-container" style="margin-top:10%;">
         <div class="row">
@@ -33,11 +33,11 @@
 
 {% block javascripts %}
     <script defer>
-        let password = document.getElementById("password")
+        let password = document.getElementById("password");
         let password_confirm = document.getElementById("password_confirm");
 
         function validatePassword(){
-        if(password.value != password_confirm.value) {
+        if(password.value !== password_confirm.value) {
             password_confirm.setCustomValidity("Les mots de passe sont différents");
         } else {
             password_confirm.setCustomValidity('');

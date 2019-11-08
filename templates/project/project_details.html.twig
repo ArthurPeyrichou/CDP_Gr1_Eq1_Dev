@@ -11,12 +11,12 @@
             <div class="col s12 m6 offset-m3">
                 <div class="card center-align mg">
                     <div class="card-content">
-                        <h3>{{ project.getName() }}</h3>
-                        <p>{{ project.getDescription() }}</p>
+                        <h3>{{ project.name }}</h3>
+                        <p>{{ project.description }}</p>
                         <p>Propriétaire du projet :</p>
-                        <p><a href="mailto:{{ owner.getEmailAddress() }}"><b>{{ owner.getName() }}</b></a></p>
-                        <a class="btn waves-effect waves-light" href="/project/{{ project.getId() }}/edit">Editer</a>
-                        <a class="btn waves-effect waves-light red" href="/project/{{ project.getId() }}/delete">Supprimer</a>
+                        <p><a href="mailto:{{ owner.emailAddress }}" style="font-weight: bold">{{ owner.name }}</a></p>
+                        <a class="btn waves-effect waves-light" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
+                        <a class="btn waves-effect waves-light red" href="/project/{{ project.id }}/delete">Supprimer</a>
                         <div>
                             {% include 'project/project_members.html.twig' %}
                         </div>

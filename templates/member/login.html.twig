@@ -1,9 +1,9 @@
-{% extends   "base.html.twig" %}
+{% extends "base.html.twig" %}
 
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+    {% include 'app_header.html.twig' %}
 
     <div id="login-container" style="margin-top:10%;">
         <form id="login-formular" action="/login" method="POST">

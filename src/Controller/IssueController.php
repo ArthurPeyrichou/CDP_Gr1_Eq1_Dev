@@ -2,13 +2,10 @@
 // src/Controller/IssueController.php
 namespace App\Controller;
 
-use App\Entity\Member;
-use App\Entity\Invitation;
-use App\Entity\Project;
 use App\Entity\Issue;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Project;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IssueController extends AbstractController {

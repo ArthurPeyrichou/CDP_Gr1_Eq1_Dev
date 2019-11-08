@@ -2,9 +2,8 @@
 // src/Controller/DashboardController.php
 namespace App\Controller;
 
-use App\Entity\Project;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractController {
