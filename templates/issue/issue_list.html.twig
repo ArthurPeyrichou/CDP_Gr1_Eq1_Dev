@@ -4,16 +4,7 @@
 
 {% block body %}
 
-    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
-
-    <nav class="cyan darken-4">
-        <div class="nav-wrapper" >
-            <a href="" class="brand-logo">Gestion de issues</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="{{ path('createProject') }}">créer nouveau projet</a></li>
-            </ul>
-        </div>
-    </nav>   
+    {% include 'app_header.html.twig' %}
     
     <div id="issue-list-container" style="margin-top:10%;">
         <div class="row">
@@ -31,8 +22,8 @@
                         </div> 
                     {% else %}
                         <p> Vous n'avez pour l'instant créé aucune issue.</p>
-                        <a class="btn waves-effect waves-light" href="{{ path('createProject') }}">Créer mon projet</a>
                     {% endif %}
+                    <a class="btn waves-effect waves-light" href="{#{{ path('createIssue') }} #}">Créer une issue</a>
                 </div>
             </div>
         </div>

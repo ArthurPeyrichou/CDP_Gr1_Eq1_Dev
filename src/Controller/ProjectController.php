@@ -42,7 +42,8 @@ class ProjectController extends AbstractController {
         }
 
         return $this->render('project/creation.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'user' => $this->getUser()
         ]);
 
     }
@@ -52,7 +53,6 @@ class ProjectController extends AbstractController {
      */
     public function viewProject(Request $request, ProjectRepository $projectRepository, $id): Response
     {
-        $pseudo = $this->getUser()->getName();
         $theProject = $projectRepository->findOneBy([
             'id' => intval($id)
         ]);
@@ -61,7 +61,7 @@ class ProjectController extends AbstractController {
             'project' => $theProject,
             'owner' => $owner,
             'members' => $theProject->getMembers(),
-            'pseudo' => $pseudo
+            'user' => $this->getUser()
         ]);
     }
 

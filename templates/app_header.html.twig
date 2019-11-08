@@ -1,10 +1,11 @@
 <header>
     <nav class="cyan darken-4">
         <div class="nav-wrapper" >
-            {% if pseudo is defined %}  
+            {% if user is defined %}  
             <ul id="nav-mobile" class="left hide-on-med-and-down">
-                <li><a href="#">Connecté en tant que {{pseudo | default('')}}</a></li>
+                <li><a href="#">Connecté en tant que {{user.name | default('')}}</a></li>
                 <li><a href="{{ path('dashboard') }}">Liste des projets</a></li>
+                <li><a href="{{ path('createProject') }}">Nouveau projet</a></li>
             </ul>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="{{ path('logout') }}">Se déconnecter</a></li>

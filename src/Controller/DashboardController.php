@@ -21,7 +21,7 @@ class DashboardController extends AbstractController {
 
         return $this->render('project/dashboard.html.twig', ["myProjects"=> $myProjects,
                                                             "myLinkedProjects"=> $myLinkedProjects, 
-                                                            "pseudo"=> $pseudo]);
+                                                            'user' => $this->getUser()]);
     }
 
 }

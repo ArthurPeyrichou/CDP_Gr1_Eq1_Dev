@@ -20,6 +20,6 @@ class InvitationController extends AbstractController
         //$entityManager->flush();
         //return $this->render('member/invitation.html.twig', ["msg"=>'Saved new invitation with id '.$invitation->getId()]);
         
-        return $this->render('member/invitation.html.twig');
+        return $this->render('member/invitation.html.twig', ['user' => $this->getUser()]);
     }
 }
