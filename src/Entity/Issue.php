@@ -46,7 +46,15 @@ class Issue
      * @ORM\JoinColumn(nullable=false)
      */
     private $project;
-
+    public function __construct($name,$description,$difficulty,$priority,$status,$project)
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->difficulty=$difficulty;
+        $this->priority=$priority;
+        $this->status=$status;
+        $this->project=$project;
+    }
     public function getId(): ?int
     {
         return $this->id;

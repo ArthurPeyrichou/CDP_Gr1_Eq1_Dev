@@ -1,0 +1,38 @@
+{% extends   "base.html.twig" %}
+
+{% block title %}Création d'un issue{% endblock %}
+
+{% block body %}
+    {% include 'app_header.html.twig' with  {'foo': 'bar'} %}
+    <nav class="cyan darken-4">
+        <div class="nav-wrapper" >
+            <a href="" class="brand-logo">Gestion des issues</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="">Mes issues</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="issue-container" style="margin-top:10%;">
+        <div class="row">
+                <div class="col s12 m6 offset-m3">
+                    <div class="card center-align mg">
+                        <div class="card-content">
+                            {{ form_start(form) }}
+                            {{ form_errors(form) }}
+                            {{ form_row(form.name) }}
+                            {{ form_row(form.description) }}
+                            {{ form_row(form.difficulty) }}
+                            {{ form_row(form.priority) }}
+                            {#{{ form_widget(form.priority)}}#}
+                            {{ form_row(form.status) }}
+                            <button id="project-button" class="btn waves-effect waves-light"  type="submit">Créer</button>
+                            <a class="btn waves-effect waves-light red" href="/home">Annuler</a>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
