@@ -7,26 +7,27 @@
     {% include 'app_header.html.twig' %}
 
     <div id="login-container" style="margin-top:10%;">
-        <div class="row">
-            <div class="col s12 m6 offset-m3">
-                <div class="card center-align mg">
-                    <div class="card-content">
-                        <h3>{{ project.name }}</h3>
-                        <p>{{ project.description }}</p>
-                        <p>Propriétaire du projet :</p>
-                        <p><a href="mailto:{{ owner.emailAddress }}" style="font-weight: bold">{{ owner.name }}</a></p>
-                        <a class="btn waves-effect waves-light" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
-                        <a class="btn waves-effect waves-light red" href="/project/{{ project.id }}/delete">Supprimer</a>
-                        <div>
-                            {% include 'project/project_members.html.twig' %}
-                        </div>
+        <div  class="row align-items-center" >
+            <div class="col sm-6" >
+                <div class="card" >
+                    <div class="card-body">
+                        <p style="display:inline-block;" class="card-title"> <h3>{{ project.name }}</h3></p>
+                        <p class="card-subtitle mb-2 text-muted"><b>Propriétaire du projet :</b>
+                        <a href="mailto:{{ owner.emailAddress }}" class="card-link">{{ owner.name }}</a></p>
+                        <p  class="text-justify" class="card-text">{{ project.description }}</p>
+                        <a class="btn btn-primary" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
+                        <a class="btn btn-danger" href="/project/{{ project.id }}/delete">Supprimer</a>
+
                     </div>
                 </div>
+
             </div>
-        </div>
+            <div>
+                {% include 'project/project_members.html.twig' %}
+            </div>
     </div>
-    
-    
+
+    </div>
 
 {% endblock %}
 
