@@ -6,24 +6,25 @@
 
     {% include 'app_header.html.twig' %}
 
-    <div id="register-container" style="margin-top:10%;">
-        <div class="row">
-                <div class="row">
-                    <div class="col s12 m6 offset-m3">
-                        <div class="card center-align mg">
-                            <div class="card-content">
-                                {{ form_start(form) }}
-                                    {{ form_errors(form) }}
-                                    {{ form_row(form.name) }}
-                                    {{ form_row(form.emailAddress) }}
-                                    {{ form_row(form.password) }}
-                                    <button id="register-button" class="btn waves-effect waves-light"  type="submit">S'enregister</button>
-                                    <a class="btn waves-effect waves-light red" href="/">Annuler</a>
-                                {{ form_end(form) }}
-                            </div>
-                        </div>
-                    </div>
+    <div id="register-container" class="container border rounded" style="margin-top:10%; max-width:750px;">
+        <div style="margin-top:15px; margin-bottom:15px;">
+            {{ form_start(form) }}
+                <h3>Inscription :</h3>
+                {{ form_errors(form) }}
+                <div class="form-group">
+                {{ form_row(form.name) }}
                 </div>
+                <div class="form-group">
+                {{ form_row(form.emailAddress) }}
+                </div>
+                <div class="form-group">
+                {{ form_row(form.password) }}
+                </div>
+                <button type="submit" class="btn btn-primary btn-dark">S'enregister</button>
+                <a lass="btn btn-red btn-red href="/">Annuler</a>
+            {{ form_end(form) }}
+        </div>
+    </div>
 
             
             

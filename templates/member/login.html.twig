@@ -5,27 +5,22 @@
 {% block body %}
     {% include 'app_header.html.twig' %}
 
-    <div id="login-container" style="margin-top:10%;">
-        <form id="login-formular" action="/login" method="POST">
-            <div class="row">
-                <div class="col s12 m6 offset-m3">
-                    <div class="card center-align mg">
-                        <div class="card-content">
-                            <span class="card-title">Connexion</span>
-                            <div class="input-field">
-                                <input id="email" value="{{ last_typed_email }}" name="emailAddress" type="email" minlength="5" maxlength="128" class="validate" placeholder="Votre Email" required />
-                            </div>
-                            <div class="input-field">
-                                <input id="password" name="password" type="password" minlength="8" maxlength="50" class="validate" placeholder="Votre mot de passe" required />
-                            </div>
-                            <button id="login-button" class="btn waves-effect waves-light"  type="submit">Se connecter</button>
-                            <a class="btn waves-effect waves-light red" href="/">Annuler</a>
-                            {{error | default('')}}
-                        </div>
-                    </div>
+    <div id="login-container" class="container border rounded" style="margin-top:10%; max-width:750px;">
+        <div style="margin-top:15px; margin-bottom:15px;">
+            <form id="login-formular" action="/login" method="POST">
+                <h3>Connexion :</h3>
+                <div class="form-group">
+                    <label>Adresse mail</label>
+                    <input id="email" value="{{ last_typed_email }}" name="emailAddress" type="email" minlength="5" maxlength="128" class="form-control" placeholder="Votre Email" required />
                 </div>
-            </div>
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
-        </form>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input id="password" name="password" type="password" minlength="8" maxlength="50" class="form-control" placeholder="Votre mot de passe" required />
+                </div>
+                <button type="submit" class="btn btn-primary btn-dark">Se connecter</button>
+                {{error | default('')}}
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+            </form>
+        </div>
     </div>
 {% endblock %}

@@ -27,8 +27,12 @@ class InvitationController extends AbstractController
         $myProject = $projectRepository->findOneBy([
             'id' => $id
         ]);
-       
-        $invitationService->inviteUser($theMember, $myProject);
+
+        if($theMember) {
+            $invitationService->inviteUser($theMember, $myProject);
+        } else {
+            throw new \Exception("Ce membre n'apparait pas dans nos registres...");
+        }
 
         return $this->redirectToRoute('dashboard');
     }

@@ -1,21 +1,27 @@
 <header>
-    <nav class="cyan darken-4">
-        <div class="nav-wrapper" >
-            {% if user is defined %}  
-            <ul id="nav-mobile" class="left hide-on-med-and-down">
-                <li><a href="#">Connecté en tant que {{user.name | default('')}}</a></li>
-                <li><a href="{{ path('dashboard') }}">Liste des projets</a></li>
-                <li><a href="{{ path('createProject') }}">Nouveau projet</a></li>
-            </ul>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="{{ path('logout') }}">Se déconnecter</a></li>
-            </ul>
-            {% else %} 
-            <ul id="nav-mobile" class="left hide-on-med-and-down">
-                <li><a href="{{ path('login') }}">Se connecter</a></li>
-                <li><a href="{{ path('register') }}">Créer un compte</a></li>
-            </ul>
-            {% endif %} 
-        </div>
-    </nav> 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">FireScrum</a>
+        {% if user is defined %}  
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'dashboard' %} active{% endif %}" href="{{ path('dashboard') }}">Liste des projets</span></a>
+                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'createProject' %} active{% endif %}" href="{{ path('createProject') }}">Nouveau projet</a>
+                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'logout' %} active{% endif %}" href="{{ path('logout') }}">Se déconnecter</a>
+                </div>
+            </div>
+            <span class="navbar-text">
+            Connecté en tant que {{user.name | default('')}}
+            </span>
+        {% else %} 
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'login' %} active{% endif %}" href="{{ path('login') }}">Se connecter</span></a>
+                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'register' %} active{% endif %}" href="{{ path('register') }}">Créer un compte</a>
+                </div>
+            </div>
+        {% endif %} 
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
 </header>

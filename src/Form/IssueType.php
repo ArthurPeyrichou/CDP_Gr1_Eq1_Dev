@@ -16,20 +16,25 @@ class IssueType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'attr' => ['placeholder' => 'entrez le nom de votre issue']
+                'attr' => ['placeholder' => 'entrez le nom de votre issue',
+                            'class' => 'form-control']
             ])
             ->add('description', TextareaType::class, [
-                'attr' => ['placeholder' => 'Description de votre issue']
+                'attr' => ['placeholder' => 'Description de votre issue',
+                            'class' => 'form-control']
 
             ])
             ->add('difficulty', IntegerType::class, [
-                'attr' => ['placeholder' => 'Difficulté de votre issue']
+                'attr' => ['placeholder' => 'Difficulté de votre issue',
+                            'class' => 'form-control']
             ])
             ->add('priority',TextType::class, [
-                'attr' => ['placeholder' => 'Priorité "HAUT" "BAS"']
+                'attr' => ['placeholder' => 'Priorité "HAUT" "BAS"',
+                            'class' => 'form-control']
             ])
             ->add('status',TextType::class, [
-                'attr' => ['placeholder' => 'Etat de votre issue "TODO" "DOING" "DONE"']
+                'attr' => ['placeholder' => 'Etat de votre issue "TODO" "DOING" "DONE"',
+                            'class' => 'form-control']
     ]);
     }
 
