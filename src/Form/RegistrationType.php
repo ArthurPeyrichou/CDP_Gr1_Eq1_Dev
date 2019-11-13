@@ -16,19 +16,23 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'attr' => ['placeholder' => 'Votre pseudo'],
+                'attr' => ['placeholder' => 'Votre pseudo',
+                            'class' => 'form-control'],
                 'label' => 'Pseudo'
                 ])
             ->add('emailAddress', EmailType::class, [
-                'attr' => ['placeholder' => 'Votre adresse mail'],
+                'attr' => ['placeholder' => 'Votre adresse mail',
+                            'class' => 'form-control'],
                 'label' => 'Adresse mail'
                 ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => ['label' => 'Mot de passe',
-                                    'attr' => ['placeholder' => 'Votre mot de passe']],
+                                    'attr' => ['placeholder' => 'Votre mot de passe',
+                                                'class' => 'form-control']],
                 'second_options' => ['label' => 'Confirmation mot de passe',
-                                    'attr' => ['placeholder' => 'Confirmer votre mot de passe']]
+                                    'attr' => ['placeholder' => 'Confirmer votre mot de passe',
+                                                'class' => 'form-control']]
             ]);
     }
 

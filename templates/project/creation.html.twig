@@ -6,24 +6,15 @@
 
     {% include 'app_header.html.twig' %}
 
-    <div id="project-container" style="margin-top:10%;">
-        <div class="row">
-                <div class="row">
-                    <div class="col s12 m6 offset-m3">
-                        <div class="card center-align mg">
-                            <div class="card-content">
-                                {{ form_start(form) }}
-                                {{ form_errors(form) }}
-                                {{ form_row(form.name) }}
-                                {{ form_row(form.description) }}
+   <div id="project-container" class="container border rounded" style="margin-top:10%; max-width:750px;">
+        <div style="margin-top:15px; margin-bottom:15px;">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.description) }}
 
-                                <button id="project-button" class="btn waves-effect waves-light" type="submit">Créer le Projet</button>
-                                <a class="btn waves-effect waves-light red" href="{{ path('dashboard') }}">Annuler</a>
-                                {{ form_end(form) }}
-                            </div>
-                         </div>
-                    </div>
-                </div>
+            <button type="submit" class="btn btn-primary btn-dark">Créer le Projet</button>
+            {{ form_end(form) }}
         </div>
     </div>
 
