@@ -29,7 +29,12 @@ class InvitationService
     public function inviteUser(Member $newMember, Project $project): Invitation
     {
 
-        if ($this->entityManager->contains($newMember) ) {
+        $invitation = $this->invitationRepository->findOneBy([
+            'project' => $project,
+            'member' => $newMember
+        ]);
+        
+        if($invitation != null) {
             throw new InvitationAlreadySentException ("Le membre {$newMember->getName()} est déjà invité à ce projet");
         }
 
