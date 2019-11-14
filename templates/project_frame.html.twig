@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="main">
+        <div id="sidebar">
+            <header class="text-center d-none d-sm-block align-middle py-sm-2">
+                <h3>Projet</h3>
+            </header>
+            <ul class="list-unstyled sidebar_nav py-sm-3 pt-5">
+                <li class="py-sm-2">
+                    <a href="{{ path('projectDetails', {'id': project.id}) }}">
+                        <img class="icon" src="{{ asset('build/images/details.svg') }}" alt="Détails">
+                        <span class="d-none d-sm-inline">Détails du projet</span>
+                    </a>
+                </li>
+                <li class="py-sm-2">
+                    <a href="{{ path('issuesList', {'id_project': project.id}) }}">
+                        <img class="icon" src="{{ asset('build/images/view_list.svg') }}" alt="Issues">
+                        <span class="d-none d-sm-inline">Liste des issues</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('sidebar') }}
+{% endblock %}
