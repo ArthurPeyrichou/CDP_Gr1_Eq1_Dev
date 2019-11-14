@@ -27,14 +27,29 @@ class InvitationController extends AbstractController
         $myProject = $projectRepository->findOneBy([
             'id' => $id
         ]);
-
-        if($theMember) {
-            $invitationService->inviteUser($theMember, $myProject);
-        } else {
-            throw new \Exception("Ce membre n'apparait pas dans nos registres...");
+        
+        $success = null;
+        $error = null;
+        try {
+            if($theMember) {
+                $invitationService->inviteUser($theMember, $myProject);
+            } else {
+                throw new \RuntimeException("Ce membre n'apparait pas dans nos registres...");
+            }
+            $success = "Invitation envoyé avec succés";
+        } catch(\Exception $e) {
+            $error = $e->getMessage();
         }
 
-        return $this->redirectToRoute('dashboard');
+        $owner = $myProject->getOwner();
+        return $this->render('project/project_details.html.twig', [
+            "success"=> $success,
+            "error"=> $error,
+            'project' => $myProject,
+            'owner' => $owner,
+            'members' => $myProject->getMembers(),
+            'user' => $this->getUser()
+        ]);
     }
 
 }
