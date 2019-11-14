@@ -14,11 +14,12 @@ use Symfony\Component\HttpFoundation\Response;
 class InvitationController extends AbstractController
 {
 
-     /**
+    /**
      * @Route("/project/{id}/sendInvitation", name="inviteToProject", methods={"POST"})
      */
-    public function sendInvitationToProject(Request $request, InvitationService $invitationService, 
-                MemberRepository $memberRepository, ProjectRepository $projectRepository, $id)
+    public function sendInvitationToProject(Request $request, InvitationService $invitationService,
+                                            MemberRepository $memberRepository, ProjectRepository $projectRepository,
+                                            $id) : Response
     {
 
         $theMember = $memberRepository->findOneBy([
@@ -28,24 +29,27 @@ class InvitationController extends AbstractController
         $myProject = $projectRepository->findOneBy([
             'id' => $id
         ]);
-        
+
         $success = null;
         $error = null;
-        try {
-            if($theMember) {
+
+        if($theMember) {
+            try {
                 $invitationService->inviteUser($theMember, $myProject);
-            } else {
-                throw new \RuntimeException("Ce membre n'apparait pas dans nos registres...");
+                $success = 'Invitation envoyée avec succès';
             }
-            $success = "Invitation envoyé avec succés";
-        } catch(\Exception $e) {
-            $error = $e->getMessage();
+            catch(\Exception $e) {
+                $error = $e->getMessage();
+            }
+        }
+        else {
+            $error = 'Ce membre n\'apparait pas dans nos registres...';
         }
 
         $owner = $myProject->getOwner();
         return $this->render('project/project_details.html.twig', [
-            "success"=> $success,
-            "error"=> $error,
+            'success' => $success,
+            'error' => $error,
             'project' => $myProject,
             'owner' => $owner,
             'members' => $myProject->getMembers(),
@@ -53,34 +57,36 @@ class InvitationController extends AbstractController
         ]);
     }
 
-     /**
+    /**
      * @Route("/project/{invitationKey}/acceptInvitation", name="acceptInviteToProject", methods={"GET"})
      */
-    public function acceptInvitationToProject(Request $request, InvitationRepository $invitationRepository, 
-                MemberRepository $memberRepository, ProjectRepository $projectRepository, $invitationKey)
+    public function acceptInvitationToProject(Request $request, InvitationRepository $invitationRepository,
+                                              $invitationKey) : Response
     {
 
         $member = $this->getUser();
         $success = null;
         $error = null;
-        try {
-            $invitation = $invitationRepository->findOneBy([
-                'invitationKey' => $invitationKey,
-                'member' => $member
-            ]);
-            if($invitation == null) {
-                throw new \Exception("L'invitation ne vous est pas adressé");
-            }
-            $project = $invitation->getProject();
-            $member->addContributedProject($project);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($member);
-            $entityManager->remove($invitation);
-            $entityManager->flush();
-            $success = "Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre sont projet";
 
-        } catch(\Exception $e) {
-            $error = $e->getMessage();
+        $invitation = $invitationRepository->findOneBy([
+            'invitationKey' => $invitationKey,
+            'member' => $member
+        ]);
+        if($invitation == null) {
+            $error = 'L\'invitation ne vous est pas adressée ou n\'existe pas';
+        }
+        else {
+            try {
+                $project = $invitation->getProject();
+                $member->addContributedProject($project);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($member);
+                $entityManager->remove($invitation);
+                $entityManager->flush();
+                $success = "Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre sont projet";
+            } catch(\Exception $e) {
+                $error = $e->getMessage();
+            }
         }
 
         $myProjects = $member->getOwnedProjects();
@@ -93,8 +99,8 @@ class InvitationController extends AbstractController
             "success"=> $success,
             "error"=> $error,
             "myProjects"=> $myProjects,
-            "myLinkedProjects"=> $myLinkedProjects, 
-            "myInvitations"=> $myInvitations, 
+            "myLinkedProjects"=> $myLinkedProjects,
+            "myInvitations"=> $myInvitations,
             'user' => $this->getUser()
         ]);
     }
