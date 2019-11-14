@@ -75,8 +75,8 @@ class InvitationController extends AbstractController
             $member->addContributedProject($project);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($member);
+            $entityManager->remove($invitation);
             $entityManager->flush();
-            //TODO remove invitation de la BDD
             $success = "Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre sont projet";
 
         } catch(\Exception $e) {

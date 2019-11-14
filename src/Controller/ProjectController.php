@@ -77,7 +77,7 @@ class ProjectController extends AbstractController {
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
 
-        $error = '';
+        $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -92,12 +92,13 @@ class ProjectController extends AbstractController {
             $entityManager->persist($project);
             $entityManager->flush();
 
-            if($error == ''){
+            if($error == null){
                 return $this->redirectToRoute('dashboard');
             }
         }
 
         return $this->render('project/edit.html.twig', [
+            'error' => $error,
             'form' => $form->createView(),
             'user' => $this->getUser()
         ]);
