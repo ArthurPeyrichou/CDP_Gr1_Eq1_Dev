@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Création de projet{% endblock %}
+{% block title %}Création et Edition d'un projet{% endblock %}
 
 {% block body %}
 
@@ -8,12 +8,14 @@
 
    <div id="project-container" class="container border rounded" style="margin-top:10%; max-width:750px;">
         <div style="margin-top:15px; margin-bottom:15px;">
+            <div class="form-group">
             {{ form_start(form) }}
             {{ form_errors(form) }}
             {{ form_row(form.name) }}
             {{ form_row(form.description) }}
-
+            </div>
             <button type="submit" class="btn btn-primary btn-dark">Créer le Projet</button>
+            <button type="submit" class="btn btn-primary">Editer</button>
             {{ form_end(form) }}
         </div>
     </div>
