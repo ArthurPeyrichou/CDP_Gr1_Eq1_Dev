@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <p style="display:inline-block;" class="card-title"><b>Mes projets :</b></p>
                     {% if myProjects is not empty %}
-                        <div class="list-group">
+                        <div class="list-group" id="project">
                             {% for project in myProjects %}
                                 <a href="{{ path('projectDetails', {'id': project.id}) }}" class="list-group-item list-group-item-action"><b>{{ project.name }}</b> : {{ project.description }} </a>
                             {% endfor %}

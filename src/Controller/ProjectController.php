@@ -107,9 +107,15 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}/delete", name="deleteProject")
      */
-    public function deleteProject(Request $request, $id)
+    public function deleteProject(Request $request,  EntityManagerInterface $entityManager,$id)
     {
-        throw new HttpException(500, 'TODO');
+        $project = $this->getDoctrine()->getRepository(Project::class)->find($id);
+        if (!$project) {
+            throw $this->createNotFoundException('aucun projet existe avec cet id '.$id);
+        }
+        $entityManager->remove($project);
+        $entityManager->flush();
+        return $this->redirectToRoute('dashboard');
     }
 
     /**

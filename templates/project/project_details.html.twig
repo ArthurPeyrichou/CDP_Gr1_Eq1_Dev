@@ -16,7 +16,7 @@
                         <a href="mailto:{{ owner.emailAddress }}" class="card-link">{{ owner.name }}</a></p>
                         <p  class="text-justify" class="card-text">{{ project.description }}</p>
                         <a class="btn btn-primary" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
-                        <a class="btn btn-danger" href="/project/{{ project.id }}/delete">Supprimer</a>
+                        <a class="btn btn-danger" href="/project/{{ project.id }}/delete" onclick="confirm('vous êtes sur de supprimer ce projet??')" >Supprimer</a>
 
                     </div>
                 </div>
@@ -31,4 +31,3 @@
 
 
 {% endblock %}
-
