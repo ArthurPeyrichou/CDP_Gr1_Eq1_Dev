@@ -6,16 +6,6 @@
 
     {% include 'app_header.html.twig' %}
 
-    {% if error is defined and error is not null %}  
-        <div class="alert alert-danger container" role="alert" style="margin-top:10%;">
-        {{ error }}
-        </div>
-    {% elseif success is defined and success is not null  %}
-        <div class="alert alert-success" container" role="alert" style="margin-top:10%;">
-        {{ success }}
-        </div>
-    {% endif %}
-
     <div id="login-container" class="container" style="margin-top:10%;">
         <div class="row">
             <div class="col-sm-6 col-lg-8">

@@ -25,3 +25,13 @@
         </button>
     </nav>
 </header>
+
+{% if error is defined and error is not null %}  
+    <div class="alert alert-danger container" role="alert" style="margin-top:10%;">
+    {{ error }}
+    </div>
+{% elseif success is defined and success is not null  %}
+    <div class="alert alert-success" container" role="alert" style="margin-top:10%;">
+    {{ success }}
+    </div>
+{% endif %}

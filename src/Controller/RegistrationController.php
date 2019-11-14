@@ -21,7 +21,7 @@ class RegistrationController extends AbstractController {
         $form = $this->createForm(RegistrationType::class);
         $form->handleRequest($request);
 
-        $error = '';
+        $error = null;
         
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -40,12 +40,13 @@ class RegistrationController extends AbstractController {
             catch (EmailAddressInUseException $e) {
                 $error = 'L\'adresse email choisie est déjà utilisée';
             }
-            if($error == ''){
+            if($error == null){
                 return $this->redirectToRoute('login');
             }
         }
 
-        return $this->render('member/register.html.twig', ["form"=> $form->createView()] );
+        return $this->render('member/register.html.twig', ["error"=> $error,
+                                                            "form"=> $form->createView()] );
     }
 
 }
