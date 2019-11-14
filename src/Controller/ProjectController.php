@@ -68,9 +68,40 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}/edit", name="editProject")
      */
-    public function editProject(Request $request, ProjectRepository $projectRepository, $id): Response
+    public function editProject(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository, $id): Response
     {
-        throw new HttpException(500, 'TODO');
+
+        $project = $this->getDoctrine()->getRepository(Project::class)->find($id);
+
+        $form = $this->createForm(ProjectType::class);
+        $form->handleRequest($request);
+
+        $error = '';
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $owner = $this->getUser();
+            $name = $data['name'];
+            $description= $data['description'];
+            $date= new \DateTime('now');
+            $project->setName($name);
+            $project->setDescription($description);
+            $project->setOwner($owner);
+            $project->setCreationDate($date);
+            $entityManager->persist($project);
+            $entityManager->flush();
+
+            if($error == ''){
+                return $this->redirectToRoute('dashboard');
+            }
+        }
+
+        return $this->render('project/edit.html.twig', [
+            'form' => $form->createView(),
+            'user' => $this->getUser()
+        ]);
+
+
     }
 
     /**
