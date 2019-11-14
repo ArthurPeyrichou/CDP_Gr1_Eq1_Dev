@@ -4,54 +4,54 @@
 
 {% block body %}
     {% if myInvitations is not empty %}
-    <div id="invitation-list-container" class="container" style="margin-top:10%;">
-        {% for myInvitation in myInvitations %}
-            <div class="alert alert-secondary" role="alert">
-                <a href="{{ path('acceptInviteToProject', {'invitationKey': myInvitation.invitationKey}) }}">
-                    Vous êtes invité à rejoindre le projet de {{ myInvitation.project.owner.name }} -> {{ myInvitation.project.name }}
-                </a>
-            </div>
-        {% endfor %}
-    </div>
+        <div id="invitation-list-container" class="container" style="margin-top:10%;">
+            {% for myInvitation in myInvitations %}
+                <div class="alert alert-secondary" role="alert">
+                    <a href="{{ path('acceptInviteToProject', {'invitationKey': myInvitation.invitationKey}) }}">
+                        Vous êtes invité à rejoindre le projet de {{ myInvitation.project.owner.name }} -> {{ myInvitation.project.name }}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 
     <div id="project-list-container" class="container" style="margin-top:10%;">
         <div class="row">
-            <div class="col sm-6" >
+            <div class="col-sm-6" >
                 <div class="card">
                     <div class="card-body">
                         <p style="display:inline-block;" class="card-title"><b>Mes projets :</b></p>
-                    {% if myProjects is not empty %}
-                        <div class="list-group" id="project">
-                            {% for project in myProjects %}
-                                <a href="{{ path('projectDetails', {'id': project.id}) }}" class="list-group-item list-group-item-action"><b>{{ project.name }}</b> : {{ project.description }} </a>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p> Vous n'avez pour l'instant créé aucun projet.</p>
-                        <a class="btn btn-primary btn-dark" href="{{ path('createProject') }}">Créer mon projet</a>
-                    {% endif %}
+                        {% if myProjects is not empty %}
+                            <div class="list-group" id="project">
+                                {% for project in myProjects %}
+                                    <a href="{{ path('projectDetails', {'id': project.id}) }}" class="list-group-item list-group-item-action"><b>{{ project.name }}</b> : {{ project.description }} </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p> Vous n'avez pour l'instant créé aucun projet.</p>
+                            <a class="btn btn-primary btn-dark" href="{{ path('createProject') }}">Créer mon projet</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-                       <div class="col sm-6">
-                           <div class="card">
-                               <div class="card-body">
-                                   <p style="display:inline-block;" class="card-title"><b>Mes projets associés :</b></p>
-                    {% if myLinkedProjects is not empty %}  
-                        
-                        <div class="list-group">
-                            {% for project in myLinkedProjects %}
-                                <a href="{{ path('projectDetails', {'id': project.id}) }}" class="list-group-item list-group-item-action"><b>{{ project.name }}</b> : {{ project.description }} </a>
-                            {% endfor %}
-                        </div> 
-                    {% else %}
-                        <p> Vous n'avez pour l'instant aucun projet associés.</p>
-                    {% endif %}
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <p style="display:inline-block;" class="card-title"><b>Mes projets associés :</b></p>
+                        {% if myLinkedProjects is not empty %}
+
+                            <div class="list-group">
+                                {% for project in myLinkedProjects %}
+                                    <a href="{{ path('projectDetails', {'id': project.id}) }}" class="list-group-item list-group-item-action"><b>{{ project.name }}</b> : {{ project.description }} </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p> Vous n'avez pour l'instant aucun projet associés.</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}
 
