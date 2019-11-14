@@ -20,7 +20,7 @@ class IssueController extends AbstractController {
         $form = $this->createForm(IssueType::class);
         $form->handleRequest($request);
 
-        $error = '';
+        $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -39,13 +39,14 @@ class IssueController extends AbstractController {
             $entityManager->persist($issue);
             $entityManager->flush();
 
-            if($error == ''){
+            if($error == null){
                 return $this->redirectToRoute('dashboard');
             }
         }
 
-        return $this->render('issue/issue_form.html.twig', ["form"=> $form->createView(),
-                                                                    'user' => $this->getUser()] );
+        return $this->render('issue/issue_form.html.twig', ['error'=> $error,
+                                                            "form"=> $form->createView(),
+                                                            'user' => $this->getUser()] );
 
     }
 

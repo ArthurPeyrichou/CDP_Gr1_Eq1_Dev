@@ -11,6 +11,7 @@ use App\Repository\InvitationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Invitation\MemberAlreadyExistsException;
 use App\Service\Invitation\MemberIsOwnerException;
+use App\Service\Invitation\InvitationAlreadySentException;
 
 class InvitationService
 {
@@ -28,14 +29,23 @@ class InvitationService
     public function inviteUser(Member $newMember, Project $project): Invitation
     {
 
+        $invitation = $this->invitationRepository->findOneBy([
+            'project' => $project,
+            'member' => $newMember
+        ]);
+        
+        if($invitation != null) {
+            throw new InvitationAlreadySentException ("Le membre {$newMember->getName()} est déjà invité à ce projet");
+        }
+
         $memberAlreadyExist = $project->getMembers()->contains($newMember);
         
         if ($memberAlreadyExist) {
-            throw new MemberAlreadyExistsException("Member {$newMember->getName()} is already invite in project");
+            throw new MemberAlreadyExistsException("Le membre {$newMember->getName()} est déjà collaborateur à ce projet");
         }
 
         if($project->getOwner()->getId() ==  $newMember->getId()) {
-            throw new MemberIsOwnerException("You cannot invite yourself in project");
+            throw new MemberIsOwnerException("Vous ne pouvez vous invité à un projet que vous avez crée");
         }
         
         $invitation = new Invitation($newMember, $project);

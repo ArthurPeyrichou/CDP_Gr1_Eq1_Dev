@@ -22,7 +22,7 @@ class ProjectController extends AbstractController {
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
 
-        $error = '';
+        $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -36,12 +36,13 @@ class ProjectController extends AbstractController {
             $entityManager->persist($project);
             $entityManager->flush();
 
-            if($error == ''){
+            if($error == null){
                 return $this->redirectToRoute('dashboard');
             }
         }
 
         return $this->render('project/creation.html.twig', [
+            'error'=> $error,
             'form' => $form->createView(),
             'user' => $this->getUser()
         ]);
@@ -76,7 +77,7 @@ class ProjectController extends AbstractController {
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
 
-        $error = '';
+        $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -91,12 +92,13 @@ class ProjectController extends AbstractController {
             $entityManager->persist($project);
             $entityManager->flush();
 
-            if($error == ''){
+            if($error == null){
                 return $this->redirectToRoute('dashboard');
             }
         }
 
         return $this->render('project/edit.html.twig', [
+            'error' => $error,
             'form' => $form->createView(),
             'user' => $this->getUser()
         ]);
@@ -107,9 +109,15 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}/delete", name="deleteProject")
      */
-    public function deleteProject(Request $request, $id)
+    public function deleteProject(Request $request,  EntityManagerInterface $entityManager,$id)
     {
-        throw new HttpException(500, 'TODO');
+        $project = $this->getDoctrine()->getRepository(Project::class)->find($id);
+        if (!$project) {
+            throw $this->createNotFoundException('aucun projet existe avec cet id '.$id);
+        }
+        $entityManager->remove($project);
+        $entityManager->flush();
+        return $this->redirectToRoute('dashboard');
     }
 
     /**
