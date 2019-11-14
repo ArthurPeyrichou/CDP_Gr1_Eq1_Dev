@@ -17,13 +17,13 @@ class Invitation
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Member")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Member")
      * @ORM\JoinColumn(nullable=false)
      */
     private $member;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Project")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Project")
      * @ORM\JoinColumn(nullable=false)
      */
     private $project;
