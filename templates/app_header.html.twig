@@ -1,10 +1,10 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">FireScrum</a>
+        <a class="navbar-brand" href="{{ path('dashboard') }}">FireScrum</a>
         {% if user is defined %}  
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'dashboard' %} active{% endif %}" href="{{ path('dashboard') }}">Liste des projets</span></a>
+                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'dashboard' %} active{% endif %}" href="{{ path('dashboard') }}">Liste des projets</a>
                     <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'createProject' %} active{% endif %}" href="{{ path('createProject') }}">Nouveau projet</a>
                     <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'logout' %} active{% endif %}" href="{{ path('logout') }}">Se déconnecter</a>
                 </div>
@@ -15,7 +15,7 @@
         {% else %} 
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'login' %} active{% endif %}" href="{{ path('login') }}">Se connecter</span></a>
+                    <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'login' %} active{% endif %}" href="{{ path('login') }}">Se connecter</a>
                     <a class="nav-item nav-link {% if app.request.attributes.get('_route') == 'register' %} active{% endif %}" href="{{ path('register') }}">Créer un compte</a>
                 </div>
             </div>

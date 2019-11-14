@@ -1,34 +1,28 @@
-<div id="project-member-container" style="margin-top:10%;">
-        <div class="col sm-6" >
-            <div class="card">
-                <div class="card-body">
-                    <p style="display:inline-block;" class="card-title"><h5>Liste des membres</h5></p>
-                         {% if members is not empty %}
-                                 {% for member in members %}
-                    <div class="list-group">
-
-                    <a href="mailto:{{ member.emailAddress }}" class="list-group-item list-group-item-action"><b>   {{ member.name }}</b>
-
-                    </a>
-                    <a href="{{ path('deleteMember', {'projectId': project.id, 'memberId': member.id}) }}"
-                        class="list-group-item list-group-item-secondary">&times;</a>
+<div id="project-member-container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Liste des membres</h5>
+            <ul class="list-group">
+                {% if members is not empty %}
+                    {% for member in members %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold">
+                            <a href="mailto:{{ member.emailAddress }}">
+                                {{ member.name }}
+                            </a>
+                            <a href="{{ path('deleteMember', {'projectId': project.id, 'memberId': member.id}) }}">&times;</a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item">Aucun collaborateur</li>
+                {% endif %}
+            </ul>
+            <h5 class="mb-3 mt-4">Inviter un membre</h5>
+            <form action="{{ path('inviteToProject', {'id': project.id}) }}" method="POST">
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Inviter un membre" name="memberEmail">
                 </div>
-
-        {% endfor %}
-
-    {% else %}
-
-        <div class="list-group-item list-group-item-action">Aucun collaborateur</div>
-    {% endif %}
-                    <p style="display:inline-block;" class="card-text"><h5>Inviter un membre</h5></p>
-        <form action="{{ path('inviteToProject', {'id': project.id}) }}" method="POST">
-            <div class="form-group">
-            <input type="email" class="form-control"  placeholder="Inviter un membre" name="memberEmail">
-            </div>
-            <button type="submit" class="btn btn-primary">Inviter ce membre</button>
-
-        </form>
-                </div>
-            </div>
+                <button type="submit" class="btn btn-primary">Inviter ce membre</button>
+            </form>
         </div>
     </div>
+</div>

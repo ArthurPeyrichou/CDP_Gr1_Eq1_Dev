@@ -1,33 +1,45 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Informations{% endblock %}
+{% block title %}Informations projet - {{ project.name }}{% endblock %}
 
 {% block body %}
 
     {% include 'app_header.html.twig' %}
 
     <div id="login-container" class="container" style="margin-top:10%;">
-        <div  class="row align-items-center" >
-            <div class="col sm-6" >
-                <div class="card" >
+        <div class="row">
+            <div class="col-sm-6 col-lg-8">
+                <div class="card">
                     <div class="card-body">
-                        <p style="display:inline-block;" class="card-title"> <h3>{{ project.name }}</h3></p>
-                        <p class="card-subtitle mb-2 text-muted"><b>Propriétaire du projet :</b>
-                        <a href="mailto:{{ owner.emailAddress }}" class="card-link">{{ owner.name }}</a></p>
-                        <p  class="text-justify" class="card-text">{{ project.description }}</p>
+                        <h3 class="card-title">{{ project.name }}</h3>
+                        <p class="card-subtitle mb-2 text-muted">
+                            <span class="font-weight-bold">Propriétaire du projet :</span>
+                            <a href="mailto:{{ owner.emailAddress }}" class="card-link">{{ owner.name }}</a>
+                        </p>
+                        <p class="text-justify" class="card-text">{{ project.description }}</p>
                         <a class="btn btn-primary" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
-                        <a class="btn btn-danger" href="/project/{{ project.id }}/delete" onclick="confirm('vous êtes sur de supprimer ce projet??')" >Supprimer</a>
-
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#project-delete-confirm">Supprimer</button>
                     </div>
                 </div>
-
             </div>
-            <div>
+            <div class="col-sm-6 col-lg-4">
                 {% include 'project/project_members.html.twig' %}
             </div>
+        </div>
     </div>
 
-    </div>
+    {% embed 'components/_modal.html.twig' with {'modalId': 'project-delete-confirm'} %}
+        {% block header %}
+            <h3>Veuillez confirmer la suppression</h3>
+        {% endblock %}
+        {% block body %}
+            <p>Êtes-vous sûr(e) de vouloir supprimer le projet {{ project.name }}</p>
+        {% endblock %}
+        {% block footer %}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+            <a href="/project/{{ project.id }}/delete" class="btn btn-primary">Oui</a>
+        {% endblock %}
+    {% endembed %}
 
 
 {% endblock %}
