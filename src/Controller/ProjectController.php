@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Project;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
+use App\Repository\InvitationRepository;
+use App\Repository\MemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,13 +54,33 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}", name="projectDetails", methods={"GET"})
      */
-    public function viewProject(Request $request, ProjectRepository $projectRepository, $id): Response
+    public function viewProject(Request $request, ProjectRepository $projectRepository, InvitationRepository $invitationRepository, $id): Response
     {
         $theProject = $projectRepository->findOneBy([
             'id' => intval($id)
         ]);
         $owner = $theProject->getOwner();
+        $user = $this->getUser();
+        $status = null;
+        $myInvitation = null;
+
+        if($owner == $user){
+            $status = "owner";
+        } else if($theProject->getMembers()->contains($user) ) {
+            $status = "member";
+        } else {
+            $myInvitation = $invitationRepository->findOneBy([
+                'project' => $theProject,
+                'member' => $user
+            ]);
+            if($myInvitation){
+                $status = "invited";
+            }
+        }
+
         return $this->render('project/project_details.html.twig', [
+            'status' => $status,
+            'myInvitation' => $myInvitation,
             'project' => $theProject,
             'owner' => $owner,
             'members' => $theProject->getMembers(),
@@ -109,11 +131,11 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}/delete", name="deleteProject")
      */
-    public function deleteProject(Request $request,  EntityManagerInterface $entityManager,$id)
+    public function deleteProject(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $entityManager,$id)
     {
-        $project = $this->getDoctrine()->getRepository(Project::class)->find($id);
+        $project = $projectRepository->find($id);
         if (!$project) {
-            throw $this->createNotFoundException('aucun projet existe avec cet id '.$id);
+            throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
         }
         $entityManager->remove($project);
         $entityManager->flush();
@@ -123,9 +145,19 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{projectId}/deleteMember/{memberId}", name="deleteMember")
      */
-    public function deleteMember($projectId, $memberId): Response
+    public function deleteMember($projectId, $memberId, ProjectRepository $projectRepository, MemberRepository $memberRepository, EntityManagerInterface $entityManager): Response
     {
-        throw new HttpException(500, 'TODO');
+        $project = $projectRepository->find($projectId);
+        if (!$project) {
+            throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
+        }
+        $member = $memberRepository->find($memberId);
+        if (!$member) {
+            throw $this->createNotFoundException('aucun membre existe avec cet identifiant '.$id);
+        }
+        $project->removeMember($member);
+        $entityManager->flush();
+        return $this->redirectToRoute('dashboard');
     }
 
 }

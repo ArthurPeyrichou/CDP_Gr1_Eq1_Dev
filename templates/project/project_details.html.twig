@@ -15,8 +15,13 @@
                             <a href="mailto:{{ owner.emailAddress }}" class="card-link">{{ owner.name }}</a>
                         </p>
                         <p class="text-justify" class="card-text">{{ project.description }}</p>
-                        <a class="btn btn-primary" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
-                        <button class="btn btn-danger" data-toggle="modal" data-target="#project-delete-confirm">Supprimer</button>
+                        {% if status is defined and status == "invited" %}
+                            <a class="btn btn-primary" href="{{ path('acceptInviteToProject', {'invitationKey': myInvitation.invitationKey}) }}">Rejoindre</a>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#project-refuse-confirm">Refuser</button>
+                        {% elseif status is defined and status == "owner" %}
+                            <a class="btn btn-primary" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#project-delete-confirm">Supprimer</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -26,18 +31,33 @@
         </div>
     </div>
 
-    {% embed 'components/_modal.html.twig' with {'modalId': 'project-delete-confirm'} %}
-        {% block header %}
-            <h3>Veuillez confirmer la suppression</h3>
-        {% endblock %}
-        {% block body %}
-            <p>Êtes-vous sûr(e) de vouloir supprimer le projet {{ project.name }}</p>
-        {% endblock %}
-        {% block footer %}
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-            <a href="/project/{{ project.id }}/delete" class="btn btn-primary">Oui</a>
-        {% endblock %}
-    {% endembed %}
+    {% if status is defined and status == "invited" %}
+        {% embed 'components/_modal.html.twig' with {'modalId': 'project-refuse-confirm'} %}
+            {% block header %}
+                <h3>Veuillez confirmer la suppression</h3>
+            {% endblock %}
+            {% block body %}
+                <p>Êtes-vous sûr(e) de vouloir refuser de rejoindre le projet {{ project.name }}?</p>
+            {% endblock %}
+            {% block footer %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                <a href=" {{ path('denyInviteToProject', {'invitationKey': myInvitation.invitationKey}) }}" class="btn btn-primary">Oui</a>
+            {% endblock %}
+        {% endembed %}
+    {% elseif status is defined and status == "owner" %}
+        {% embed 'components/_modal.html.twig' with {'modalId': 'project-delete-confirm'} %}
+            {% block header %}
+                <h3>Veuillez confirmer la suppression</h3>
+            {% endblock %}
+            {% block body %}
+                <p>Êtes-vous sûr(e) de vouloir supprimer le projet {{ project.name }}</p>
+            {% endblock %}
+            {% block footer %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                <a href=" {{ path('deleteProject', {'id': project.id}) }}" class="btn btn-primary">Oui</a>
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
 
 
 {% endblock %}

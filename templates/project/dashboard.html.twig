@@ -7,7 +7,7 @@
         <div id="invitation-list-container" class="container" style="margin-top:10%;">
             {% for myInvitation in myInvitations %}
                 <div class="alert alert-secondary" role="alert">
-                    <a href="{{ path('acceptInviteToProject', {'invitationKey': myInvitation.invitationKey}) }}">
+                    <a href="{{ path('projectDetails', {'id': myInvitation.project.id}) }}">
                         Vous êtes invité à rejoindre le projet de {{ myInvitation.project.owner.name }} -> {{ myInvitation.project.name }}
                     </a>
                 </div>
