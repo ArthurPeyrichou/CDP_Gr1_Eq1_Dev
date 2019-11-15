@@ -5,12 +5,13 @@ namespace App\Controller;
 use App\Form\IssueType;
 use App\Entity\Issue;
 use App\Entity\Project;
+use App\Repository\IssueRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProjectRepository;
-
+use Doctrine\ORM\EntityManagerInterface;
 class IssueController extends AbstractController {
     /**
      * @Route("/project/{id_project}/new_issue", name = "createIssue")
@@ -67,4 +68,17 @@ class IssueController extends AbstractController {
                                                             'user' => $this->getUser()]);
     }
 
-}
+
+/**
+ * @Route("/project/{myProject_id}/issue/{issue_id}/delete", name="deleteIssue")
+ */
+public function deleteIssue(Request $request, IssueRepository $issue_Repository,EntityManagerInterface $entityManager,$issue_id)
+{
+    $issue = $issue_Repository->find($issue_id);
+    if (!$issue) {
+        throw $this->createNotFoundException('aucun issue existe avec cet id ' . $issue_id);
+    }
+    $entityManager->remove($issue);
+    $entityManager->flush();
+    return $this->redirectToRoute('dashboard');
+}}
