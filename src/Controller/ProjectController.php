@@ -94,7 +94,7 @@ class ProjectController extends AbstractController {
     public function editProject(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository, $id): Response
     {
 
-        $project = $this->getDoctrine()->getRepository(Project::class)->find($id);
+        $project = $projectRepository->find($id);
 
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);

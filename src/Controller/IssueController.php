@@ -69,6 +69,45 @@ class IssueController extends AbstractController {
     }
 
 
+
+
+
+    /**
+     * @Route("/project/{myProject_id}/issue/{issue_id}/edit", name="editIssue")
+     */
+    public function editIssue(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository,IssueRepository $issueRepository, $issue_id,$myProject_id): Response
+    {
+        $issue=$issueRepository->find($issue_id);
+        $form = $this->createForm(IssueType::class);
+        $form->handleRequest($request);
+
+        $error = null;
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $name = $data['name'];
+            $description = $data['description'];
+            $difficulty = $data['difficulty'];
+            $priority = $data['priority'];
+            $status = $data['status'];
+            $project = $projectRepository->find($myProject_id);
+            $issue->setName($name);
+            $issue->setDescription($description);
+            $issue->setDifficulty($difficulty);
+            $issue->setPriority($priority);
+            $issue->setStatus($status);
+            $issue->setProject($project);
+            $entityManager->persist($issue);
+            $entityManager->flush();
+            if ($error == null) {
+                return $this->redirectToRoute('dashboard');
+            }
+        }
+        return $this->render('issue/edit.html.twig', [
+            'error' => $error,
+            'form' => $form->createView(),
+            'user' => $this->getUser()
+        ]);
+    }
 /**
  * @Route("/project/{myProject_id}/issue/{issue_id}/delete", name="deleteIssue")
  */
