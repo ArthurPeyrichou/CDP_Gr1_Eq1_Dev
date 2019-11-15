@@ -29,7 +29,7 @@ class InvitationController extends AbstractController
         $myProject = $projectRepository->findOneBy([
             'id' => $id
         ]);
-        $owner = $theProject->getOwner();
+        $owner = $myProject->getOwner();
 
         $success = null;
         $error = null;
@@ -137,9 +137,10 @@ class InvitationController extends AbstractController
             $error = 'L\'invitation ne vous est pas adressée ou n\'existe pas';
         }  else {
             try {
+                $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->remove($invitation);
                 $entityManager->flush();
-                $success = "Vous venez de refuser l'invitation de {$project->getOwner()->getName()} à rejoindre sont projet";
+                $success = "Vous venez de refuser l'invitation de {$invitation->getProject()->getOwner()->getName()} à rejoindre sont projet";
             } catch(\Exception $e) {
                 $error = $e->getMessage();
             }
