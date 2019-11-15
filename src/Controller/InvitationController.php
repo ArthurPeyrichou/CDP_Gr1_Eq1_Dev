@@ -8,6 +8,7 @@ use App\Repository\ProjectRepository;
 use App\Repository\MemberRepository;
 use App\Repository\InvitationRepository;
 use App\Service\Invitation\InvitationService;
+use App\Service\RenderService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,18 +19,18 @@ class InvitationController extends AbstractController
      * @Route("/project/{id}/sendInvitation", name="inviteToProject", methods={"POST"})
      */
     public function sendInvitationToProject(Request $request, InvitationService $invitationService,
-                                            MemberRepository $memberRepository, ProjectRepository $projectRepository,
-                                            $id) : Response
+            RenderService $renderService,MemberRepository $memberRepository, ProjectRepository $projectRepository,
+            $id) : Response
     {
 
-        $theMember = $memberRepository->findOneBy([
+        $member = $memberRepository->findOneBy([
             'emailAddress' =>  $request->get('memberEmail')
         ]);
 
-        $myProject = $projectRepository->findOneBy([
+        $project = $projectRepository->findOneBy([
             'id' => $id
         ]);
-        $owner = $myProject->getOwner();
+        $owner = $project->getOwner();
 
         $success = null;
         $error = null;
@@ -37,44 +38,35 @@ class InvitationController extends AbstractController
         $user = $this->getUser();
         $status = null;
 
-        if($theMember && $myProject) {
-            try {
-                if($owner == $user){
-                    $status = "owner";
-                } else {
-                    throw new \RuntimeException("Vous ne pouvez pas inviter des membres dans ce projet");
+        if($owner == $user){
+            $status = "owner";
+            if($member && $project) {
+                try {    
+                    $invitationService->inviteUser($member, $project);
+                    $success = 'Invitation envoyée avec succès';
+                }  catch(\Exception $e) {
+                    $error = $e->getMessage();
                 }
-                $invitationService->inviteUser($theMember, $myProject);
-                $success = 'Invitation envoyée avec succès';
+            } else if($project) {
+                $error = 'Ce membre n\'apparait pas dans nos registres...';
+            } else if($member) {
+                $error = 'Ce projet n\'apparait pas dans nos registres...';
+            } else {
+                $error = 'Ni le membre, ni le projet n\'apparaient dans nos registres...';
             }
-            catch(\Exception $e) {
-                $error = $e->getMessage();
-            }
-        } else if($myProject) {
-            $error = 'Ce membre n\'apparait pas dans nos registres...';
-        } else if($theMember) {
-            $error = 'Ce projet n\'apparait pas dans nos registres...';
         } else {
-            $error = 'Ni le membre, ni le projet n\'apparaient dans nos registres...';
+            $error =  'Vous ne pouvez pas inviter des membres dans ce projet';
         }
 
-        $owner = $myProject->getOwner();
-        return $this->render('project/project_details.html.twig', [
-            'status' => $status,
-            'success' => $success,
-            'error' => $error,
-            'project' => $myProject,
-            'owner' => $owner,
-            'members' => $myProject->getMembers(),
-            'user' => $this->getUser()
-        ]);
+        return $this->render('project/project_details.html.twig',
+        $renderService->renderProjectDetails($this->getUser(), $error, $success, $status, $project, null));
     }
 
     /**
      * @Route("/project/{invitationKey}/acceptInvitation", name="acceptInviteToProject", methods={"GET"})
      */
     public function acceptInvitationToProject(Request $request, InvitationRepository $invitationRepository,
-                                              $invitationKey) : Response
+            RenderService $renderService, $invitationKey) : Response
     {
 
         $member = $this->getUser();
@@ -102,27 +94,15 @@ class InvitationController extends AbstractController
             }
         }
 
-        $myProjects = $member->getOwnedProjects();
-        $myLinkedProjects = $member->getContributedProjects();
-        $myInvitations = $invitationRepository->findBy([
-            'member' => $member
-        ]);
-
-        return $this->render('project/dashboard.html.twig', [
-            "success"=> $success,
-            "error"=> $error,
-            "myProjects"=> $myProjects,
-            "myLinkedProjects"=> $myLinkedProjects,
-            "myInvitations"=> $myInvitations,
-            'user' => $this->getUser()
-        ]);
+        return $this->render('project/dashboard.html.twig', 
+        $renderService->renderDashboard($this->getUser(), $error, $success, $invitation));
     }
 
         /**
      * @Route("/project/{invitationKey}/denyInvitation", name="denyInviteToProject", methods={"GET"})
      */
-    public function denyInvitationToProject(Request $request, InvitationRepository $invitationRepository,
-                                              $invitationKey) : Response
+    public function denyInvitationToProject(Request $request, InvitationRepository $invitationRepository, 
+            RenderService $renderService, $invitationKey) : Response
     {
 
         $member = $this->getUser();
@@ -146,20 +126,8 @@ class InvitationController extends AbstractController
             }
         }
 
-        $myProjects = $member->getOwnedProjects();
-        $myLinkedProjects = $member->getContributedProjects();
-        $myInvitations = $invitationRepository->findBy([
-            'member' => $member
-        ]);
-
-        return $this->render('project/dashboard.html.twig', [
-            "success"=> $success,
-            "error"=> $error,
-            "myProjects"=> $myProjects,
-            "myLinkedProjects"=> $myLinkedProjects,
-            "myInvitations"=> $myInvitations,
-            'user' => $this->getUser()
-        ]);
+        return $this->render('project/dashboard.html.twig', 
+        $renderService->renderDashboard($this->getUser(), $error, $success, $invitation));
     }
 
 }

@@ -7,6 +7,7 @@ use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
 use App\Repository\InvitationRepository;
 use App\Repository\MemberRepository;
+use App\Service\RenderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,8 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/new", name="createProject")
      */
-    public function createProject(Request $request, EntityManagerInterface $entityManager) : Response
+    public function createProject(Request $request, EntityManagerInterface $entityManager,
+            RenderService $renderService) : Response
     {
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
@@ -39,7 +41,8 @@ class ProjectController extends AbstractController {
             $entityManager->flush();
 
             if($error == null){
-                return $this->redirectToRoute('dashboard');
+                return $this->render('project/project_details.html.twig',
+                $renderService->renderProjectDetails($this->getUser(), $error, "Création du projet réussi", "owner", $project, null));
             }
         }
 
@@ -54,44 +57,42 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}", name="projectDetails", methods={"GET"})
      */
-    public function viewProject(Request $request, ProjectRepository $projectRepository, InvitationRepository $invitationRepository, $id): Response
+    public function viewProject(Request $request, ProjectRepository $projectRepository, InvitationRepository $invitationRepository,
+            RenderService $renderService,  $id): Response
     {
-        $theProject = $projectRepository->findOneBy([
+        $project = $projectRepository->findOneBy([
             'id' => intval($id)
         ]);
-        $owner = $theProject->getOwner();
+
         $user = $this->getUser();
         $status = null;
         $myInvitation = null;
 
-        if($owner == $user){
+        if($project->getOwner() == $user){
             $status = "owner";
-        } else if($theProject->getMembers()->contains($user) ) {
+        } else if($project->getMembers()->contains($user) ) {
             $status = "member";
         } else {
             $myInvitation = $invitationRepository->findOneBy([
-                'project' => $theProject,
+                'project' => $project,
                 'member' => $user
             ]);
             if($myInvitation){
                 $status = "invited";
+            } else {
+                return $this->redirectToRoute('dashboard');
             }
         }
 
-        return $this->render('project/project_details.html.twig', [
-            'status' => $status,
-            'myInvitation' => $myInvitation,
-            'project' => $theProject,
-            'owner' => $owner,
-            'members' => $theProject->getMembers(),
-            'user' => $this->getUser()
-        ]);
+        return $this->render('project/project_details.html.twig',
+        $renderService->renderProjectDetails($this->getUser(), null, null, $status, $project, $myInvitation));
     }
 
     /**
      * @Route("/project/{id}/edit", name="editProject")
      */
-    public function editProject(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository, $id): Response
+    public function editProject(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository, 
+            RenderService $renderService, $id): Response
     {
 
         $project =  $projectRepository->find($id);
@@ -115,7 +116,8 @@ class ProjectController extends AbstractController {
             $entityManager->flush();
 
             if($error == null){
-                return $this->redirectToRoute('dashboard');
+                return $this->render('project/project_details.html.twig',
+                $renderService->renderProjectDetails($this->getUser(), $error, "Edition du projet réussi", "owner", $project, null));
             }
         }
 
@@ -131,64 +133,71 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}/delete", name="deleteProject")
      */
-    public function deleteProject(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $entityManager,$id)
+    public function deleteProject(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $entityManager, 
+            RenderService $renderService, InvitationRepository $invitationRepository,$id)
     {
         $project = $projectRepository->find($id);
-        if (!$project) {
-            throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
+        $error = null;
+        try {
+            if (!$project) {
+                throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
+            }
+            $entityManager->remove($project);
+            $entityManager->flush();
+        } catch(\Exception $e) {
+            $error = $e->getMessage();
         }
-        $entityManager->remove($project);
-        $entityManager->flush();
-        return $this->redirectToRoute('dashboard');
+        if($error != null){
+            return $this->render('project/project_details.html.twig',
+            $renderService->renderProjectDetails($this->getUser(), $error, null, "owner", $project, null));
+        }
+
+        return $this->render('project/dashboard.html.twig', 
+        $renderService->renderDashboard($this->getUser(), null, "Suppression du projet réussi") );
     }
 
     /**
      * @Route("/project/{projectId}/deleteMember/{memberId}", name="deleteMember")
      */
-    public function deleteMember($projectId, $memberId, ProjectRepository $projectRepository, MemberRepository $memberRepository, EntityManagerInterface $entityManager): Response
+    public function deleteMember($projectId, $memberId, ProjectRepository $projectRepository, MemberRepository $memberRepository, 
+            RenderService $renderService, EntityManagerInterface $entityManager): Response
     {
 
         $error = null;
         $status = null;
         $success = null;
-        $theProject =null;
-        $owner = null;
+        $project =null;
+        $user = $this->getUser();
         try {
             $status = null;
-
-            $theProject = $projectRepository->find($projectId);
-            if (!$theProject) {
-                throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
-            }
-            $owner = $theProject->getOwner();
-            if($owner == $this->getUser()){
-                $status = "owner";
-            } else {
-                throw new \RuntimeException("Vous ne pouvez pas supprimer un projet dont vous n'êtes pas propriétaire");
-            }
 
             $member = $memberRepository->find($memberId);
             if (!$member) {
                 throw $this->createNotFoundException('aucun membre existe avec cet identifiant '.$id);
             }
-            $theProject->removeMember($member);
+
+            $project = $projectRepository->find($projectId);
+            if (!$project) {
+                throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
+            } else if($project->getOwner() == $user){
+                $status = "owner";
+                $success = $member->getName() . " a été retiré du projet avec succés";
+            } else if($member->getId() != $user->getId()) {
+                throw new \RuntimeException("Vous ne pouvez pas supprimer un collaborater de projet dont vous n'êtes pas propriétaire");
+            }
+
+            $project->removeMember($member);
             $entityManager->flush();
-            $success = $member->getName() . " a été retiré du projet avec succés";
         } catch(\Exception $e) {
             $error = $e->getMessage();
         }
         
-        
-        return $this->render('project/project_details.html.twig', [
-            'error' => $error,
-            'success' => $success,
-            'status' => $status,
-            'myInvitation' => null,
-            'project' => $theProject,
-            'owner' => $owner,
-            'members' => $theProject->getMembers(),
-            'user' => $this->getUser()
-        ]);
+        if($error == null && $project->getOwner() != $user) {
+            return $this->render('project/dashboard.html.twig', 
+        $renderService->renderDashboard($this->getUser(), null, "Vous venez de quitter le projet " . $project->getName()) );
+        }
+        return $this->render('project/project_details.html.twig',
+        $renderService->renderProjectDetails($this->getUser(), $error, $success, $status, $project, null));
     }
 
 }

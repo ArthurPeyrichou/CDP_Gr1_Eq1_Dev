@@ -22,7 +22,7 @@
             <h5 class="mb-3 mt-4">Inviter un membre</h5>
             <form action="{{ path('inviteToProject', {'id': project.id}) }}" method="POST">
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Inviter un membre" name="memberEmail">
+                    <input type="email" class="form-control" placeholder="Inviter un membre" name="memberEmail" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Inviter ce membre</button>
             </form>

@@ -21,6 +21,8 @@
                         {% elseif status is defined and status == "owner" %}
                             <a class="btn btn-primary" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
                             <button class="btn btn-danger" data-toggle="modal" data-target="#project-delete-confirm">Supprimer</button>
+                        {% elseif status is defined and status == "member" %}
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#leave-project-confirm">Quitter le projet</button>
                         {% endif %}
                     </div>
                 </div>
@@ -55,6 +57,19 @@
             {% block footer %}
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
                 <a href=" {{ path('deleteProject', {'id': project.id}) }}" class="btn btn-primary">Oui</a>
+            {% endblock %}
+        {% endembed %}
+    {% elseif status is defined and status == "member" %}
+        {% embed 'components/_modal.html.twig' with {'modalId': 'leave-project-confirm'} %}
+            {% block header %}
+                <h3>Veuillez confirmer le départ</h3>
+            {% endblock %}
+            {% block body %}
+                <p>Êtes-vous sûr(e) de vouloir quitter le projet {{ project.name }}</p>
+            {% endblock %}
+            {% block footer %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                <a href=" {{ path('deleteMember', {'projectId': project.id, 'memberId': user.id}) }}" class="btn btn-primary">Oui</a>
             {% endblock %}
         {% endembed %}
     {% endif %}
