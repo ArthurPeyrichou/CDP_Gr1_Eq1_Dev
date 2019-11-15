@@ -16,23 +16,38 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'attr' => ['placeholder' => 'Votre pseudo',
-                            'class' => 'form-control'],
+                'attr' => [
+                    'placeholder' => 'Votre pseudo',
+                    'max' => 50
+                ],
                 'label' => 'Pseudo'
-                ])
+            ])
             ->add('emailAddress', EmailType::class, [
-                'attr' => ['placeholder' => 'Votre adresse mail',
-                            'class' => 'form-control'],
+                'attr' => [
+                    'placeholder' => 'Votre adresse mail',
+                    'min' => 5,
+                    'max' => 128
+                ],
                 'label' => 'Adresse mail'
-                ])
+            ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options' => ['label' => 'Mot de passe',
-                                    'attr' => ['placeholder' => 'Votre mot de passe',
-                                                'class' => 'form-control']],
-                'second_options' => ['label' => 'Confirmation mot de passe',
-                                    'attr' => ['placeholder' => 'Confirmer votre mot de passe',
-                                                'class' => 'form-control']]
+                'attr' => [
+                    'min' => 8,
+                    'max' => 50
+                ],
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'attr' => [
+                        'placeholder' => 'Votre mot de passe'
+                    ]
+                ],
+                'second_options' => [
+                    'label' => 'Confirmation mot de passe',
+                    'attr' => [
+                        'placeholder' => 'Confirmer votre mot de passe'
+                    ]
+                ]
             ]);
     }
 
