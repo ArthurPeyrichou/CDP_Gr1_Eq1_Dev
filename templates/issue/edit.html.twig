@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Editer un issue{% endblock %}
+
+{% block body %}
+
+    <div id="issue-edit-container" class="container border rounded" style="margin-top:10%; max-width:750px;">
+        <div style="margin-top:15px; margin-bottom:15px;">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.name) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.difficulty) }}
+            {{ form_row(form.priority) }}
+            {{ form_row(form.status) }}
+            <button type="submit" class="btn btn-primary">Modifier l'issue</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+{% endblock %}

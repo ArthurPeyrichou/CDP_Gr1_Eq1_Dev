@@ -94,7 +94,7 @@ class ProjectController extends AbstractController {
     public function editProject(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository, $id): Response
     {
 
-        $project = $this->getDoctrine()->getRepository(Project::class)->find($id);
+        $project =  $projectRepository->find($id);
 
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
@@ -147,17 +147,48 @@ class ProjectController extends AbstractController {
      */
     public function deleteMember($projectId, $memberId, ProjectRepository $projectRepository, MemberRepository $memberRepository, EntityManagerInterface $entityManager): Response
     {
-        $project = $projectRepository->find($projectId);
-        if (!$project) {
-            throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
+
+        $error = null;
+        $status = null;
+        $success = null;
+        $theProject =null;
+        $owner = null;
+        try {
+            $status = null;
+
+            $theProject = $projectRepository->find($projectId);
+            if (!$theProject) {
+                throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
+            }
+            $owner = $theProject->getOwner();
+            if($owner == $this->getUser()){
+                $status = "owner";
+            } else {
+                throw new \RuntimeException("Vous ne pouvez pas supprimer un projet dont vous n'êtes pas propriétaire");
+            }
+
+            $member = $memberRepository->find($memberId);
+            if (!$member) {
+                throw $this->createNotFoundException('aucun membre existe avec cet identifiant '.$id);
+            }
+            $theProject->removeMember($member);
+            $entityManager->flush();
+            $success = $member->getName() . " a été retiré du projet avec succés";
+        } catch(\Exception $e) {
+            $error = $e->getMessage();
         }
-        $member = $memberRepository->find($memberId);
-        if (!$member) {
-            throw $this->createNotFoundException('aucun membre existe avec cet identifiant '.$id);
-        }
-        $project->removeMember($member);
-        $entityManager->flush();
-        return $this->redirectToRoute('dashboard');
+        
+        
+        return $this->render('project/project_details.html.twig', [
+            'error' => $error,
+            'success' => $success,
+            'status' => $status,
+            'myInvitation' => null,
+            'project' => $theProject,
+            'owner' => $owner,
+            'members' => $theProject->getMembers(),
+            'user' => $this->getUser()
+        ]);
     }
 
 }
