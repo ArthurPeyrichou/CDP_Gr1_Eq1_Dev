@@ -29,25 +29,38 @@ class InvitationController extends AbstractController
         $myProject = $projectRepository->findOneBy([
             'id' => $id
         ]);
+        $owner = $theProject->getOwner();
 
         $success = null;
         $error = null;
 
-        if($theMember) {
+        $user = $this->getUser();
+        $status = null;
+
+        if($theMember && $myProject) {
             try {
+                if($owner == $user){
+                    $status = "owner";
+                } else {
+                    throw new \RuntimeException("Vous ne pouvez pas inviter des membres dans ce projet");
+                }
                 $invitationService->inviteUser($theMember, $myProject);
                 $success = 'Invitation envoyée avec succès';
             }
             catch(\Exception $e) {
                 $error = $e->getMessage();
             }
-        }
-        else {
+        } else if($myProject) {
             $error = 'Ce membre n\'apparait pas dans nos registres...';
+        } else if($theMember) {
+            $error = 'Ce projet n\'apparait pas dans nos registres...';
+        } else {
+            $error = 'Ni le membre, ni le projet n\'apparaient dans nos registres...';
         }
 
         $owner = $myProject->getOwner();
         return $this->render('project/project_details.html.twig', [
+            'status' => $status,
             'success' => $success,
             'error' => $error,
             'project' => $myProject,
@@ -84,6 +97,49 @@ class InvitationController extends AbstractController
                 $entityManager->remove($invitation);
                 $entityManager->flush();
                 $success = "Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre sont projet";
+            } catch(\Exception $e) {
+                $error = $e->getMessage();
+            }
+        }
+
+        $myProjects = $member->getOwnedProjects();
+        $myLinkedProjects = $member->getContributedProjects();
+        $myInvitations = $invitationRepository->findBy([
+            'member' => $member
+        ]);
+
+        return $this->render('project/dashboard.html.twig', [
+            "success"=> $success,
+            "error"=> $error,
+            "myProjects"=> $myProjects,
+            "myLinkedProjects"=> $myLinkedProjects,
+            "myInvitations"=> $myInvitations,
+            'user' => $this->getUser()
+        ]);
+    }
+
+        /**
+     * @Route("/project/{invitationKey}/denyInvitation", name="denyInviteToProject", methods={"GET"})
+     */
+    public function denyInvitationToProject(Request $request, InvitationRepository $invitationRepository,
+                                              $invitationKey) : Response
+    {
+
+        $member = $this->getUser();
+        $success = null;
+        $error = null;
+
+        $invitation = $invitationRepository->findOneBy([
+            'invitationKey' => $invitationKey,
+            'member' => $member
+        ]);
+        if($invitation == null) {
+            $error = 'L\'invitation ne vous est pas adressée ou n\'existe pas';
+        }  else {
+            try {
+                $entityManager->remove($invitation);
+                $entityManager->flush();
+                $success = "Vous venez de refuser l'invitation de {$project->getOwner()->getName()} à rejoindre sont projet";
             } catch(\Exception $e) {
                 $error = $e->getMessage();
             }

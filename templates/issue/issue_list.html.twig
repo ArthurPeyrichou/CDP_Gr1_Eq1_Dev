@@ -4,7 +4,7 @@
 
 {% block body %}
     
-    <div id="issue-list-container" style="margin-top:10%;">
+    <div id="issue-list-container" class="container" style="margin-top:10%;">
         <div class="row">
             <div class="col s12 m6 offset-m3">
                 <div class="card center-align mg">
@@ -21,7 +21,7 @@
                     {% else %}
                         <p> Vous n'avez pour l'instant créé aucune issue.</p>
                     {% endif %}
-                    <a class="btn waves-effect waves-light" href="{{ path('createIssue') }}">Créer une issue</a>
+                    <a class="btn btn-primary btn-dark" style="margin: auto; margin-bottom: 15px;" href="{{ path('createIssue', {'id_project' : myProject.id}) }}">Créer une issue</a>
                 </div>
             </div>
         </div>
