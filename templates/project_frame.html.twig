@@ -19,6 +19,12 @@
                         <span class="d-none d-sm-inline">Liste des issues</span>
                     </a>
                 </li>
+                <li class="py-sm-2">
+                    <a href="{{ path('createIssue', {'id_project': project.id}) }}">
+                        <img class="icon" src="{{ asset('build/images/add.svg') }}" alt="NewIssue">
+                        <span class="d-none d-sm-inline">nouvelle issue</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div id="content">
