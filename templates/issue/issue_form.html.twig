@@ -18,9 +18,8 @@
             {{ form_row(form.name) }}
             {{ form_row(form.description) }}
             {{ form_row(form.difficulty) }}
-            {{ form_row(form.priority) }}
-            {#{{ form_widget(form.priority)}}#}
-            {{ form_row(form.status) }}
+            {{ form_row(form.priority,{'label': 'Priorité'},{ 'separator': '----------' }) }}
+            {{ form_row(form.status,{'label': 'Statut'},{ 'separator': '----------' }) }}
             <button type="submit" class="btn btn-primary btn-dark">Créer l'issue</button>
             <a class="btn waves-effect waves-light red" href="/home">Annuler</a>
             {{ form_end(form) }}

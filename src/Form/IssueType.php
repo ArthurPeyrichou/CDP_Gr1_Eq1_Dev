@@ -28,13 +28,18 @@ class IssueType extends AbstractType
                 'attr' => ['placeholder' => 'Difficulté de votre issue',
                             'class' => 'form-control']
             ])
-            ->add('priority',TextType::class, [
-                'attr' => ['placeholder' => 'Priorité "HAUT" "BAS"',
-                            'class' => 'form-control']
+            ->add('priority',ChoiceType::class, [
+                'choices' => ['HAUT'=> 'HAUT',
+                                'MEDIUM'=>'MEDIUM',
+                                    'BAS'=>'BAS'],
+                'preferred_choices' => ['HAUT'],
+
             ])
-            ->add('status',TextType::class, [
-                'attr' => ['placeholder' => 'Etat de votre issue "TODO" "DOING" "DONE"',
-                            'class' => 'form-control']
+
+            ->add('status',ChoiceType::class, [
+                'choices' => ['TODO'=>'TODO', 'DOING'=>'DOING', 'DONE'=>'DONE'],
+                'preferred_choices' => ['TODO'],
+
     ]);
     }
 
