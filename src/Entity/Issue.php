@@ -46,6 +46,12 @@ class Issue
      * @ORM\JoinColumn(nullable=false)
      */
     private $project;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Release", inversedBy="implementedIssues")
+     */
+    private $linkedToRelease;
+
     public function __construct($name,$description,$difficulty,$priority,$status,$project)
     {
         $this->name = $name;
@@ -131,4 +137,19 @@ class Issue
 
         return $this;
     }
+
+    public function getLinkedToRelease(): ?Release
+    {
+        return $this->linkedToRelease;
+    }
+
+    public function setLinkedToRelease(?Release $linkedToRelease): self
+    {
+        $this->linkedToRelease = $linkedToRelease;
+
+        return $this;
+    }
+
+
+
 }
