@@ -48,6 +48,12 @@ class Task
      */
     private $relatedIssues;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="tasks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $project;
+
     public function __construct()
     {
         $this->relatedIssues = new ArrayCollection();
@@ -140,6 +146,18 @@ class Task
         if ($this->relatedIssues->contains($relatedIssue)) {
             $this->relatedIssues->removeElement($relatedIssue);
         }
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): self
+    {
+        $this->project = $project;
 
         return $this;
     }

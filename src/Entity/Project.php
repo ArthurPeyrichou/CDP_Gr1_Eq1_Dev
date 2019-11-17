@@ -45,18 +45,30 @@ class Project
     private $members;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="project", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $issues;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $tasks;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Release", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $releases;
 
     public function __construct($owner, $name, $description, $creationDate)
     {
         $this->owner = $owner;
         $this->name = $name;
         $this->description = $description;
-        $this->members = new ArrayCollection();
         $this->creationDate = $creationDate;
+        $this->members = new ArrayCollection();
         $this->issues = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
+        $this->releases = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,6 +179,68 @@ class Project
             // set the owning side to null (unless already changed)
             if ($issue->getProject() === $this) {
                 $issue->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+            // set the owning side to null (unless already changed)
+            if ($task->getProject() === $this) {
+                $task->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Release[]
+     */
+    public function getReleases(): Collection
+    {
+        return $this->releases;
+    }
+
+    public function addRelease(Release $release): self
+    {
+        if (!$this->releases->contains($release)) {
+            $this->releases[] = $release;
+            $release->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelease(Release $release): self
+    {
+        if ($this->releases->contains($release)) {
+            $this->releases->removeElement($release);
+            // set the owning side to null (unless already changed)
+            if ($release->getProject() === $this) {
+                $release->setProject(null);
             }
         }
 
