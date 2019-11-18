@@ -1,15 +1,15 @@
-{% extends "base.html.twig" %}
+{% extends 'project_frame.html.twig' %}
 
 {% block title %}List des issues{% endblock %}
 
-{% block body %}
+{% block content %}
     
-    <div id="issue-list-container" class="container" style="margin-top:10%;">
+    <div id="issue-list-container" class="container" style="padding-top:10%;">
         <div class="row">
             <div class="col s12 m6 offset-m3">
                 <div class="card center-align mg">
                     <p style="display:inline-block;"><h3>Issues </h3></p>
-                    {% if myIssues is not empty %}  
+                    {% if myIssues is not empty %}
                         <div class="collection">
                             {% for issue in myIssues %}
                                 <p class="collection-item">
@@ -23,7 +23,7 @@
                                             <li class="list-group-item d-flex justify-content-between align-items-center">Priorité: {{ issue.priority }}</li>
                                         </ul>
 
-                                            <a class="btn btn-primary" href="/project/{{ myProject.id }}/issue/{{ issue.id }}/edit">Editer</a>
+                                            <a class="btn btn-primary" href="/project/{{ project.id }}/issue/{{ issue.id }}/edit">Editer</a>
                                             <button class="btn btn-danger" data-toggle="modal" data-target="#issue-delete-confirm">Supprimer</button>
                                     </div>
                             </div>
@@ -37,7 +37,7 @@
                         {% endblock %}
                         {% block footer %}
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                            <a href="{{ path('deleteIssue',{'myProject_id':myProject.id,'issue_id':issue.id }) }}" class="btn btn-primary">Oui</a>
+                            <a href="{{ path('deleteIssue',{'myProject_id':project.id,'issue_id':issue.id }) }}" class="btn btn-primary">Oui</a>
                         {% endblock %}
                     {% endembed %}
 
@@ -46,7 +46,7 @@
                         </div> 
                     {% else %}
                         <p> Vous n'avez pour l'instant créé aucune issue.</p>
-                        <a class="btn btn-primary btn-dark" style="margin: auto; margin-bottom: 15px;" href="{{ path('createIssue', {'id_project' : myProject.id}) }}">Créer une issue</a>
+                        <a class="btn btn-primary btn-dark" style="margin: auto; margin-bottom: 15px;" href="{{ path('createIssue', {'id_project' : project.id}) }}">Créer une issue</a>
                     {% endif %}
 
                 </div>

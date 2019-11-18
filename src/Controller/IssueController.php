@@ -21,6 +21,9 @@ class IssueController extends AbstractController {
     {
         $form = $this->createForm(IssueType::class);
         $form->handleRequest($request);
+        $project = $projectRepository->findOneBy([
+            'id' => $id_project
+        ]);
 
         $error = null;
 
@@ -31,11 +34,8 @@ class IssueController extends AbstractController {
             $difficulty=$data['difficulty'];
             $priority=$data['priority'];
             $status=$data['status'];
-            $myProject = $projectRepository->findOneBy([
-                'id' => $id_project
-            ]);
 
-            $issue = new Issue($name,$description,$difficulty,$priority,$status,$myProject);
+            $issue = new Issue($name,$description,$difficulty,$priority,$status,$project);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($issue);
@@ -46,9 +46,12 @@ class IssueController extends AbstractController {
             }
         }
 
-        return $this->render('issue/issue_form.html.twig', ['error'=> $error,
-            "form"=> $form->createView(),
-            'user' => $this->getUser()] );
+        return $this->render('issue/issue_form.html.twig', [
+            'error'=> $error,
+            'form'=> $form->createView(),
+            'user' => $this->getUser(),
+            'project' => $project
+        ]);
 
     }
 
@@ -58,15 +61,17 @@ class IssueController extends AbstractController {
     public function viewIssues(Request $request, ProjectRepository $projectRepository, $id_project) {
         $member = $this->getUser();
 
-        $myProject = $projectRepository->findOneBy([
+        $project = $projectRepository->findOneBy([
             'id' => $id_project
         ]);
 
-        $myIssues = $myProject->getIssues();
+        $myIssues = $project->getIssues();
 
-        return $this->render('issue/issue_list.html.twig', ["myProject"=> $myProject,
-            "myIssues"=> $myIssues,
-            'user' => $member]);
+        return $this->render('issue/issue_list.html.twig', [
+            'project'=> $project,
+            'myIssues' => $myIssues,
+            'user' => $member
+            ]);
     }
 
     /**
@@ -77,6 +82,7 @@ class IssueController extends AbstractController {
         $issue=$issueRepository->find($issue_id);
         $form = $this->createForm(IssueType::class);
         $form->handleRequest($request);
+        $project = $projectRepository->find($myProject_id);
 
         $error = null;
         if ($form->isSubmitted() && $form->isValid()) {
@@ -86,7 +92,6 @@ class IssueController extends AbstractController {
             $difficulty = $data['difficulty'];
             $priority = $data['priority'];
             $status = $data['status'];
-            $project = $projectRepository->find($myProject_id);
             $issue->setName($name);
             $issue->setDescription($description);
             $issue->setDifficulty($difficulty);
@@ -102,7 +107,8 @@ class IssueController extends AbstractController {
         return $this->render('issue/edit.html.twig', [
             'error' => $error,
             'form' => $form->createView(),
-            'user' => $this->getUser()
+            'user' => $this->getUser(),
+            'project' => $project
         ]);
     }
 

@@ -2,6 +2,7 @@
 // src/Controller/ProjectController.php
 namespace App\Controller;
 
+use App\Entity\Member;
 use App\Entity\Project;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
@@ -93,7 +94,6 @@ class ProjectController extends AbstractController {
     public function editProject(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository, 
             RenderService $renderService, $id): Response
     {
-
         $project =  $projectRepository->find($id);
 
         $form = $this->createForm(ProjectType::class);
@@ -103,10 +103,11 @@ class ProjectController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
+            /**@var $owner Member */
             $owner = $this->getUser();
             $name = $data['name'];
             $description= $data['description'];
-            $date= new \DateTime('now');
+            $date= new \DateTime();
             $project->setName($name);
             $project->setDescription($description);
             $project->setOwner($owner);
@@ -123,7 +124,8 @@ class ProjectController extends AbstractController {
         return $this->render('project/edit.html.twig', [
             'error' => $error,
             'form' => $form->createView(),
-            'user' => $this->getUser()
+            'user' => $this->getUser(),
+            'project' => $project
         ]);
 
 

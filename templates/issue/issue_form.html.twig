@@ -1,28 +1,22 @@
-{% extends   "base.html.twig" %}
+{% extends 'project_frame.html.twig' %}
 
 {% block title %}Création d'un issue{% endblock %}
 
-{% block body %}
-    <nav class="cyan darken-4">
-        <div class="nav-wrapper" >
-            <a href="" class="brand-logo">Gestion des issues</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="">Mes issues</a></li>
-            </ul>
-        </div>
-    </nav>
-    <div id="issue-container" class="container border rounded" style="margin-top:10%; max-width:750px;">
-        <div style="margin-top:15px; margin-bottom:15px;">
-            {{ form_start(form) }}
-            {{ form_errors(form) }}
-            {{ form_row(form.name) }}
-            {{ form_row(form.description) }}
-            {{ form_row(form.difficulty) }}
-            {{ form_row(form.priority,{'label': 'Priorité'},{ 'separator': '----------' }) }}
-            {{ form_row(form.status,{'label': 'Statut'},{ 'separator': '----------' }) }}
-            <button type="submit" class="btn btn-primary btn-dark">Créer l'issue</button>
-            <a class="btn waves-effect waves-light red" href="/home">Annuler</a>
-            {{ form_end(form) }}
+{% block content %}
+    <div id="issue-container" class="container" style="padding-top:10%;">
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.difficulty) }}
+                {{ form_row(form.priority,{'label': 'Priorité'},{ 'separator': '----------' }) }}
+                {{ form_row(form.status,{'label': 'Statut'},{ 'separator': '----------' }) }}
+                <button type="submit" class="btn btn-primary btn-dark">Créer l'issue</button>
+                <a class="btn waves-effect waves-light red" href="/home">Annuler</a>
+                {{ form_end(form) }}
+            </div>
         </div>
     </div>
 
