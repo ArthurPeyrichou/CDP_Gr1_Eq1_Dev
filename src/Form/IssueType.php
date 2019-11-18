@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Form;
-use App\Entity\Issue;
+
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -16,34 +16,46 @@ class IssueType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'attr' => ['placeholder' => 'entrez le nom de votre issue',
-                            'class' => 'form-control']
+                'label' => 'Nom',
+                'attr' => [
+                    'placeholder' => 'Nom de votre issue',
+                ]
             ])
             ->add('description', TextareaType::class, [
-                'attr' => ['placeholder' => 'Description de votre issue',
-                            'class' => 'form-control']
+                'label' => 'Description',
+                'attr' => [
+                    'placeholder' => 'Description de votre issue',
+                ]
 
             ])
             ->add('difficulty', IntegerType::class, [
-                'attr' => ['placeholder' => 'Difficulté de votre issue',
-                            'class' => 'form-control']
+                'label' => 'Difficulté',
+                'attr' => [
+                    'placeholder' => 'Difficulté de votre issue',
+                ]
             ])
             ->add('priority',ChoiceType::class, [
-                'choices' => ['HAUT'=> 'HAUT',
-                                'MEDIUM'=>'MEDIUM',
-                                    'BAS'=>'BAS'],
+                'label' => 'Priorité',
+                'choices' => [
+                    'HAUT'=> 'HAUT',
+                    'MEDIUM'=>'MEDIUM',
+                    'BAS'=>'BAS'
+                ],
                 'preferred_choices' => ['HAUT'],
 
             ])
-
             ->add('status',ChoiceType::class, [
-                'choices' => ['TODO'=>'TODO', 'DOING'=>'DOING', 'DONE'=>'DONE'],
+                'label' => 'Statut',
+                'choices' => [
+                    'TODO'=>'TODO',
+                    'DOING'=>'DOING',
+                    'DONE'=>'DONE'
+                ],
                 'preferred_choices' => ['TODO'],
-
-    ]);
+            ]);
     }
 
-   public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
 

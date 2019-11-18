@@ -52,14 +52,14 @@ class Issue
      */
     private $linkedToRelease;
 
-    public function __construct($name,$description,$difficulty,$priority,$status,$project)
+    public function __construct($name, $description, $difficulty, $priority, $status, $project)
     {
         $this->name = $name;
         $this->description = $description;
-        $this->difficulty=$difficulty;
-        $this->priority=$priority;
-        $this->status=$status;
-        $this->project=$project;
+        $this->difficulty = $difficulty;
+        $this->priority = $priority;
+        $this->status = $status;
+        $this->project = $project;
     }
     public function getId(): ?int
     {
