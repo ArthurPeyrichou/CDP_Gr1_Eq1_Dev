@@ -1,10 +1,10 @@
 {% extends 'project_frame.html.twig' %}
 
-{% block title %}Editer un issue{% endblock %}
+{% block title %}Edition d'une issue{% endblock %}
 
 {% block content %}
 
-    <div id="issue-edit-container" class="container" style="padding-top:10%;">
+    <div class="container" style="padding-top:10%;">
         <div class="card">
             <div class="card-body">
                 {{ form_start(form) }}
@@ -15,6 +15,7 @@
                 {{ form_row(form.priority) }}
                 {{ form_row(form.status) }}
                 <button type="submit" class="btn btn-primary">Modifier l'issue</button>
+                <a class="btn btn-outline-danger" href="{{ path('issuesList', {'id_project' : project.id}) }}">Annuler</a>
                 {{ form_end(form) }}
             </div>
         </div>

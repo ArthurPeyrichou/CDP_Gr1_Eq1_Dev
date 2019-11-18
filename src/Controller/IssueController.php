@@ -75,14 +75,16 @@ class IssueController extends AbstractController {
     }
 
     /**
-     * @Route("/project/{myProject_id}/issue/{issue_id}/edit", name="editIssue")
+     * @Route("/project/{id_project}/issue/{id_issue}/edit", name="editIssue")
      */
-    public function editIssue(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository,IssueRepository $issueRepository, $issue_id,$myProject_id): Response
+    public function editIssue(Request $request, EntityManagerInterface $entityManager,
+                              ProjectRepository $projectRepository, IssueRepository $issueRepository,
+                              $id_issue, $id_project): Response
     {
-        $issue=$issueRepository->find($issue_id);
+        $issue=$issueRepository->find($id_issue);
         $form = $this->createForm(IssueType::class);
         $form->handleRequest($request);
-        $project = $projectRepository->find($myProject_id);
+        $project = $projectRepository->find($id_project);
 
         $error = null;
         if ($form->isSubmitted() && $form->isValid()) {

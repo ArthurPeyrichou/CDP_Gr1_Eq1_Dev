@@ -1,58 +1,55 @@
 {% extends 'project_frame.html.twig' %}
 
-{% block title %}List des issues{% endblock %}
+{% block title %}Liste des issues{% endblock %}
 
 {% block content %}
-    
-    <div id="issue-list-container" class="container" style="padding-top:10%;">
-        <div class="row">
-            <div class="col s12 m6 offset-m3">
-                <div class="card center-align mg">
-                    <p style="display:inline-block;"><h3>Issues </h3></p>
-                    {% if myIssues is not empty %}
-                        <div class="collection">
-                            {% for issue in myIssues %}
-                                <p class="collection-item">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">{{ issue.name }}</h3>
-                                        <ul class="list-group">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">Description: {{ issue.description }}</li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">Difficulté: {{ issue.difficulty }}</li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">Statut: {{ issue.status }}</li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">Priorité: {{ issue.priority }}</li>
-                                        </ul>
 
-                                            <a class="btn btn-primary" href="/project/{{ project.id }}/issue/{{ issue.id }}/edit">Editer</a>
-                                            <button class="btn btn-danger" data-toggle="modal" data-target="#issue-delete-confirm">Supprimer</button>
+    <div class="container" style="padding-top:10%;">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Issues </h3>
+                {% if myIssues is not empty %}
+                    <ul class="list-group">
+                        {% for index, issue in myIssues %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="font-weight-bold">{{ issue.name }} - {{ issue.description }}</div>
+                                        <div class="text-muted small">
+                                            <span>Difficulté :</span>
+                                            <span class="font-weight-bold">{{ issue.difficulty }}</span>
+                                            <span>| Priorité :</span>
+                                            <span class="font-weight-bold">{{ issue.priority }}</span>
+                                            <span>| Statut :</span>
+                                            <span class="font-weight-bold">{{ issue.status }}</span>
+                                        </div>
                                     </div>
-                            </div>
-                        </div>
-                    {% embed 'components/_modal.html.twig' with {'modalId': 'issue-delete-confirm'} %}
-                        {% block header %}
-                            <h3>Veuillez confirmer la suppression</h3>
-                        {% endblock %}
-                        {% block body %}
-                            <p>Êtes-vous sûr(e) de vouloir supprimer l'issue {{ issue.name }}</p>
-                        {% endblock %}
-                        {% block footer %}
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                            <a href="{{ path('deleteIssue',{'myProject_id':project.id,'issue_id':issue.id }) }}" class="btn btn-primary">Oui</a>
-                        {% endblock %}
-                    {% endembed %}
-
-                    {% endfor %}
-
-                        </div> 
-                    {% else %}
-                        <p> Vous n'avez pour l'instant créé aucune issue.</p>
-                        <a class="btn btn-primary btn-dark" style="margin: auto; margin-bottom: 15px;" href="{{ path('createIssue', {'id_project' : project.id}) }}">Créer une issue</a>
-                    {% endif %}
-
-                </div>
+                                    <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                        <a class="btn btn-primary my-auto mr-1" href="{{ path('editIssue', {'id_project': project.id, 'id_issue' : issue.id}) }}">Editer</a>
+                                        <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#issue-delete-confirm{{ index }}">Supprimer</button>
+                                    </div>
+                                </div>
+                            </li>
+                            {% embed 'components/_modal.html.twig' with {'modalId': "issue-delete-confirm#{index}"} %}
+                                {% block header %}
+                                    <h3>Veuillez confirmer la suppression</h3>
+                                {% endblock %}
+                                {% block body %}
+                                    <p>Êtes-vous sûr(e) de vouloir supprimer l'issue {{ issue.name }}</p>
+                                {% endblock %}
+                                {% block footer %}
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                    <a href="{{ path('deleteIssue', {'myProject_id':project.id,'issue_id':issue.id }) }}" class="btn btn-primary">Oui</a>
+                                {% endblock %}
+                            {% endembed %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p> Vous n'avez pour l'instant créé aucune issue.</p>
+                    <a class="btn btn-primary" href="{{ path('createIssue', {'id_project' : project.id}) }}">Créer une issue</a>
+                {% endif %}
             </div>
         </div>
     </div>
-
 {% endblock %}
 
