@@ -2,6 +2,7 @@
 // src/Controller/DashboardController.php
 namespace App\Controller;
 
+use App\Entity\Member;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,7 +19,6 @@ class DashboardController extends AbstractController {
         $member = $this->getUser();
         $myProjects = $member->getOwnedProjects();
         $myLinkedProjects = $member->getContributedProjects();
-        $pseudo = $member->getName();
 
         $myInvitations = $invitationRepository->findBy([
             'member' => $member

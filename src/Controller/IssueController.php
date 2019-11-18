@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Form\IssueType;
 use App\Entity\Issue;
-use App\Entity\Project;
 use App\Repository\IssueRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
+
 class IssueController extends AbstractController {
+
     /**
      * @Route("/project/{id_project}/new_issue", name = "createIssue")
      */
@@ -46,8 +47,8 @@ class IssueController extends AbstractController {
         }
 
         return $this->render('issue/issue_form.html.twig', ['error'=> $error,
-                                                            "form"=> $form->createView(),
-                                                            'user' => $this->getUser()] );
+            "form"=> $form->createView(),
+            'user' => $this->getUser()] );
 
     }
 
@@ -56,21 +57,17 @@ class IssueController extends AbstractController {
      */
     public function viewIssues(Request $request, ProjectRepository $projectRepository, $id_project) {
         $member = $this->getUser();
-    
+
         $myProject = $projectRepository->findOneBy([
             'id' => $id_project
         ]);
 
         $myIssues = $myProject->getIssues();
 
-        return $this->render('issue/issue_list.html.twig', ["myProject"=> $myProject, 
-                                                            "myIssues"=> $myIssues,
-                                                            'user' => $this->getUser()]);
+        return $this->render('issue/issue_list.html.twig', ["myProject"=> $myProject,
+            "myIssues"=> $myIssues,
+            'user' => $member]);
     }
-
-
-
-
 
     /**
      * @Route("/project/{myProject_id}/issue/{issue_id}/edit", name="editIssue")
@@ -108,16 +105,18 @@ class IssueController extends AbstractController {
             'user' => $this->getUser()
         ]);
     }
-/**
- * @Route("/project/{myProject_id}/issue/{issue_id}/delete", name="deleteIssue")
- */
-public function deleteIssue(Request $request, IssueRepository $issue_Repository,EntityManagerInterface $entityManager,$issue_id)
-{
-    $issue = $issue_Repository->find($issue_id);
-    if (!$issue) {
-        throw $this->createNotFoundException('aucun issue existe avec cet id ' . $issue_id);
+
+    /**
+     * @Route("/project/{myProject_id}/issue/{issue_id}/delete", name="deleteIssue")
+     */
+    public function deleteIssue(Request $request, IssueRepository $issue_Repository,EntityManagerInterface $entityManager,$issue_id)
+    {
+        $issue = $issue_Repository->find($issue_id);
+        if (!$issue) {
+            throw $this->createNotFoundException('aucun issue existe avec cet id ' . $issue_id);
+        }
+        $entityManager->remove($issue);
+        $entityManager->flush();
+        return $this->redirectToRoute('dashboard');
     }
-    $entityManager->remove($issue);
-    $entityManager->flush();
-    return $this->redirectToRoute('dashboard');
-}}
+}

@@ -12,7 +12,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProjectController extends AbstractController {
@@ -134,7 +133,7 @@ class ProjectController extends AbstractController {
      * @Route("/project/{id}/delete", name="deleteProject")
      */
     public function deleteProject(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $entityManager, 
-            RenderService $renderService, InvitationRepository $invitationRepository,$id)
+            RenderService $renderService, $id)
     {
         $project = $projectRepository->find($id);
         $error = null;
@@ -159,8 +158,8 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{projectId}/deleteMember/{memberId}", name="deleteMember")
      */
-    public function deleteMember($projectId, $memberId, ProjectRepository $projectRepository, MemberRepository $memberRepository, 
-            RenderService $renderService, EntityManagerInterface $entityManager): Response
+    public function deleteMember(ProjectRepository $projectRepository, MemberRepository $memberRepository,
+            RenderService $renderService, EntityManagerInterface $entityManager, $projectId, $memberId): Response
     {
 
         $error = null;
@@ -173,12 +172,12 @@ class ProjectController extends AbstractController {
 
             $member = $memberRepository->find($memberId);
             if (!$member) {
-                throw $this->createNotFoundException('aucun membre existe avec cet identifiant '.$id);
+                throw $this->createNotFoundException('aucun membre existe avec cet identifiant ' . $memberId);
             }
 
             $project = $projectRepository->find($projectId);
             if (!$project) {
-                throw $this->createNotFoundException('aucun projet existe avec cet identifiant '.$id);
+                throw $this->createNotFoundException('aucun projet existe avec cet identifiant ' . $projectId);
             } else if($project->getOwner() == $user){
                 $status = "owner";
                 $success = $member->getName() . " a été retiré du projet avec succés";

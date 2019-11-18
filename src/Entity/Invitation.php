@@ -49,7 +49,7 @@ class Invitation
 
     public function getId(): ?int
     {
-
+        $this->id;
     }
 
     public function getMember(): ?Member

@@ -72,7 +72,7 @@ class Member implements UserInterface
 
     public function getUsername()
     {
-        return $this->emailAddress;
+        return $this->getEmailAddress();
     }
 
     public function eraseCredentials() {}
