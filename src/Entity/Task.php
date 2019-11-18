@@ -11,6 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Task
 {
+    public const TODO = 'todo';
+    public const DOING = 'doing';
+    public const DONE = 'done';
+
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
