@@ -61,7 +61,7 @@ class Task
     private $project;
 
     public function __construct(int $number, string $description, float $requiredManDays,
-                                Member $developper, array $relatedIssues, Project $project)
+                                array $relatedIssues, Project $project, ?Member $developper)
     {
         $this->number = $number;
         $this->description = $description;
@@ -77,7 +77,7 @@ class Task
         return $this->id;
     }
 
-    public function getNumber(): ?int
+    public function getNumber(): int
     {
         return $this->number;
     }
@@ -89,7 +89,7 @@ class Task
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -101,7 +101,7 @@ class Task
         return $this;
     }
 
-    public function getRequiredManDays(): ?float
+    public function getRequiredManDays(): float
     {
         return $this->requiredManDays;
     }
@@ -113,7 +113,7 @@ class Task
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -174,12 +174,12 @@ class Task
         return $this;
     }
 
-    public function getProject(): ?Project
+    public function getProject(): Project
     {
         return $this->project;
     }
 
-    public function setProject(?Project $project): self
+    public function setProject(Project $project): self
     {
         $this->project = $project;
 
