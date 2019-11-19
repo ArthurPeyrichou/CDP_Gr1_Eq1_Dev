@@ -3,26 +3,6 @@ body, html{
 
 }
 
-.identification{
-    width: 200px;
-    margin: 10% auto 0;
-}
-
-.btn-large {
-    display: block;
-    margin: 0 auto 10px;
-    width: 100%;
-}
-
-.right {
-    position: absolute;
-    right: 0;
-}
-
-.cardmargin {
-    margin: 0.5rem 0 1rem 0;
-}
-
 .dropdown a {
     text-decoration: none;
 }
