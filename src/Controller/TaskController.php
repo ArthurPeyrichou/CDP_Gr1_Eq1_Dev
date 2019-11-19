@@ -46,18 +46,18 @@ class TaskController extends AbstractController
      * @Route("/project/{id_project}/tasks/new", name="createTask")
      */
     public function createTask(Request $request, ProjectRepository $projectRepository,
-                               EntityManagerInterface $entityManager, $id_project)
+                               EntityManagerInterface $entityManager, TaskRepository $taskRepository, $id_project)
     {
         $project = $projectRepository->find($id_project);
-        $form = $this->createForm(TaskType::class, null, [
+        $nextNumber = $taskRepository->getNextNumber($project);
+        $form = $this->createForm(TaskType::class, ['number' => $nextNumber], [
             TaskType::PROJECT => $project
         ]);
-
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $number = $data['number'];
+            $number = $nextNumber;
             $description = $data['description'];
             $requiredManDays = $data['requiredManDays'];
             $developper = $data['developper'];

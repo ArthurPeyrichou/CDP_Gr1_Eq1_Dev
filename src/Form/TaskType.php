@@ -24,6 +24,7 @@ class TaskType extends AbstractType
         $builder
             ->add('number', IntegerType::class, [
                 'label' => 'Numéro',
+                'disabled' => true,
                 'attr' => [
                     'placeholder' => 'Numéro de votre tâche'
                 ]
