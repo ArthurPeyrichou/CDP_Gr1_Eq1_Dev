@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\EntityException\InvalidStatusTransitionException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -59,9 +60,16 @@ class Task
      */
     private $project;
 
-    public function __construct()
+    public function __construct(int $number, string $description, float $requiredManDays,
+                                Member $developper, array $relatedIssues, Project $project)
     {
-        $this->relatedIssues = new ArrayCollection();
+        $this->number = $number;
+        $this->description = $description;
+        $this->requiredManDays = $requiredManDays;
+        $this->developper = $developper;
+        $this->project = $project;
+        $this->relatedIssues = new ArrayCollection($relatedIssues);
+        $this->status = self::TODO;
     }
 
     public function getId(): ?int
@@ -110,11 +118,22 @@ class Task
         return $this->status;
     }
 
-    public function setStatus(string $status): self
-    {
-        $this->status = $status;
+    public function begin(): void {
+        if ($this->status == self::DONE || $this->status == self::DOING) {
+            throw new InvalidStatusTransitionException(
+                "Cannot begin a task that has status {$this->getStatus()}"
+            );
+        }
+        $this->status = self::DOING;
+    }
 
-        return $this;
+    public function finish(): void {
+        if ($this->status == self::DONE) {
+            throw new InvalidStatusTransitionException(
+                "Cannot finish a task that has status {$this->getStatus()}"
+            );
+        }
+        $this->status = self::DONE;
     }
 
     public function getDevelopper(): ?Member
