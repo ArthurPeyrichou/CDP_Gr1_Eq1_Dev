@@ -41,11 +41,11 @@ class InvitationService
         $memberAlreadyExist = $project->getMembers()->contains($newMember);
         
         if ($memberAlreadyExist) {
-            throw new MemberAlreadyExistsException("Le membre {$newMember->getName()} est déjà collaborateur à ce projet");
+            throw new MemberAlreadyExistsException("Le membre {$newMember->getName()} est déjà collaborateur de ce projet");
         }
 
         if($project->getOwner()->getId() ==  $newMember->getId()) {
-            throw new MemberIsOwnerException("Vous ne pouvez vous invité à un projet que vous avez crée");
+            throw new MemberIsOwnerException('Vous ne pouvez pas vous inviter à un projet que vous avez créé');
         }
         
         $invitation = new Invitation($newMember, $project);

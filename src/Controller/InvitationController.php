@@ -39,7 +39,7 @@ class InvitationController extends AbstractController
         $status = null;
 
         if($owner == $user){
-            $status = "owner";
+            $status = 'owner';
             if($member && $project) {
                 try {    
                     $invitationService->inviteUser($member, $project);
@@ -52,10 +52,10 @@ class InvitationController extends AbstractController
             } else if($member) {
                 $error = 'Ce projet n\'apparait pas dans nos registres...';
             } else {
-                $error = 'Ni le membre, ni le projet n\'apparaient dans nos registres...';
+                $error = 'Ni le membre ni le projet n\'apparaissent dans nos registres...';
             }
         } else {
-            $error =  'Vous ne pouvez pas inviter des membres dans ce projet';
+            $error = 'Vous ne pouvez pas inviter des membres dans ce projet';
         }
 
         return $this->render('project/project_details.html.twig',
@@ -88,7 +88,7 @@ class InvitationController extends AbstractController
                 $entityManager->persist($member);
                 $entityManager->remove($invitation);
                 $entityManager->flush();
-                $success = "Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre sont projet";
+                $success = "Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre son projet";
             } catch(\Exception $e) {
                 $error = $e->getMessage();
             }
@@ -120,7 +120,7 @@ class InvitationController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->remove($invitation);
                 $entityManager->flush();
-                $success = "Vous venez de refuser l'invitation de {$invitation->getProject()->getOwner()->getName()} à rejoindre sont projet";
+                $success = "Vous venez de refuser l'invitation de {$invitation->getProject()->getOwner()->getName()} à rejoindre son projet";
             } catch(\Exception $e) {
                 $error = $e->getMessage();
             }

@@ -35,7 +35,7 @@ class IssueController extends AbstractController {
             $priority=$data['priority'];
             $status=$data['status'];
 
-            $issue = new Issue($name,$description,$difficulty,$priority,$status,$project);
+            $issue = new Issue($name, $description, $difficulty, $priority, $status, $project);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($issue);
@@ -71,7 +71,7 @@ class IssueController extends AbstractController {
             'project'=> $project,
             'myIssues' => $myIssues,
             'user' => $member
-            ]);
+        ]);
     }
 
     /**
@@ -121,7 +121,7 @@ class IssueController extends AbstractController {
     {
         $issue = $issue_Repository->find($issue_id);
         if (!$issue) {
-            throw $this->createNotFoundException('aucun issue existe avec cet id ' . $issue_id);
+            throw $this->createNotFoundException("Aucune issue n'existe avec l'id {$issue_id}");
         }
         $entityManager->remove($issue);
         $entityManager->flush();

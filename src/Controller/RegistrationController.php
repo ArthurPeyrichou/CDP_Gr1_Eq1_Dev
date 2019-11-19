@@ -35,7 +35,7 @@ class RegistrationController extends AbstractController {
                 return $this->redirectToRoute('login');
             }
             catch (MemberNameInUseException $e) {
-                $error = 'Le nom d\'utilisateur choisi existe déjà';
+                $error = 'Le nom d\'utilisateur choisi est déjà utilisé';
             }
             catch (EmailAddressInUseException $e) {
                 $error = 'L\'adresse email choisie est déjà utilisée';

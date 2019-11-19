@@ -46,8 +46,8 @@
                     </ul>
                 {% else %}
                     <p> Vous n'avez pour l'instant créé aucune issue.</p>
-                    <a class="btn btn-primary" href="{{ path('createIssue', {'id_project' : project.id}) }}">Créer une issue</a>
                 {% endif %}
+                <a class="btn btn-primary mt-3" href="{{ path('createIssue', {'id_project' : project.id}) }}">Créer une issue</a>
             </div>
         </div>
     </div>
