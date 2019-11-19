@@ -15,7 +15,6 @@
                 {{ form_row(form.priority,{'label': 'Priorité'},{ 'separator': '----------' }) }}
                 {{ form_row(form.status,{'label': 'Statut'},{ 'separator': '----------' }) }}
                 <button type="submit" class="btn btn-primary">Créer l'issue</button>
-                <a class="btn btn-outline-danger" href="{{ path('issuesList', {'id_project' : project.id}) }}">Annuler</a>
                 {{ form_end(form) }}
             </div>
         </div>

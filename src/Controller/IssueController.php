@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\RenderService;
 
 class IssueController extends AbstractController {
 
@@ -25,20 +26,24 @@ class IssueController extends AbstractController {
         $project = $projectRepository->find( $id_project);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $name = $data['name'];
-            $description= $data['description'];
-            $difficulty=$data['difficulty'];
-            $priority=$data['priority'];
-            $status=$data['status'];
-
-            $issue = new Issue($name, $description, $difficulty, $priority, $status, $project);
-
-            $entityManager->persist($issue);
-            $entityManager->flush();
-            return $this->redirectToRoute('issuesList', [
-                'id_project' => $project->getId()
-            ]);
+            $error = null; 
+            $success = null; 
+            try {
+                $data = $form->getData();
+                $name = $data['name'];
+                $description= $data['description'];
+                $difficulty=$data['difficulty'];
+                $priority=$data['priority'];
+                $status=$data['status'];
+                $issue = new Issue($name, $description, $difficulty, $priority, $status, $project);
+                $success =  "Issue {$issue->getName()} créée avec succés."; 
+                $entityManager->persist($issue);
+                $entityManager->flush();
+            } catch(\Exception $e) {
+                $error = $e->getMessage();
+            }
+            
+            return $this->renderIssue($error, $success , $project);
         }
 
         return $this->render('issue/issue_form.html.twig', [
@@ -53,19 +58,7 @@ class IssueController extends AbstractController {
      * @Route("/project/{id_project}/issues", name="issuesList", methods={"GET"})
      */
     public function viewIssues(Request $request, ProjectRepository $projectRepository, $id_project) {
-        $member = $this->getUser();
-
-        $project = $projectRepository->findOneBy([
-            'id' => $id_project
-        ]);
-
-        $issues = $project->getIssues();
-
-        return $this->render('issue/issue_list.html.twig', [
-            'project'=> $project,
-            'issues' => $issues,
-            'user' => $member
-        ]);
+        return $this->renderIssue(null, null, $projectRepository->find($id_project));
     }
 
     /**
@@ -79,13 +72,16 @@ class IssueController extends AbstractController {
         $form = $this->createForm(IssueType::class, $issue);
         $form->handleRequest($request);
         $project = $projectRepository->find($id_project);
+        $error = null;
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($issue);
-            $entityManager->flush();
-            return $this->redirectToRoute('issuesList', [
-                'id_project' => $project->getId()
-            ]);
+        if ($form->isSubmitted() && $form->isValid()) {     
+            try {
+                $entityManager->persist($issue);
+                $entityManager->flush();
+            } catch(\Exception $e) {
+                $error = $e->getMessage();
+            }
+            return $this->renderIssue($error, "Issue {$issue->getName()} éditée avec succés.", $project);
         }
 
         return $this->render('issue/edit.html.twig', [
@@ -99,14 +95,35 @@ class IssueController extends AbstractController {
      * @Route("/project/{id_project}/issues/{id_issue}/delete", name="deleteIssue")
      */
     public function deleteIssue(Request $request, IssueRepository $issue_Repository,
-                                EntityManagerInterface $entityManager, $issue_id)
+                                EntityManagerInterface $entityManager, ProjectRepository $projectRepository, $id_project, $id_issue)
     {
-        $issue = $issue_Repository->find($issue_id);
+        $issue = $issue_Repository->find($id_issue);
+        $error = null;
+        $success = null;
         if (!$issue) {
-            throw $this->createNotFoundException("Aucune issue n'existe avec l'id {$issue_id}");
+            $error ="Aucune issue n'existe avec l'id {$id_issue}";
+        } else {
+            try {
+                $success = "Issue {$issue->getName()} supprimée avec succés.";
+                $entityManager->remove($issue);
+                $entityManager->flush();
+            } catch(\Exception $e) {
+                $error = $e->getMessage();
+            }
         }
-        $entityManager->remove($issue);
-        $entityManager->flush();
-        return $this->redirectToRoute('dashboard');
+        return $this->renderIssue($error, $success, $projectRepository->find($id_project));
+    }
+
+    private function renderIssue($error, $success, $project) {
+        
+        $issues = $project->getIssues();
+
+        return $this->render('issue/issue_list.html.twig', [
+            'error' => $error,
+            'success' => $success,
+            'project'=> $project,
+            'issues' => $issues,
+            'user' => $this->getUser()
+        ]);
     }
 }
