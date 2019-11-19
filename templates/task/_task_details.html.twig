@@ -1,0 +1,22 @@
+<li class="mt-2">
+    <a class="link collapsed" data-toggle="collapse" href="#taskDetail{{ task.id }}" aria-expanded="false">
+        <h4 class="h6 mb-0">
+            {{ task.number }}
+            <span class="pl-1 font-italic">| Assignée à {{ task.developper.name }}</span>
+        </h4>
+        <div class="ellipsis">{{ task.description }}</div>
+    </a>
+    <div class="collapse mw-100" id="taskDetail{{ task.id }}">
+        <span>{{ task.description }}</span>
+        <h6 class="mt-1 mb-0">Issues associées</h6>
+        <ul class="mb-4">
+            {% for issue in task.relatedIssues %}
+                <li>
+                    <span class="font-weight-bold">{{ issue.name }}</span>
+                    <div class="ellipsis">{{ issue.description }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+        {% block buttons %}{% endblock %}
+    </div>
+</li>

@@ -1,0 +1,40 @@
+.list-unstyled a {
+    color: #000000;
+    text-decoration: none;
+}
+
+.link h4::before {
+    content: '˅';
+    display: inline;
+    padding-right: 0.2rem;
+}
+
+.link.collapsed h4::before {
+    content: '˃';
+    display: inline;
+    padding-right: 0.2rem;
+}
+
+.ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.link:not(.collapsed) div {
+    display: none;
+}
+
+h4 span {
+    font-weight: 200;
+}
+
+.link:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+
+@media(min-width: 992px) {
+    .card-height {
+        min-height: 50vh;
+    }
+}

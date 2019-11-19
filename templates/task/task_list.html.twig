@@ -1,0 +1,81 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Liste des tâches{% endblock %}
+
+{% block content %}
+    <div class="container" style="padding-top:10%;">
+        {% if todos is not empty or doings is not empty or dones is not empty %}
+            <div class="row">
+                <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                    <div class="card card-height">
+                        <div class="card-body">
+                            <h3>A faire</h3>
+                            <div class="container-fluid">
+                                <ul class="list-unstyled">
+                                    {% for task in todos %}
+                                        {% embed 'task/_task_details.html.twig'%}
+                                            {% block buttons %}
+                                                <div class="text-center row justify-content-around">
+                                                    <button class="col-5 btn btn-primary px-2" type="button">En cours</button>
+                                                    <button class="col-5 btn btn-success px-2" type="button">Fait</button>
+                                                </div>
+                                            {% endblock %}
+                                        {% endembed %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                    <div class="card card-height">
+                        <div class="card-body">
+                            <h3>En cours</h3>
+                            <div class="container-fluid">
+                                <ul class="list-unstyled">
+                                    {% for task in doings %}
+                                        {% embed 'task/_task_details.html.twig' %}
+                                            {% block buttons %}
+                                                <div class="text-center row justify-content-around">
+                                                    <button class="col-5 btn btn-success px-2" type="button">Fait</button>
+                                                </div>
+                                            {% endblock %}
+                                        {% endembed %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                    <div class="card card-height">
+                        <div class="card-body">
+                            <h3>Faite(s)</h3>
+                            <div class="container-fluid">
+                                <ul class="list-unstyled">
+                                    {% for task in dones %}
+                                        {% include 'task/_task_details.html.twig' %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-body">
+                    <h3>Tâches</h3>
+                    <p>Vous n'avez pour l'instant créé aucune tâche.</p>
+                    <a class="btn btn-primary" href="{{ path('createTask', {'id_project' : project.id}) }}">Créer une tâche</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('task') }}
+{% endblock %}
+

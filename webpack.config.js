@@ -29,6 +29,7 @@ Encore
 
     .addStyleEntry('main', './assets/css/main.css')
     .addStyleEntry('sidebar', './assets/css/sidebar.css')
+    .addStyleEntry('task', './assets/css/task.css')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
