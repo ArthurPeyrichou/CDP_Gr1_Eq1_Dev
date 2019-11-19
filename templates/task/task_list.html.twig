@@ -16,8 +16,14 @@
                                         {% embed 'task/_task_details.html.twig'%}
                                             {% block buttons %}
                                                 <div class="text-center row justify-content-around">
-                                                    <button class="col-5 btn btn-primary px-2" type="button">En cours</button>
-                                                    <button class="col-5 btn btn-success px-2" type="button">Fait</button>
+                                                    <a class="col-5 btn btn-primary px-2"
+                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing'}) }}">
+                                                        En cours
+                                                    </a>
+                                                    <a class="col-5 btn btn-success px-2"
+                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done'}) }}">
+                                                        Fait
+                                                    </a>
                                                 </div>
                                             {% endblock %}
                                         {% endembed %}
@@ -37,7 +43,10 @@
                                         {% embed 'task/_task_details.html.twig' %}
                                             {% block buttons %}
                                                 <div class="text-center row justify-content-around">
-                                                    <button class="col-5 btn btn-success px-2" type="button">Fait</button>
+                                                    <a class="col-5 btn btn-success px-2"
+                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done'}) }}">
+                                                        Fait
+                                                    </a>
                                                 </div>
                                             {% endblock %}
                                         {% endembed %}
