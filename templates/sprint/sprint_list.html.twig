@@ -1,0 +1,53 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Liste des sprints{% endblock %}
+
+{% block content %}
+
+    <div class="container" style="padding-top:10%;">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Sprints </h3>
+                {% if sprints is not empty %}
+                    <ul class="list-group">
+                        {% for index, sprint in sprints %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="font-weight-bold">{{ sprint.name }} - {{ sprint.description }}</div>
+                                        <div class="text-muted small">
+                                            <span>Date de début :</span>
+                                            <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }}</span>
+                                            <span>| Date de fin :</span>
+                                            <span class="font-weight-bold">{{ sprint.endDate.format("d/m/Y") }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                        <a class="btn btn-primary my-auto mr-1" href="{{ path('editSprint', {'id_project': project.id, 'id_sprint' : sprint.id}) }}">Editer</a>
+                                        <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#sprint-delete-confirm{{ index }}">Supprimer</button>
+                                    </div>
+                                </div>
+                            </li>
+                            {% embed 'components/_modal.html.twig' with {'modalId': "sprint-delete-confirm#{index}"} %}
+                                {% block header %}
+                                    <h3>Veuillez confirmer la suppression</h3>
+                                {% endblock %}
+                                {% block body %}
+                                    <p>Êtes-vous sûr(e) de vouloir supprimer l'sprint {{ sprint.name }}</p>
+                                {% endblock %}
+                                {% block footer %}
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                    <a href="{{ path('deleteSprint', {'id_project' : project.id,'id_sprint' : sprint.id }) }}" class="btn btn-primary">Oui</a>
+                                {% endblock %}
+                            {% endembed %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p> Vous n'avez pour l'instant créé aucun sprint.</p>
+                {% endif %}
+                <a class="btn btn-primary mt-3" href="{{ path('createSprint', {'id_project' : project.id}) }}">Créer un sprint</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

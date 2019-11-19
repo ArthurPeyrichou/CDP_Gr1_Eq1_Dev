@@ -1,0 +1,23 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Edition d'une sprint{% endblock %}
+
+{% block content %}
+
+    <div id="edit-sprint-container" class="container" style="padding-top:10%; max-width:750px;">
+        <div class="container border rounded">
+            <div style="margin-top:5%; margin-bottom:5%;">
+                {{ form_start(form) }}
+                <h3>Editer un sprint :</h3>
+                {{ form_errors(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.startDate) }}
+                {{ form_row(form.endDate) }}
+                <button type="submit" class="btn btn-primary">Modifier le sprint</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

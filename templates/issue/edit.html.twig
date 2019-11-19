@@ -4,10 +4,11 @@
 
 {% block content %}
 
-    <div class="container" style="padding-top:10%;">
-        <div class="card">
-            <div class="card-body">
+    <div id="edit-issue-container" class="container" style="padding-top:10%; max-width:750px;">
+        <div class="container border rounded">
+            <div style="margin-top:5%; margin-bottom:5%;">
                 {{ form_start(form) }}
+                <h3>Editer une issue :</h3>
                 {{ form_errors(form) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.description) }}
