@@ -44,10 +44,10 @@ class Release
     private $implementedIssues;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="releases")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Sprint", inversedBy="releases")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $project;
+    private $sprint;
 
 
     public function __construct()
@@ -139,14 +139,14 @@ class Release
         return $this;
     }
 
-    public function getProject(): ?Project
+    public function getSprint(): ?Sprint
     {
-        return $this->project;
+        return $this->sprint;
     }
 
-    public function setProject(?Project $project): self
+    public function setSprint(?Sprint $sprint): self
     {
-        $this->project = $project;
+        $this->sprint = $sprint;
 
         return $this;
     }

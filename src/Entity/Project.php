@@ -55,9 +55,9 @@ class Project
     private $tasks;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Release", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Sprint", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $releases;
+    private $sprints;
 
     public function __construct($owner, $name, $description, $creationDate)
     {
@@ -217,30 +217,30 @@ class Project
     }
 
     /**
-     * @return Collection|Release[]
+     * @return Collection|Sprint[]
      */
-    public function getReleases(): Collection
+    public function getSprints(): Collection
     {
-        return $this->releases;
+        return $this->sprints;
     }
 
-    public function addRelease(Release $release): self
+    public function addSprint(Sprint $sprint): self
     {
-        if (!$this->releases->contains($release)) {
-            $this->releases[] = $release;
-            $release->setProject($this);
+        if (!$this->sprints->contains($sprint)) {
+            $this->sprints[] = $release;
+            $sprint->setProject($this);
         }
 
         return $this;
     }
 
-    public function removeRelease(Release $release): self
+    public function removeSprint(Sprint $sprint): self
     {
-        if ($this->releases->contains($release)) {
-            $this->releases->removeElement($release);
+        if ($this->sprints->contains($sprint)) {
+            $this->sprints->removeElement($sprint);
             // set the owning side to null (unless already changed)
-            if ($release->getProject() === $this) {
-                $release->setProject(null);
+            if ($sprint->getProject() === $this) {
+                $sprint->setProject(null);
             }
         }
 
