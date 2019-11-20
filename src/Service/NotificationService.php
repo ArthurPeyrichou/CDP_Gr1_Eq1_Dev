@@ -4,15 +4,23 @@
 namespace App\Service;
 
 
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 class NotificationService
 {
     public const ERROR = 'error';
     public const SUCCESS = 'success';
 
-    private $messages = [
-        self::ERROR => [],
-        self::SUCCESS => []
-    ];
+    /**
+     * @var Session
+     */
+    private $session;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+    }
 
     public function addSuccess(string $message): void
     {
@@ -26,7 +34,7 @@ class NotificationService
 
     private function addMessage(string $message, string $type): void
     {
-        $this->messages[$type][] = $message;
+        $this->session->getFlashBag()->add($type, $message);
     }
 
     /**
@@ -34,9 +42,9 @@ class NotificationService
      */
     public function getMessages(string $type): array
     {
-        if (!array_key_exists($type, $this->messages)) {
+        if (!$this->session->getFlashBag()->has($type)) {
             return [];
         }
-        return $this->messages[$type];
+        return $this->session->getFlashBag()->get($type);
     }
 }

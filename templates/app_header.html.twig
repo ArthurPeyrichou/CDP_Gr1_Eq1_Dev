@@ -1,8 +1,8 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="{{ path('dashboard') }}">
-        <img id="logo" src="{{ asset('build/images/fire.svg') }}" title="FireScrum" alt="Logo FireScrum" width="30" height="30" class="d-inline-block align-top"/>
-        FireScrum
+            <img id="logo" src="{{ asset('build/images/fire.svg') }}" title="FireScrum" alt="Logo FireScrum" width="30" height="30" class="d-inline-block align-top"/>
+            FireScrum
         </a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,4 +41,20 @@
     <div class="alert alert-success container" role="alert" style="margin-top:10%;">
         {{ success }}
     </div>
+{% endif %}
+
+{% set errorList = getErrors() %}
+{% set successList = getSuccess() %}
+{% if errorList is not empty %}
+    {% for error in errorList %}
+        <div class="alert alert-danger container" role="alert" style="margin-top:10%;">
+            {{ error }}
+        </div>
+    {% endfor %}
+{% elseif successList is not empty %}
+    {% for success in successList %}
+        <div class="alert alert-success container" role="alert" style="margin-top:10%;">
+            {{ success }}
+        </div>
+    {% endfor %}
 {% endif %}
