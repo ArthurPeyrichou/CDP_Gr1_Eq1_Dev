@@ -80,6 +80,11 @@
             </ul>
         </div>
         <div id="content">
+            {% if project is defined and project is not null %}
+            <h1 style="padding-top:5%; text-align:center;">
+            {{ project.getName() }}
+            </h1>
+            {% endif %}
             {% block content %}{% endblock %}
         </div>
     </div>
