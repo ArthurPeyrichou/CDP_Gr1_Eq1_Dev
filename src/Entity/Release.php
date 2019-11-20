@@ -56,14 +56,15 @@ class Release
     private $project;
 
 
-    public function __construct($number,$description,$date,$link,$implementedIssues,$sprint)
+    public function __construct($number,$description,$date,$link,$implementedIssues,$sprint,$project)
     {
         $this->number=$number;
         $this->description=$description;
         $this->date=$date;
         $this->link=$link;
-        $this->implementedIssues = new ArrayCollection($implementedIssues);
+        $this->implementedIssues =$implementedIssues;
         $this->sprint=$sprint;
+        $this->project=$project;
 
     }
 
