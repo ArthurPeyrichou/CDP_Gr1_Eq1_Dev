@@ -19,13 +19,14 @@ class TestType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Nom',
                 'attr' => [
-                    'placeholder' => 'Nom de votre issue',
+                    'placeholder' => 'Nom de votre test',
                 ]
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'attr' => [
-                    'placeholder' => 'Description de votre issue',
+                    'placeholder' => "Etant donné que\nQuand\nAlors\n",
+                    'rows' => 4
                 ]
 
             ])

@@ -33,7 +33,8 @@ class TaskType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'attr' => [
-                    'placeholder' => 'Description de votre tâche'
+                    'placeholder' => 'Description de votre tâche',
+                    'rows' => 4
                 ]
             ])
             ->add('requiredManDays', NumberType::class, [

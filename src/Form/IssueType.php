@@ -25,7 +25,8 @@ class IssueType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'attr' => [
-                    'placeholder' => 'Description de votre issue',
+                    'placeholder' => "En tant que\nJe souhaite\nAfin de",
+                    'rows' => 4
                 ]
 
             ])
@@ -33,6 +34,7 @@ class IssueType extends AbstractType
                 'label' => 'Difficulté',
                 'attr' => [
                     'placeholder' => 'Difficulté de votre issue',
+                    'min' => 0
                 ]
             ])
             ->add('priority',ChoiceType::class, [

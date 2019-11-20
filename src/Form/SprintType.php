@@ -25,7 +25,8 @@ class SprintType extends AbstractType
                 'label' => 'Description',
                 'attr' => [
                     'placeholder' => 'Description de votre sprint',
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'rows' => 4
                 ]
 
             ])
