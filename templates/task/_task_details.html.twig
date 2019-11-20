@@ -2,7 +2,13 @@
     <a class="link collapsed" data-toggle="collapse" href="#taskDetail{{ task.id }}" aria-expanded="false">
         <h4 class="h6 mb-0">
             {{ task.number }}
-            <span class="pl-1 font-italic">| Assignée à {{ task.developper.name }}</span>
+            <span class="pl-1 font-italic">
+                {% if task.developper is not null %}
+                    | Assignée à {{ task.developper.name }}
+                {% else %}
+                    | Non assignée
+                {% endif %}
+            </span>
         </h4>
         <div class="ellipsis">{{ task.description }}</div>
     </a>
