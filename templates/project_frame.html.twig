@@ -14,22 +14,68 @@
                     </a>
                 </li>
                 <li class="py-sm-2">
-                    <a href="{{ path('issuesList', {'id_project': project.id}) }}">
-                        <img class="icon" src="{{ asset('build/images/issues.svg') }}" alt="Issues">
-                        <span class="d-none d-sm-inline">Liste des issues</span>
+                    <a href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img class="icon" src="{{ asset('build/images/sprint.svg') }}" alt="Sprints" style="max-width: 30px;">
+                        <span class="d-none d-sm-inline">Sprints</span>
                     </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ path('issuesList', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/list.svg') }}" alt="Sprints">
+                            <span class="d-none d-sm-inline">Liste des sprints</span>
+                        </a>
+                        <a class="dropdown-item" href="{{ path('createSprint', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/add.svg') }}" alt="NewSprint">
+                            <span class="d-none d-sm-inline">Nouveau sprint</span>
+                        </a>
+                    </div>
                 </li>
                 <li class="py-sm-2">
-                    <a href="{{ path('tasksList', {'id_project': project.id}) }}">
-                        <img class="icon" src="{{ asset('build/images/tasks.svg') }}" alt="Issues">
-                        <span class="d-none d-sm-inline">Liste des tâches</span>
+                    <a href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img class="icon" src="{{ asset('build/images/issue.svg') }}" alt="Issues" style="max-width: 30px;">
+                        <span class="d-none d-sm-inline">Issues</span>
                     </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ path('issuesList', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/list.svg') }}" alt="Issues">
+                            <span class="d-none d-sm-inline">Liste des issues</span>
+                        </a>
+                        <a class="dropdown-item" href="{{ path('createIssue', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/add.svg') }}" alt="NewIssue">
+                            <span class="d-none d-sm-inline">Nouvelle issue</span>
+                        </a>
+                    </div>
                 </li>
                 <li class="py-sm-2">
-                    <a href="{{ path('createIssue', {'id_project': project.id}) }}">
-                        <img class="icon" src="{{ asset('build/images/add.svg') }}" alt="NewIssue">
-                        <span class="d-none d-sm-inline">Nouvelle issue</span>
+                    <a href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img class="icon" src="{{ asset('build/images/task.svg') }}" alt="Issues" style="max-width: 30px;">
+                        <span class="d-none d-sm-inline">Tâches</span>
                     </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ path('tasksList', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/list.svg') }}" alt="Tasks">
+                            <span class="d-none d-sm-inline">Liste des tâches</span>
+                        </a>
+                        <a class="dropdown-item"  href="{{ path('createTask', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/add.svg') }}" alt="NewTask">
+                            <span class="d-none d-sm-inline">Nouvelle tâche</span>
+                        </a>
+                    </div>
+                </li>
+                <li class="py-sm-2">
+                    <a href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img class="icon" src="{{ asset('build/images/test.svg') }}" alt="Tests" style="max-width: 30px;">
+                        <span class="d-none d-sm-inline">Tests</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    </div>
+                </li>
+                <li class="py-sm-2">
+                    <a href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img class="icon" src="{{ asset('build/images/release.svg') }}" alt="Releases" style="max-width: 30px;">
+                        <span class="d-none d-sm-inline">Releases</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    </div>
                 </li>
             </ul>
         </div>
