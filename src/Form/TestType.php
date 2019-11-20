@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Issue;
+use App\Entity\Test;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class IssueType extends AbstractType
+class TestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,30 +29,15 @@ class IssueType extends AbstractType
                 ]
 
             ])
-            ->add('difficulty', IntegerType::class, [
-                'label' => 'Difficulté',
-                'attr' => [
-                    'placeholder' => 'Difficulté de votre issue',
-                ]
-            ])
-            ->add('priority',ChoiceType::class, [
-                'label' => 'Priorité',
-                'choices' => [
-                    'High' => Issue::PRIORITY_HIGH,
-                    'Medium' => Issue::PRIORITY_MEDIUM,
-                    'Low' => Issue::PRIORITY_LOW
-                ]
-
-            ])
-            ->add('status',ChoiceType::class, [
+            ->add('state',ChoiceType::class, [
                 'label' => 'Statut',
                 'choices' => [
-                    'ToDo' => Issue::TODO,
-                    'Doing' => Issue::DOING,
-                    'Done' => Issue::DONE
+                    'ToDo' => Test::TODO,
+                    'Succeeded' => Test::SUCCEEDED,
+                    'Failed' => Test::FAILED
                 ],
                 'preferred_choices' => [
-                    Issue::TODO
+                    Test::TODO
                 ],
             ]);
     }

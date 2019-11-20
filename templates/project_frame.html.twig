@@ -67,6 +67,14 @@
                         <span class="d-none d-sm-inline">Tests</span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ path('testsList', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/list.svg') }}" alt="Tests">
+                            <span class="d-none d-sm-inline">Liste des tests</span>
+                        </a>
+                        <a class="dropdown-item"  href="{{ path('createTest', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/add.svg') }}" alt="NewTest">
+                            <span class="d-none d-sm-inline">Nouveau test</span>
+                        </a>
                     </div>
                 </li>
                 <li class="py-sm-2">

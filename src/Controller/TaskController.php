@@ -18,20 +18,13 @@ class TaskController extends AbstractController
     /**
      * @Route("/project/{id_project}/tasks", name="tasksList", methods={"GET"})
      */
-    public function viewTasks(ProjectRepository $projectRepository, $id_project)
+    public function viewTasks(ProjectRepository $projectRepository, TaskRepository $taskRepository, $id_project)
     {
         $project = $projectRepository->find($id_project);
 
-        $tasks = $project->getTasks()->toArray();
-        $todos = array_filter($tasks, function (Task $task) {
-            return $task->getStatus() == Task::TODO;
-        });
-        $doings = array_filter($tasks, function (Task $task) {
-            return $task->getStatus() == Task::DOING;
-        });
-        $dones = array_filter($tasks, function (Task $task) {
-            return $task->getStatus() == Task::DONE;
-        });
+        $todos = $taskRepository->getToDo($project);
+        $doings = $taskRepository->getDoing($project);
+        $dones = $taskRepository->getDone($project);
 
         return $this->render('task/task_list.html.twig', [
             'project' => $project,

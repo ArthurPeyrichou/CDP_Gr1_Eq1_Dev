@@ -31,4 +31,27 @@ class TaskRepository extends ServiceEntityRepository
 
         return $result + 1;
     }
+
+    public function getDone(Project $project): array
+    {
+        return $this->getByStatus($project, Task::DONE);
+    }
+
+    public function getDoing(Project $project): array
+    {
+        return $this->getByStatus($project, Task::DOING);
+    }
+
+    public function getToDo(Project $project): array
+    {
+        return $this->getByStatus($project, Task::TODO);
+    }
+
+    private function getByStatus(Project $project, string $status): array
+    {
+        return $this->findBy([
+            'project' => $project,
+            'status' => $status
+        ]);
+    }
 }

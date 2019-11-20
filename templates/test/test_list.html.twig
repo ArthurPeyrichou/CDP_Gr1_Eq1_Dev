@@ -1,0 +1,51 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Liste des tests{% endblock %}
+
+{% block content %}
+
+    <div class="container" style="padding-top:10%;">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Tests </h3>
+                {% if tests is not empty %}
+                    <ul class="list-group">
+                        {% for index, test in tests %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="font-weight-bold">{{ test.name }} - {{ test.description }}</div>
+                                        <div class="text-muted small">
+                                            <span>| state :</span>
+                                            <span class="font-weight-bold">{{ test.state }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                        <a class="btn btn-primary my-auto mr-1" href="{{ path('editTest', {'id_project': project.id, 'id_test' : test.id}) }}">Editer</a>
+                                        <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#test-delete-confirm{{ index }}">Supprimer</button>
+                                    </div>
+                                </div>
+                            </li>
+                            {% embed 'components/_modal.html.twig' with {'modalId': "test-delete-confirm#{index}"} %}
+                                {% block header %}
+                                    <h3>Veuillez confirmer la suppression</h3>
+                                {% endblock %}
+                                {% block body %}
+                                    <p>Êtes-vous sûr(e) de vouloir supprimer le test {{ test.name }}</p>
+                                {% endblock %}
+                                {% block footer %}
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                    <a href="{{ path('deleteTest', {'id_project' : project.id,'id_test' : test.id }) }}" class="btn btn-primary">Oui</a>
+                                {% endblock %}
+                            {% endembed %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p> Vous n'avez pour l'instant créé aucun test.</p>
+                {% endif %}
+                <a class="btn btn-primary mt-3" href="{{ path('createTest', {'id_project' : project.id}) }}">Créer un test</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
