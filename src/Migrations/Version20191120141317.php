@@ -24,9 +24,6 @@ final class Version20191120141317 extends AbstractMigration
 
         $this->addSql('CREATE TABLE test (id INT AUTO_INCREMENT NOT NULL, project_id INT NOT NULL, name VARCHAR(64) NOT NULL, description VARCHAR(255) NOT NULL, state VARCHAR(64) NOT NULL, INDEX IDX_D87F7E0C166D1F9C (project_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE test ADD CONSTRAINT FK_D87F7E0C166D1F9C FOREIGN KEY (project_id) REFERENCES project (id)');
-        $this->addSql('ALTER TABLE `release` ADD project_id INT NOT NULL');
-        $this->addSql('ALTER TABLE `release` ADD CONSTRAINT FK_9E47031D166D1F9C FOREIGN KEY (project_id) REFERENCES project (id)');
-        $this->addSql('CREATE INDEX IDX_9E47031D166D1F9C ON `release` (project_id)');
     }
 
     public function down(Schema $schema) : void
@@ -35,8 +32,5 @@ final class Version20191120141317 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('DROP TABLE test');
-        $this->addSql('ALTER TABLE `release` DROP FOREIGN KEY FK_9E47031D166D1F9C');
-        $this->addSql('DROP INDEX IDX_9E47031D166D1F9C ON `release`');
-        $this->addSql('ALTER TABLE `release` DROP project_id');
     }
 }
