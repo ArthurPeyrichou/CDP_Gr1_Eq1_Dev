@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Issue;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -37,21 +38,22 @@ class IssueType extends AbstractType
             ->add('priority',ChoiceType::class, [
                 'label' => 'Priorité',
                 'choices' => [
-                    'HAUT'=> 'HAUT',
-                    'MEDIUM'=>'MEDIUM',
-                    'BAS'=>'BAS'
-                ],
-                'preferred_choices' => ['HAUT'],
+                    'High' => Issue::PRIORITY_HIGH,
+                    'Medium' => Issue::PRIORITY_MEDIUM,
+                    'Low' => Issue::PRIORITY_LOW
+                ]
 
             ])
             ->add('status',ChoiceType::class, [
                 'label' => 'Statut',
                 'choices' => [
-                    'TODO'=>'TODO',
-                    'DOING'=>'DOING',
-                    'DONE'=>'DONE'
+                    'ToDo' => Issue::TODO,
+                    'Doing' => Issue::DOING,
+                    'Done' => Issue::DONE
                 ],
-                'preferred_choices' => ['TODO'],
+                'preferred_choices' => [
+                    Issue::TODO
+                ],
             ]);
     }
 

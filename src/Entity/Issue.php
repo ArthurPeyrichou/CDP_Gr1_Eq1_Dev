@@ -9,6 +9,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Issue
 {
+    public const TODO = 'todo';
+    public const DONE = 'done';
+    public const DOING = 'doing';
+
+    public const PRIORITY_LOW = 'low';
+    public const PRIORITY_MEDIUM = 'medium';
+    public const PRIORITY_HIGH = 'high';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
