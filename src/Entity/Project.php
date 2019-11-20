@@ -68,7 +68,6 @@ class Project
         $this->members = new ArrayCollection();
         $this->issues = new ArrayCollection();
         $this->tasks = new ArrayCollection();
-        $this->releases = new ArrayCollection();
     }
 
     public function getId(): ?int

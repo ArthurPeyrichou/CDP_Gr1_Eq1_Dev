@@ -50,9 +50,15 @@ class Release
     private $sprint;
 
 
-    public function __construct()
+    public function __construct($number,$description,$date,$link,$implementedIssues,$sprint)
     {
-        $this->implementedIssues = new ArrayCollection();
+        $this->number=$number;
+        $this->description=$description;
+        $this->date=$date;
+        $this->link=$link;
+        $this->implementedIssues = new ArrayCollection($implementedIssues);
+        $this->sprint=$sprint;
+
     }
 
     public function getId(): ?int
