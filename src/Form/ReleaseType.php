@@ -17,26 +17,27 @@ class ReleaseType extends AbstractType
     {
         $builder
             ->add('number', IntegerType::class, [
+                'label' => 'Numéro',
                 'attr' => [
-                    'placeholder' => 'Le numero de votre release',
-                    'class' => 'form-control'
+                    'placeholder' => 'Le numero de votre release'
                 ]
             ])
 
             ->add('description', TextareaType::class, [
+                'label' => 'Description',
                 'attr' => [
                     'placeholder' => 'Description de votre release',
-                    'class' => 'form-control',
                     'rows' => 4
                 ]
             ])
-            ->add('date',DateType::class,[
-                'widget' => 'choice',
+            ->add('date',DateType::class, [
+                'label' => 'Date de release',
+                'widget' => 'single_text',
             ])
             ->add('link',UrlType::class, [
+                'label' => 'Lien vers l\'archive de release',
                 'attr' => [
-                    'placeholder' => 'Le lien vers votre release',
-                    'class' => 'form-control'
+                    'placeholder' => 'Le lien vers votre release'
                 ]
             ]);
 

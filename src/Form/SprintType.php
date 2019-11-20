@@ -17,27 +17,27 @@ class SprintType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Nom',
                 'attr' => [
-                    'placeholder' => 'Nom de votre sprint',
-                    'class' => 'form-control'
+                    'placeholder' => 'Nom de votre sprint'
                 ]
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'attr' => [
                     'placeholder' => 'Description de votre sprint',
-                    'class' => 'form-control',
                     'rows' => 4
                 ]
 
             ])
             ->add('startDate',DateType::class, [
                 'label' => 'Date de début',
+                'widget' => 'single_text',
                 'attr' => [
                     'placeholder' => 'Date de début de votre sprint'
                 ]
             ])
             ->add('endDate',DateType::class, [
                 'label' => 'Date de fin',
+                'widget' => 'single_text',
                 'attr' => [
                     'placeholder' => 'Date de fin de votre sprint'
                 ]

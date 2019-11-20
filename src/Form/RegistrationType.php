@@ -16,19 +16,19 @@ class RegistrationType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
+                'label' => 'Pseudo',
                 'attr' => [
                     'placeholder' => 'Votre pseudo',
                     'max' => 50
-                ],
-                'label' => 'Pseudo'
+                ]
             ])
             ->add('emailAddress', EmailType::class, [
+                'label' => 'Adresse mail',
                 'attr' => [
                     'placeholder' => 'Votre adresse mail',
                     'min' => 5,
                     'max' => 128
-                ],
-                'label' => 'Adresse mail'
+                ]
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
