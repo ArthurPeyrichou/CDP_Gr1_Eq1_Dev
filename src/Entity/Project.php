@@ -64,6 +64,11 @@ class Project
      */
     private $releases;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Test", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $tests;
+
     public function __construct($owner, $name, $description, $creationDate)
     {
         $this->owner = $owner;
@@ -278,6 +283,37 @@ class Project
             // set the owning side to null (unless already changed)
             if ($release->getProject() === $this) {
                 $release->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Test[]
+     */
+    public function getTests(): Collection
+    {
+        return $this->tests;
+    }
+
+    public function addTest(Test $test): self
+    {
+        if (!$this->tests->contains($test)) {
+            $this->tests[] = $test;
+            $test->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTest(Test $test): self
+    {
+        if ($this->tests->contains($test)) {
+            $this->tests->removeElement($test);
+            // set the owning side to null (unless already changed)
+            if ($test->getProject() === $this) {
+                $test->setProject(null);
             }
         }
 

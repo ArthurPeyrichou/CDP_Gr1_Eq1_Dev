@@ -1,0 +1,22 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Création d'un test{% endblock %}
+
+{% block content %}
+
+    <div id="new-test-container" class="container" style="padding-top:10%; max-width:750px;">
+        <div class="container border rounded">
+            <div style="margin-top:5%; margin-bottom:5%;">
+                {{ form_start(form) }}
+                <h3>Créer un test :</h3>
+                {{ form_errors(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.state,{'label': 'Etat'},{ 'separator': '----------' }) }}
+                <button type="submit" class="btn btn-primary">Créer le test</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

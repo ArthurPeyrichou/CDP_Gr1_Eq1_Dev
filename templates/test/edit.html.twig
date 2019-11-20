@@ -1,0 +1,23 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Edition d'un test{% endblock %}
+
+{% block content %}
+
+    <div id="edit-test-container" class="container" style="padding-top:10%; max-width:750px;">
+        <div class="container border rounded">
+            <div style="margin-top:5%; margin-bottom:5%;">
+                {{ form_start(form) }}
+                <h3>Editer une test :</h3>
+                {{ form_errors(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.state) }}
+                <button type="submit" class="btn btn-primary">Modifier le test</button>
+                <a class="btn btn-outline-danger" href="{{ path('testsList', {'id_project' : project.id}) }}">Annuler</a>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
