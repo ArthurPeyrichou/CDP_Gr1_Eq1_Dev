@@ -9,12 +9,14 @@
             <div class="col-sm-6 col-lg-8">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="card-title">{{ project.name }}</h3>
                         <p class="card-subtitle mb-2 text-muted">
                             <span class="font-weight-bold">Propriétaire du projet :</span>
                             <a href="mailto:{{ owner.emailAddress }}" class="card-link">{{ owner.name }}</a>
                         </p>
-                        <p class="text-justify" class="card-text">{{ project.description }}</p>
+                        <p class="text-justify" class="card-text">
+                            <span class="font-weight-bold">Description :</span>
+                            {{ project.description }}
+                        </p>
                         {% if status is defined and status == "invited" %}
                             <a class="btn btn-primary" href="{{ path('acceptInviteToProject', {'invitationKey': myInvitation.invitationKey}) }}">Rejoindre</a>
                             <button class="btn btn-danger" data-toggle="modal" data-target="#project-refuse-confirm">Refuser</button>

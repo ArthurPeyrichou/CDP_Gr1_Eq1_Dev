@@ -24,6 +24,7 @@ class TaskType extends AbstractType
         $builder
             ->add('number', IntegerType::class, [
                 'label' => 'Numéro',
+                'disabled' => true,
                 'attr' => [
                     'placeholder' => 'Numéro de votre tâche'
                 ]
@@ -46,7 +47,8 @@ class TaskType extends AbstractType
                 'choices' => array_merge($project->getMembers()->toArray(), [$project->getOwner()]),
                 'choice_label' => function (Member $member) {
                     return "{$member->getName()} - {$member->getEmailAddress()}";
-                }
+                },
+                'required' => false
             ])
             ->add('relatedIssues', EntityType::class, [
                 'label' => 'Issues associées',
@@ -55,7 +57,8 @@ class TaskType extends AbstractType
                 'multiple' => true,
                 'choice_label' => function (Issue $issue) {
                     return "{$issue->getName()} - {$issue->getDescription()}";
-                }
+                },
+                'required' => false
             ])
         ;
     }

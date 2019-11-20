@@ -6,6 +6,9 @@
     <div class="container" style="padding-top:10%;">
         {% if todos is not empty or doings is not empty or dones is not empty %}
             <div class="row">
+                <div class="col-12 px-0 px-lg-1 text-center mb-2">
+                    <a class="btn btn-primary" href="{{ path('createTask', {'id_project' : project.id}) }}">Créer une tâche</a>
+                </div>
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
                     <div class="card card-height">
                         <div class="card-body">
@@ -74,9 +77,9 @@
         {% else %}
             <div class="card">
                 <div class="card-body">
-                    <h3>Tâches</h3>
+                    <h3 class="mb-4">Tâches</h3>
                     <p>Vous n'avez pour l'instant créé aucune tâche.</p>
-                    <a class="btn btn-primary" href="{{ path('createTask', {'id_project' : project.id}) }}">Créer une tâche</a>
+                    <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id}) }}">Créer une tâche</a>
                 </div>
             </div>
         {% endif %}

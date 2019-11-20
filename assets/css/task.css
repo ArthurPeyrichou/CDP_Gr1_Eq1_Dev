@@ -1,4 +1,4 @@
-.list-unstyled a {
+.list-unstyled a:not(.btn) {
     color: #000000;
     text-decoration: none;
 }

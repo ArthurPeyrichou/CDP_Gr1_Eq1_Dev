@@ -37,8 +37,12 @@ class ProjectController extends AbstractController {
             $date= new \DateTime('now');
             $project = new Project($owner, $name, $description, $date);
 
-            $entityManager->persist($project);
-            $entityManager->flush();
+            try {
+                $entityManager->persist($project);
+                $entityManager->flush();
+            }catch (\Exception $e) {
+                $error = $e->getMessage();
+            }
 
             if($error == null){
                 return $this->render('project/project_details.html.twig',
@@ -105,18 +109,22 @@ class ProjectController extends AbstractController {
         $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            /**@var $owner Member */
-            $owner = $this->getUser();
-            $name = $data['name'];
-            $description= $data['description'];
-            $date= new \DateTime();
-            $project->setName($name);
-            $project->setDescription($description);
-            $project->setOwner($owner);
-            $project->setCreationDate($date);
-            $entityManager->persist($project);
-            $entityManager->flush();
+            try {
+                $data = $form->getData();
+                /**@var $owner Member */
+                $owner = $this->getUser();
+                $name = $data['name'];
+                $description= $data['description'];
+                $date= new \DateTime();
+                $project->setName($name);
+                $project->setDescription($description);
+                $project->setOwner($owner);
+                $project->setCreationDate($date);
+                $entityManager->persist($project);
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                $error = $e->getMessage();
+            }
 
             if($error == null){
                 return $this->render(
@@ -149,9 +157,11 @@ class ProjectController extends AbstractController {
         if (!$project) {
             $error = "Aucun projet n'existe avec l'id {$id}";
         }
-        else {
+        try {
             $entityManager->remove($project);
             $entityManager->flush();
+        } catch (\Exception $e) {
+            $error = $e->getMessage();
         }
         if($error != null){
             return $this->render('project/project_details.html.twig',
@@ -188,10 +198,14 @@ class ProjectController extends AbstractController {
             $error = 'Vous ne pouvez pas supprimer un collaborateur d\'un projet dont vous n\'êtes pas propriétaire';
         }
         else if($project->getOwner() == $user){
-            $status = 'owner';
-            $success = "{$member->getName()} a été retiré du projet avec succès";
-            $project->removeMember($member);
-            $entityManager->flush();
+            try {
+                $status = 'owner';
+                $success = "{$member->getName()} a été retiré du projet avec succès";
+                $project->removeMember($member);
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                $error = $e->getMessage();
+            }
         }
 
         if($error == null && $project->getOwner() != $user) {
