@@ -1,0 +1,38 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Liste des releases{% endblock %}
+
+{% block content %}
+
+    <div class="container" style="padding-top:10%;">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Releases</h3>
+                {% if releases is not empty %}
+                    <ul class="list-group">
+                        {% for index, release in releases %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="font-weight-bold">{{ release.number}} - {{ release.description }}</div>
+                                        <div class="text-muted small">
+                                            <span>Date:</span>
+                                            <span class="font-weight-bold">{{ release.date.format("d/m/Y") }}</span>
+                                        </div>
+                                        <a class="font-weight-bold" href="{{(release.link)}}">Le lien du release</a>
+                                    <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                    </div>
+                                </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p> Vous n'avez pour l'instant créé aucun release.</p>
+                {% endif %}
+                <a class="btn btn-primary mt-3" href="{{ path('createRelease', {'id_project' : project.id,'id_sprint' : sprint.id}) }}">Créer un release</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

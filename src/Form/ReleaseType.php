@@ -3,9 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Release;
-use Doctrine\DBAL\Types\DateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +30,8 @@ class ReleaseType extends AbstractType
             ])
             ->add('link',UrlType::class, [
             'attr' => ['placeholder' => 'Le lien vers votre release',
-            'class' => 'form-control']
+                'class' => 'form-control']
+
               ]);
 
     }

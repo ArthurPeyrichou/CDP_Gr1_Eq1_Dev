@@ -1,0 +1,23 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Création d'un release{% endblock %}
+
+{% block content %}
+
+    <div id="new-release-container" class="container" style="padding-top:10%; max-width:750px;">
+        <div class="container border rounded">
+            <div style="margin-top:5%; margin-bottom:5%;">
+                {{ form_start(form) }}
+                <h3>Créer un release :</h3>
+                {{ form_errors(form) }}
+                {{ form_row(form.number) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.date) }}
+                {{ form_row(form.link) }}
+                <button type="submit" class="btn btn-primary">Créer le release</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
