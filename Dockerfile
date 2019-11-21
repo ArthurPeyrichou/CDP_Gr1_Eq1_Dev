@@ -2,8 +2,8 @@ FROM node:12.13 AS builder
 
 WORKDIR /build
 
-COPY  ../package.json ../package-lock.json ../webpack.config.js ./
-COPY ../assets ./assets
+COPY  package.json package-lock.json webpack.config.js ./
+COPY assets ./assets
 
 RUN mkdir public
 RUN npm install
@@ -29,8 +29,8 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 WORKDIR /var/www/firescrum/
 
-COPY apache-config/vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY ../ .
+COPY docker/apache-config/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY docker .
 COPY --from=builder /build/public/build ./public/build
 
 RUN composer install
