@@ -40,11 +40,9 @@ class Release
     private $link;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="linkedToRelease")
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="linkedRelease")
      */
     private $implementedIssues;
-
-
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="releases")
@@ -129,7 +127,7 @@ class Release
     {
         if (!$this->implementedIssues->contains($implementedIssue)) {
             $this->implementedIssues[] = $implementedIssue;
-            $implementedIssue->setLinkedToRelease($this);
+            $implementedIssue->setLinkedRelease($this);
         }
 
         return $this;
@@ -140,8 +138,8 @@ class Release
         if ($this->implementedIssues->contains($implementedIssue)) {
             $this->implementedIssues->removeElement($implementedIssue);
             // set the owning side to null (unless already changed)
-            if ($implementedIssue->getLinkedToRelease() === $this) {
-                $implementedIssue->setLinkedToRelease(null);
+            if ($implementedIssue->getLinkedRelease() === $this) {
+                $implementedIssue->setLinkedRelease(null);
             }
         }
 

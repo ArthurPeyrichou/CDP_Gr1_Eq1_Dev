@@ -25,10 +25,7 @@ class TaskType extends AbstractType
         $builder
             ->add('number', IntegerType::class, [
                 'label' => 'Numéro',
-                'disabled' => true,
-                'attr' => [
-                    'placeholder' => 'Numéro de votre tâche'
-                ]
+                'disabled' => true
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
@@ -60,7 +57,7 @@ class TaskType extends AbstractType
                 'choices' => $project->getIssues(),
                 'multiple' => true,
                 'choice_label' => function (Issue $issue) {
-                    return "{$issue->getName()} - {$issue->getDescription()}";
+                    return "{$issue->getNumber()} - {$issue->getDescription()}";
                 }
             ])
         ;

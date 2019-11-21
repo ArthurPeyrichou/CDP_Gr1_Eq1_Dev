@@ -19,24 +19,25 @@ class IssueController extends AbstractController {
      * @Route("/project/{id_project}/issues/new", name="createIssue")
      */
     public function viewCreationIssue(Request $request, ProjectRepository $projectRepository,
-                                      EntityManagerInterface $entityManager, $id_project) : Response
+                                      EntityManagerInterface $entityManager, IssueRepository $issueRepository,
+                                      $id_project) : Response
     {
-        $form = $this->createForm(IssueType::class);
-        $form->handleRequest($request);
         $project = $projectRepository->find( $id_project);
+        $nextNumber = $issueRepository->getNextNumber($project);
+        $form = $this->createForm(IssueType::class, ['number' => $nextNumber]);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $error = null; 
             $success = null; 
             try {
                 $data = $form->getData();
-                $name = $data['name'];
                 $description= $data['description'];
                 $difficulty=$data['difficulty'];
                 $priority=$data['priority'];
                 $status=$data['status'];
-                $issue = new Issue($name, $description, $difficulty, $priority, $status, $project);
-                $success =  "Issue {$issue->getName()} créée avec succés."; 
+                $issue = new Issue($nextNumber, $description, $difficulty, $priority, $status, $project);
+                $success = "Issue {$issue->getNumber()} créée avec succés.";
                 $entityManager->persist($issue);
                 $entityManager->flush();
             } catch(\Exception $e) {
@@ -81,7 +82,7 @@ class IssueController extends AbstractController {
             } catch(\Exception $e) {
                 $error = $e->getMessage();
             }
-            return $this->renderIssue($error, "Issue {$issue->getName()} éditée avec succés.", $project);
+            return $this->renderIssue($error, "Issue {$issue->getNumber()} éditée avec succés.", $project);
         }
 
         return $this->render('issue/edit.html.twig', [
@@ -104,7 +105,7 @@ class IssueController extends AbstractController {
             $error ="Aucune issue n'existe avec l'id {$id_issue}";
         } else {
             try {
-                $success = "Issue {$issue->getName()} supprimée avec succés.";
+                $success = "Issue {$issue->getNumber()} supprimée avec succés.";
                 $entityManager->remove($issue);
                 $entityManager->flush();
             } catch(\Exception $e) {

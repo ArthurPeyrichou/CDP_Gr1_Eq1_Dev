@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Issue;
+use App\Entity\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -17,5 +18,17 @@ class IssueRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Issue::class);
+    }
+
+    public function getNextNumber(Project $project): int
+    {
+        $result = $this->createQueryBuilder('i')
+            ->select('MAX(i.number) as maxNumber')
+            ->andWhere('i.project = :project')
+            ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult()[0]['maxNumber'];
+
+        return $result + 1;
     }
 }

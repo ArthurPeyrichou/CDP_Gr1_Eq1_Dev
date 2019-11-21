@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Issue;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\AbstractType;
@@ -16,11 +17,9 @@ class IssueType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'Nom',
-                'attr' => [
-                    'placeholder' => 'Nom de votre issue',
-                ]
+            ->add('number', NumberType::class, [
+                'label' => 'Numéro',
+                'disabled' => true
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',

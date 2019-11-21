@@ -25,9 +25,9 @@ class Issue
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="integer")
      */
-    private $name;
+    private $number;
 
     /**
      * @ORM\Column(type="string", length=200)
@@ -58,11 +58,11 @@ class Issue
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Release", inversedBy="implementedIssues")
      */
-    private $linkedToRelease;
+    private $linkedRelease;
 
-    public function __construct($name, $description, $difficulty, $priority, $status, $project)
+    public function __construct($number, $description, $difficulty, $priority, $status, $project)
     {
-        $this->name = $name;
+        $this->number = $number;
         $this->description = $description;
         $this->difficulty = $difficulty;
         $this->priority = $priority;
@@ -74,19 +74,19 @@ class Issue
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getNumber(): int
     {
-        return $this->name;
+        return $this->number;
     }
 
-    public function setName(string $name): self
+    public function setNumber(int $number): self
     {
-        $this->name = $name;
+        $this->number = $number;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -98,7 +98,7 @@ class Issue
         return $this;
     }
 
-    public function getDifficulty(): ?int
+    public function getDifficulty(): int
     {
         return $this->difficulty;
     }
@@ -110,7 +110,7 @@ class Issue
         return $this;
     }
 
-    public function getPriority(): ?string
+    public function getPriority(): string
     {
         return $this->priority;
     }
@@ -122,7 +122,7 @@ class Issue
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -146,14 +146,14 @@ class Issue
         return $this;
     }
 
-    public function getLinkedToRelease(): ?Release
+    public function getLinkedRelease(): ?Release
     {
-        return $this->linkedToRelease;
+        return $this->linkedRelease;
     }
 
-    public function setLinkedToRelease(?Release $linkedToRelease): self
+    public function setLinkedRelease(?Release $linkedRelease): self
     {
-        $this->linkedToRelease = $linkedToRelease;
+        $this->linkedRelease = $linkedRelease;
 
         return $this;
     }
