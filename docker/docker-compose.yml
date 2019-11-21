@@ -1,0 +1,19 @@
+ version:  '3.7'
+ services:
+    db:
+        image: mariadb:10.4
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        ports:
+            - '3306:3306'
+    adminer:
+        image: adminer:latest
+        ports:
+            - '8080:8080'
+    web:
+        build: .
+        environment:
+            - APP_ENV=prod
+            - DATABASE_URL=mysql://root:root@db:3306/firescrum
+        ports:
+            - '80:80'
