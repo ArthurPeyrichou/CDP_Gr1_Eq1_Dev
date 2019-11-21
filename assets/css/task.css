@@ -1,18 +1,19 @@
 .list-unstyled a:not(.btn) {
-    color: #000000;
+    color: #000;
     text-decoration: none;
 }
 
 .link h4::before {
-    content: '˅';
     display: inline;
     padding-right: 0.2rem;
 }
 
+.link h4::before {
+    content: '˅';
+}
+
 .link.collapsed h4::before {
     content: '˃';
-    display: inline;
-    padding-right: 0.2rem;
 }
 
 .ellipsis {
@@ -27,10 +28,6 @@
 
 h4 span {
     font-weight: 200;
-}
-
-.link:not(:disabled):not(.disabled) {
-    cursor: pointer;
 }
 
 @media(min-width: 992px) {
