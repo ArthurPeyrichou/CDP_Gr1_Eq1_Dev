@@ -30,8 +30,11 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 WORKDIR /var/www/firescrum/
 
 COPY docker/apache-config/vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY docker .
+COPY . .
 COPY --from=builder /build/public/build ./public/build
 COPY .env.docker .env
+COPY docker/entrypoint.sh /
 
 RUN composer install
+
+ENTRYPOINT ['/bin/sh', '/entrypoint.sh']
