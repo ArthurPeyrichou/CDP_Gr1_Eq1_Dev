@@ -1,26 +1,24 @@
-{% extends   "base.html.twig" %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
 
-    <div id="register-container" class="container border rounded" style="margin-top:10%; max-width:750px;">
-        <div style="margin-top:15px; margin-bottom:15px;">
-            {{ form_start(form) }}
-            <h3>Inscription :</h3>
-            {{ form_errors(form) }}
-            {{ form_row(form.name) }}
-            {{ form_row(form.emailAddress) }}
-            {{ form_row(form.password) }}
-            <button type="submit" class="btn btn-primary btn-dark">S'enregister</button>
-            {{ form_end(form) }}
+    <div class="container" style="margin-top:10%; max-width:750px;">
+        <div class="card">
+            <div class="card-body">
+                <h3>Inscription :</h3>
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.emailAddress) }}
+                {{ form_row(form.password) }}
+                <button type="submit" class="btn btn-primary btn-dark">S'enregister</button>
+                {{ form_end(form) }}
+            </div>
         </div>
     </div>
 
-
-
-    </div>
-    </div>
 {% endblock %}
 
 {% block javascripts %}
