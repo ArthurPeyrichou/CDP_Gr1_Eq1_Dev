@@ -13,7 +13,7 @@ FROM php:7.3-apache
 
 RUN apt-get update && \
 apt-get install -y \
-libzip-dev unzip
+libzip-dev unzip wait-for-it
 
 RUN docker-php-ext-install zip
 RUN docker-php-ext-install opcache
