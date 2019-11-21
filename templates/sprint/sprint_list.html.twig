@@ -14,7 +14,7 @@
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-6 col-lg-8">
-                                        <div class="font-weight-bold">{{ sprint.name }} - {{ sprint.description }}</div>
+                                        <div class="font-weight-bold">{{ sprint.number }} - {{ sprint.description }}</div>
                                         <div class="text-muted small">
                                             <span>Date de début :</span>
                                             <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }}</span>
@@ -33,7 +33,7 @@
                                     <h3>Veuillez confirmer la suppression</h3>
                                 {% endblock %}
                                 {% block body %}
-                                    <p>Êtes-vous sûr(e) de vouloir supprimer le sprint {{ sprint.name }}</p>
+                                    <p>Êtes-vous sûr(e) de vouloir supprimer le sprint {{ sprint.number }}</p>
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
