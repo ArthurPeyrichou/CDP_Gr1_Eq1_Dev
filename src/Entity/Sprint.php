@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,9 +17,9 @@ class Sprint
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="integer")
      */
-    private $name;
+    private $number;
 
     /**
      * @ORM\Column(type="string", length=256)
@@ -49,7 +47,7 @@ class Sprint
     public function __construct($project, $name, $description, $startDate, $endDate)
     {
         $this->project = $project;
-        $this->name = $name;
+        $this->number = $name;
         $this->description = $description;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
@@ -61,14 +59,14 @@ class Sprint
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getNumber(): ?int
     {
-        return $this->name;
+        return $this->number;
     }
 
-    public function setName(string $name): self
+    public function setNumber(int $number): self
     {
-        $this->name = $name;
+        $this->number = $number;
 
         return $this;
     }

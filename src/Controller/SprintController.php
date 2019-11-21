@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\RenderService;
 
 class SprintController extends AbstractController {
 
@@ -19,29 +18,30 @@ class SprintController extends AbstractController {
      * @Route("/project/{id_project}/sprints/new", name="createSprint")
      */
     public function viewCreationSprint(Request $request, ProjectRepository $projectRepository,
-                                      EntityManagerInterface $entityManager, $id_project) : Response
+                                       EntityManagerInterface $entityManager, SprintRepository $sprintRepository,
+                                       $id_project) : Response
     {
-        $form = $this->createForm(SprintType::class);
+        $project = $projectRepository->find($id_project);
+        $nextNumber = $sprintRepository->getNextNumber($project);
+        $form = $this->createForm(SprintType::class, ['number' => $nextNumber]);
         $form->handleRequest($request);
-        $project = $projectRepository->find( $id_project);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $error = null; 
-            $success = null; 
+            $error = null;
+            $success = null;
             try {
                 $data = $form->getData();
-                $name = $data['name'];
                 $description= $data['description'];
                 $startDate=$data['startDate'];
                 $endDate=$data['endDate'];
-                $sprint = new Sprint($project, $name, $description, $startDate, $endDate);
-                $success =  "Sprint {$sprint->getName()} créée avec succés."; 
+                $sprint = new Sprint($project, $nextNumber, $description, $startDate, $endDate);
+                $success =  "Sprint {$sprint->getNumber()} créée avec succés.";
                 $entityManager->persist($sprint);
                 $entityManager->flush();
             } catch(\Exception $e) {
                 $error = $e->getMessage();
             }
-            
+
             return $this->renderSprint($error, $success , $project);
         }
 
@@ -63,8 +63,8 @@ class SprintController extends AbstractController {
      * @Route("/project/{id_project}/sprints/{id_sprint}/edit", name="editSprint")
      */
     public function editSprint(Request $request, EntityManagerInterface $entityManager,
-                              ProjectRepository $projectRepository, SprintRepository $sprintRepository,
-                              $id_sprint, $id_project): Response
+                               ProjectRepository $projectRepository, SprintRepository $sprintRepository,
+                               $id_sprint, $id_project): Response
     {
         $sprint = $sprintRepository->find($id_sprint);
         $form = $this->createForm(SprintType::class, $sprint);
@@ -72,14 +72,14 @@ class SprintController extends AbstractController {
         $project = $projectRepository->find($id_project);
         $error = null;
 
-        if ($form->isSubmitted() && $form->isValid()) {     
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $entityManager->persist($sprint);
                 $entityManager->flush();
             } catch(\Exception $e) {
                 $error = $e->getMessage();
             }
-            return $this->renderSprint($error, "Sprint {$sprint->getName()} éditée avec succés.", $project);
+            return $this->renderSprint($error, "Sprint {$sprint->getNumber()} éditée avec succés.", $project);
         }
 
         return $this->render('sprint/edit.html.twig', [
@@ -93,7 +93,7 @@ class SprintController extends AbstractController {
      * @Route("/project/{id_project}/sprints/{id_sprint}/delete", name="deleteSprint")
      */
     public function deleteSprint(Request $request, SprintRepository $sprint_Repository,
-                                EntityManagerInterface $entityManager, ProjectRepository $projectRepository, $id_project, $id_sprint)
+                                 EntityManagerInterface $entityManager, ProjectRepository $projectRepository, $id_project, $id_sprint)
     {
         $sprint = $sprint_Repository->find($id_sprint);
         $error = null;
@@ -102,7 +102,7 @@ class SprintController extends AbstractController {
             $error ="Aucune sprint n'existe avec l'id {$id_sprint}";
         } else {
             try {
-                $success = "Sprint {$sprint->getName()} supprimée avec succés.";
+                $success = "Sprint {$sprint->getNumber()} supprimée avec succés.";
                 $entityManager->remove($sprint);
                 $entityManager->flush();
             } catch(\Exception $e) {
@@ -113,7 +113,7 @@ class SprintController extends AbstractController {
     }
 
     private function renderSprint($error, $success, $project) {
-        
+
         $sprints = $project->getSprints();
 
         return $this->render('sprint/sprint_list.html.twig', [

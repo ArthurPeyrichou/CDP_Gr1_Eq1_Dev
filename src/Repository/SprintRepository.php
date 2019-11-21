@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Project;
 use App\Entity\Sprint;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -17,5 +18,17 @@ class SprintRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sprint::class);
+    }
+
+    public function getNextNumber(Project $project): int
+    {
+        $result = $this->createQueryBuilder('s')
+            ->select('MAX(s.number) as maxNumber')
+            ->andWhere('s.project = :project')
+            ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult()[0]['maxNumber'];
+
+        return $result + 1;
     }
 }
