@@ -83,6 +83,14 @@
                         <span class="d-none d-sm-inline">Releases</span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ path('releasesList', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/list.svg') }}" alt="Releases">
+                            <span class="d-none d-sm-inline">Liste des releases</span>
+                        </a>
+                        <a class="dropdown-item"  href="{{ path('createRelease', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/add.svg') }}" alt="NewRelease">
+                            <span class="d-none d-sm-inline">Nouvelle release</span>
+                        </a>
                     </div>
                 </li>
             </ul>

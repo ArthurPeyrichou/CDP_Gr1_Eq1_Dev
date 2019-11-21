@@ -1,0 +1,23 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Edition d'une release{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h3>Editer une release:</h3>
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+                {{ form_row(form.number) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.date) }}
+                {{ form_row(form.link) }}
+                <button type="submit" class="btn btn-primary">Créer la release</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

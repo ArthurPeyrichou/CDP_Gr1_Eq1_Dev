@@ -44,11 +44,7 @@ class Release
      */
     private $implementedIssues;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Sprint", inversedBy="releases")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $sprint;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="releases")
@@ -57,14 +53,13 @@ class Release
     private $project;
 
 
-    public function __construct($number,$description,$date,$link,$implementedIssues,$sprint,$project)
+    public function __construct($number,$description,$date,$link,$implementedIssues,$project)
     {
         $this->number=$number;
         $this->description=$description;
         $this->date=$date;
         $this->link=$link;
         $this->implementedIssues =$implementedIssues;
-        $this->sprint=$sprint;
         $this->project=$project;
 
     }
@@ -153,17 +148,6 @@ class Release
         return $this;
     }
 
-    public function getSprint(): ?Sprint
-    {
-        return $this->sprint;
-    }
-
-    public function setSprint(?Sprint $sprint): self
-    {
-        $this->sprint = $sprint;
-
-        return $this;
-    }
 
     public function getProject(): ?Project
     {

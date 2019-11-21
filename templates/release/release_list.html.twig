@@ -21,16 +21,30 @@
                                         </div>
                                         <a class="font-weight-bold" href="{{(release.link)}}">Le lien du release</a>
                                     <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                            <a class="btn btn-primary my-auto mr-1" href="{{ path('editRelease', {'id_project': project.id, 'id_release' : release.id}) }}">Editer</a>
+                                        <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#release-delete-confirm{{ index }}">Supprimer</button>
                                     </div>
                                 </div>
                                 </div>
                             </li>
+                            {% embed 'components/_modal.html.twig' with {'modalId': "release-delete-confirm#{index}"} %}
+                                {% block header %}
+                                    <h3>Veuillez confirmer la suppression</h3>
+                                {% endblock %}
+                                {% block body %}
+                                    <p>Êtes-vous sûr(e) de vouloir supprimer le release {{ release.number }}</p>
+                                {% endblock %}
+                                {% block footer %}
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                    <a href="{{ path('deleteRelease', {'id_project' : project.id,'id_release' : release.id }) }}" class="btn btn-primary">Oui</a>
+                                {% endblock %}
+                            {% endembed %}
                         {% endfor %}
                     </ul>
                 {% else %}
                     <p> Vous n'avez pour l'instant créé aucun release.</p>
                 {% endif %}
-                <a class="btn btn-primary mt-3" href="{{ path('createRelease', {'id_project' : project.id,'id_sprint' : sprint.id}) }}">Créer un release</a>
+                <a class="btn btn-primary mt-3" href="{{ path('createRelease', {'id_project' : project.id}) }}">Créer un release</a>
             </div>
         </div>
     </div>

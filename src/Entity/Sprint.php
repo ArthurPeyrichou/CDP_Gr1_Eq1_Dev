@@ -44,10 +44,7 @@ class Sprint
      */
     private $project;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Release", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    private $releases;
+
 
     public function __construct($project, $name, $description, $startDate, $endDate)
     {
@@ -56,7 +53,7 @@ class Sprint
         $this->description = $description;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-        $this->releases = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -124,34 +121,4 @@ class Sprint
         return $this;
     }
 
-    /**
-     * @return Collection|Release[]
-     */
-    public function getReleases(): Collection
-    {
-        return $this->releases;
-    }
-
-    public function addRelease(Release $release): self
-    {
-        if (!$this->releases->contains($release)) {
-            $this->releases[] = $release;
-            $release->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRelease(Release $release): self
-    {
-        if ($this->releases->contains($release)) {
-            $this->releases->removeElement($release);
-            // set the owning side to null (unless already changed)
-            if ($release->getProject() === $this) {
-                $release->setProject(null);
-            }
-        }
-
-        return $this;
-    }
 }

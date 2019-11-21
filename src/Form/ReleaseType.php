@@ -48,5 +48,6 @@ class ReleaseType extends AbstractType
         $resolver->setDefaults([
 
         ]);
+
     }
 }
