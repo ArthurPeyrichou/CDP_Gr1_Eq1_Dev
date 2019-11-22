@@ -1,15 +1,11 @@
- version:  '3.7'
- services:
+version:  '3.7'
+services:
     db:
         image: mariadb:10.4
         environment:
             - MYSQL_ROOT_PASSWORD=root
         ports:
             - '3306:3306'
-    adminer:
-        image: adminer:latest
-        ports:
-            - '8080:8080'
     web:
         build: .
         command: 'bash -c "sh /var/www/firescrum/docker/database-create.sh && apache2-foreground"'
