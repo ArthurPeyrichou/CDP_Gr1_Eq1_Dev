@@ -19,7 +19,7 @@
                                             <span>Date:</span>
                                             <span class="font-weight-bold">{{ release.date.format("d/m/Y") }}</span>
                                         </div>
-                                        <a class="font-weight-bold" href="{{(release.link)}}">Le lien du release</a>
+                                        <a class="font-weight-bold" href="{{(release.link)}}">Le lien de la release</a>
                                     <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
                                             <a class="btn btn-primary my-auto mr-1" href="{{ path('editRelease', {'id_project': project.id, 'id_release' : release.id}) }}">Editer</a>
                                         <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#release-delete-confirm{{ index }}">Supprimer</button>

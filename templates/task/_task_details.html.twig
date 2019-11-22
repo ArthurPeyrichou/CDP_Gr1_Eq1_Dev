@@ -18,7 +18,7 @@
         <ul class="mb-4">
             {% for issue in task.relatedIssues %}
                 <li>
-                    <span class="font-weight-bold">{{ issue.name }}</span>
+                    <span class="font-weight-bold">{{ issue.number }}</span>
                     <div class="ellipsis">{{ issue.description }}</div>
                 </li>
             {% endfor %}

@@ -42,6 +42,10 @@ class Sprint
      */
     private $project;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Release", inversedBy="sprint")
+     */
+    private $release;
 
 
     public function __construct($project, $name, $description, $startDate, $endDate)
@@ -115,6 +119,18 @@ class Sprint
     public function setProject(?Project $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getRelease(): ?Release
+    {
+        return $this->release;
+    }
+
+    public function setRelease(?Release $release): self
+    {
+        $this->release = $release;
 
         return $this;
     }

@@ -40,9 +40,9 @@ class Release
     private $link;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="linkedRelease")
+     * @ORM\OneToOne(targetEntity="App\Entity\Sprint", mappedBy="release")
      */
-    private $implementedIssues;
+    private $sprint;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="releases")
@@ -51,13 +51,13 @@ class Release
     private $project;
 
 
-    public function __construct($number,$description,$date,$link,$implementedIssues,$project)
+    public function __construct($number,$description,$date,$link,$sprint,$project)
     {
         $this->number=$number;
         $this->description=$description;
         $this->date=$date;
         $this->link=$link;
-        $this->implementedIssues =$implementedIssues;
+        $this->sprint =$sprint;
         $this->project=$project;
 
     }
@@ -115,33 +115,14 @@ class Release
         return $this;
     }
 
-    /**
-     * @return Collection|Issue[]
-     */
-    public function getImplementedIssues(): Collection
+    public function getSprint(): ?Sprint
     {
-        return $this->implementedIssues;
+        return $this->sprint;
     }
 
-    public function addImplementedIssue(Issue $implementedIssue): self
+    public function setSprint(?Sprint $sprint): self
     {
-        if (!$this->implementedIssues->contains($implementedIssue)) {
-            $this->implementedIssues[] = $implementedIssue;
-            $implementedIssue->setLinkedRelease($this);
-        }
-
-        return $this;
-    }
-
-    public function removeImplementedIssue(Issue $implementedIssue): self
-    {
-        if ($this->implementedIssues->contains($implementedIssue)) {
-            $this->implementedIssues->removeElement($implementedIssue);
-            // set the owning side to null (unless already changed)
-            if ($implementedIssue->getLinkedRelease() === $this) {
-                $implementedIssue->setLinkedRelease(null);
-            }
-        }
+        $this->sprint = $sprint;
 
         return $this;
     }

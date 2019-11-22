@@ -55,11 +55,6 @@ class Issue
      */
     private $project;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Release", inversedBy="implementedIssues")
-     */
-    private $linkedRelease;
-
     public function __construct($number, $description, $difficulty, $priority, $status, $project)
     {
         $this->number = $number;
@@ -145,19 +140,5 @@ class Issue
 
         return $this;
     }
-
-    public function getLinkedRelease(): ?Release
-    {
-        return $this->linkedRelease;
-    }
-
-    public function setLinkedRelease(?Release $linkedRelease): self
-    {
-        $this->linkedRelease = $linkedRelease;
-
-        return $this;
-    }
-
-
 
 }

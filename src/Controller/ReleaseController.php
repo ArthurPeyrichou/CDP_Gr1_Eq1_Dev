@@ -28,7 +28,11 @@ class ReleaseController extends AbstractController
                                          $id_project): Response
     {
         $project = $projectRepository->find($id_project);
-        $form = $this->createForm(ReleaseType::class);
+        
+        $form = $this->createForm(ReleaseType::class, [], [
+            ReleaseType::PROJECT => $project
+        ]);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -39,14 +43,10 @@ class ReleaseController extends AbstractController
                 $number = $data['number'];
                 $description= $data['description'];
                 $date=$data['date'];
+                $sprint=$data['sprint'];
                 $link=$data['link'];
-                $issues=$project->getIssues();
-                $implementedIssues = new ArrayCollection();
-                foreach ($issues as $issue)
-                {   if ($issue->getStatus()=='DONE')
-                    $implementedIssues[]=$issue;
-                }
-                $release=new Release($number,$description,$date,$link,$implementedIssues,$project);
+
+                $release=new Release($number,$description,$date,$link,$sprint,$project);
 
                 $success =  "Le release a été créer avec succés.";
                 $entityManager->persist($release);
