@@ -42,12 +42,18 @@ class Test
      */
     private $project;
 
-    public function __construct($project, $name, $description, $state)
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Issue")
+     */
+    private $issue;
+
+    public function __construct($project, $name, $description, $state, $issue = null)
     {
         $this->project = $project;
         $this->name = $name;
         $this->description = $description;
         $this->state = $state;
+        $this->issue = $issue;
     }
 
     public function getId(): ?int
@@ -87,6 +93,18 @@ class Test
     public function setState(string $state): self
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    public function getIssue(): ?Issue
+    {
+        return $this->issue;
+    }
+
+    public function setIssue(?Issue $issue): self
+    {
+        $this->issue = $issue;
 
         return $this;
     }

@@ -12,6 +12,7 @@
                 {{ form_errors(form) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.description) }}
+                {{ form_row(form.issue) }}
                 {{ form_row(form.state) }}
                 <button type="submit" class="btn btn-primary">Modifier le test</button>
                 <a class="btn btn-outline-danger" href="{{ path('testsList', {'id_project' : project.id}) }}">Annuler</a>

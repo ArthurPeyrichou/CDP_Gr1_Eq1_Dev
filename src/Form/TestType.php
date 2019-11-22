@@ -2,8 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Issue;
+use App\Entity\Project;
 use App\Entity\Test;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -13,8 +15,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TestType extends AbstractType
 {
+    public const PROJECT = 'project';
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /**@var $project Project*/
+        $project = $options[self::PROJECT];
+
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom',
@@ -40,6 +47,15 @@ class TestType extends AbstractType
                 'preferred_choices' => [
                     Test::TODO
                 ],
+            ])
+            ->add('issue', EntityType::class, [
+                'label' => 'Issue testée',
+                'required' => false,
+                'class' => Issue::class,
+                'choices' => $project->getIssues(),
+                'choice_label' => function (Issue $issue) {
+                    return "{$issue->getNumber()} - {$issue->getDescription()}";
+                }
             ]);
     }
 
@@ -48,5 +64,7 @@ class TestType extends AbstractType
         $resolver->setDefaults([
 
         ]);
+
+        $resolver->setRequired([self::PROJECT]);
     }
 }

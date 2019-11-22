@@ -21,9 +21,11 @@ class TestController extends AbstractController {
     public function viewCreationTest(Request $request, ProjectRepository $projectRepository,
                                       EntityManagerInterface $entityManager, $id_project) : Response
     {
-        $form = $this->createForm(TestType::class);
-        $form->handleRequest($request);
         $project = $projectRepository->find( $id_project);
+        $form = $this->createForm(TestType::class, [], [
+            TestType::PROJECT => $project
+        ]);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $error = null; 
@@ -67,9 +69,11 @@ class TestController extends AbstractController {
                               $id_test, $id_project): Response
     {
         $test = $testRepository->find($id_test);
-        $form = $this->createForm(TestType::class, $test);
+        $project = $projectRepository->find( $id_project);
+        $form = $this->createForm(TestType::class, $test, [
+            TestType::PROJECT => $project
+        ]);
         $form->handleRequest($request);
-        $project = $projectRepository->find($id_project);
         $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {     

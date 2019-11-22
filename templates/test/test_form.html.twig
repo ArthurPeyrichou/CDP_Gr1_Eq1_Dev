@@ -12,6 +12,7 @@
                 {{ form_errors(form) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.description) }}
+                {{ form_row(form.issue) }}
                 {{ form_row(form.state,{'label': 'Etat'},{ 'separator': '----------' }) }}
                 <button type="submit" class="btn btn-primary">Créer le test</button>
                 {{ form_end(form) }}
