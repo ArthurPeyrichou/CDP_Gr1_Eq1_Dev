@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Tests\unit;
+namespace App\Tests\DBIntegration;
 
 
 use App\Entity\Issue;
