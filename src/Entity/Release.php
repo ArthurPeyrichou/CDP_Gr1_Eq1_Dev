@@ -53,12 +53,12 @@ class Release
 
     public function __construct($number,$description,$date,$link,$sprint,$project)
     {
-        $this->number=$number;
-        $this->description=$description;
-        $this->date=$date;
-        $this->link=$link;
-        $this->sprint =$sprint;
-        $this->project=$project;
+        $this->number = $number;
+        $this->description = $description;
+        $this->date = $date;
+        $this->link = $link;
+        $this->sprint = $sprint;
+        $this->project = $project;
 
     }
 
@@ -139,9 +139,5 @@ class Release
 
         return $this;
     }
-
-
-
-
 
 }

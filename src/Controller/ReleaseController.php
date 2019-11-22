@@ -74,10 +74,12 @@ class ReleaseController extends AbstractController
                                 ProjectRepository $projectRepository, ReleaseRepository $releaseRepository,
                                 $id_release, $id_project): Response
     {
-        $release = $releaseRepository->find($id_release);
-        $form = $this->createForm(ReleaseType::class, $release);
-        $form->handleRequest($request);
         $project = $projectRepository->find($id_project);
+        $release = $releaseRepository->find($id_release);
+        $form = $this->createForm(ReleaseType::class, $release, [
+            ReleaseType::PROJECT => $project
+        ]);
+        $form->handleRequest($request);
         $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
