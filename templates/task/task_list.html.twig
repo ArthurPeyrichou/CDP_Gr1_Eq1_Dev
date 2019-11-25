@@ -84,6 +84,21 @@
             </div>
         {% endif %}
     </div>
+    <select class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
+    <option>Selectionner un champ</option>
+    <option>Statut</option>
+    <option>Temps estimé</option>
+    <option>Membres associés</option>
+    </select>
+    
+    {% set title = "Jour/Homme" %}
+    {% set statistic = manDaysStat %}
+    {% include 'graph.html.twig' %}
+
+    {% set title = "Difficulté" %}
+    {% set statistic = statusStat %}
+    {% include 'graph.html.twig' %}
+
 {% endblock %}
 
 {% block stylesheets %}

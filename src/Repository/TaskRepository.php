@@ -56,6 +56,39 @@ class TaskRepository extends ServiceEntityRepository
         return $this->getByStatus($project, Task::TODO);
     }
 
+    public function getProportionStatus(Project $project): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('Count(t.status) as count, t.status as value')
+            ->andWhere('t.project = :project')
+            ->setParameter('project', $project)
+            ->groupBy('t.status')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getProportionEstimationManDays(Project $project): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('Count(t.requiredManDays) as count, t.requiredManDays as value')
+            ->andWhere('t.project = :project')
+            ->setParameter('project', $project)
+            ->groupBy('t.requiredManDays')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getProportionMembersAssociated(Project $project): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t.developper')
+            ->andWhere('t.project = :project')
+            ->setParameter('project', $project)
+            ->groupBy('t.developper')
+            ->getQuery()
+            ->getResult();
+    }
+
     private function getByStatus(Project $project, string $status): array
     {
         return $this->findBy([

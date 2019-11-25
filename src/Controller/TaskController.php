@@ -15,20 +15,35 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
+    
+    private $taskRepository;
+
+    public function __construct( TaskRepository $taskRepository)
+    {
+        $this->taskRepository = $taskRepository;
+    }
+
     /**
      * @Route("/project/{id_project}/tasks", name="tasksList", methods={"GET"})
      */
-    public function viewTasks(ProjectRepository $projectRepository, TaskRepository $taskRepository, $id_project)
+    public function viewTasks(ProjectRepository $projectRepository, $id_project)
     {
         $project = $projectRepository->find($id_project);
 
-        $todos = $taskRepository->getToDo($project);
-        $doings = $taskRepository->getDoing($project);
-        $dones = $taskRepository->getDone($project);
+        $todos = $this->taskRepository->getToDo($project);
+        $doings = $this->taskRepository->getDoing($project);
+        $dones = $this->taskRepository->getDone($project);
+
+        $manDaysStat = $this->taskRepository->getProportionEstimationManDays( $project);
+        $statusStat = $this->taskRepository->getProportionStatus( $project);
+        //$memberStat = $this->taskRepository->getProportionMembersAssociated( $project);
 
         return $this->render('task/task_list.html.twig', [
             'project' => $project,
             'user' => $this->getUser(),
+            'manDaysStat' => $manDaysStat,
+            'statusStat' => $statusStat,
+            //'memberStat' => $memberStat,
             'todos' => $todos,
             'doings' => $doings,
             'dones' => $dones
@@ -39,10 +54,10 @@ class TaskController extends AbstractController
      * @Route("/project/{id_project}/tasks/new", name="createTask")
      */
     public function createTask(Request $request, ProjectRepository $projectRepository,
-                               EntityManagerInterface $entityManager, TaskRepository $taskRepository, $id_project)
+                               EntityManagerInterface $entityManager, $id_project)
     {
         $project = $projectRepository->find($id_project);
-        $nextNumber = $taskRepository->getNextNumber($project);
+        $nextNumber = $this->taskRepository->getNextNumber($project);
         $form = $this->createForm(TaskType::class, ['number' => $nextNumber], [
             TaskType::PROJECT => $project
         ]);
@@ -76,11 +91,11 @@ class TaskController extends AbstractController
     /**
      * @Route("/project/{id_project}/tasks/{id_task}/edit", name="editTask")
      */
-    public function editTask(Request $request, ProjectRepository $projectRepository, TaskRepository $taskRepository,
+    public function editTask(Request $request, ProjectRepository $projectRepository,
                              EntityManagerInterface $entityManager, $id_project, $id_task)
     {
         $project = $projectRepository->find($id_project);
-        $task = $taskRepository->findOneBy([
+        $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
             'project' => $project
         ]);
@@ -106,12 +121,12 @@ class TaskController extends AbstractController
     /**
      * @Route("/project/{id_project}/tasks/{id_task}/delete", name="deleteTask")
      */
-    public function deleteTask(ProjectRepository $projectRepository, TaskRepository $taskRepository,
+    public function deleteTask(ProjectRepository $projectRepository,
                                EntityManagerInterface $entityManager, NotificationService $notifications,
                                $id_project, $id_task)
     {
         $project = $projectRepository->find($id_project);
-        $task = $taskRepository->findOneBy([
+        $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
             'project' => $project
         ]);
@@ -133,12 +148,12 @@ class TaskController extends AbstractController
      *     "status"="^doing|done$"
      * })
      */
-    public function changeTaskStatus(ProjectRepository $projectRepository, TaskRepository $taskRepository,
+    public function changeTaskStatus(ProjectRepository $projectRepository,
                                      NotificationService $notifications, EntityManagerInterface $entityManager,
                                      $id_project, $id_task, $status)
     {
         $project = $projectRepository->find($id_project);
-        $task = $taskRepository->findOneBy([
+        $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
             'project' => $project
         ]);
