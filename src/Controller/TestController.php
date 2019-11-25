@@ -15,6 +15,13 @@ use App\Service\RenderService;
 
 class TestController extends AbstractController {
 
+    private $testRepository;
+
+    public function __construct( TestRepository $testRepository)
+    {
+        $this->testRepository = $testRepository;
+    }
+
     /**
      * @Route("/project/{id_project}/tests/new", name="createTest")
      */
@@ -120,10 +127,13 @@ class TestController extends AbstractController {
         
         $tests = $project->getTests();
 
+        $statTests = $this->testRepository->getProportionStatus($project);
+
         return $this->render('test/test_list.html.twig', [
             'error' => $error,
             'success' => $success,
             'project'=> $project,
+            'statistic' => $statTests,
             'tests' => $tests,
             'user' => $this->getUser()
         ]);

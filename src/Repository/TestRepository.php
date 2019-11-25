@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Project;
 use App\Entity\Test;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -47,4 +48,15 @@ class TestRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getProportionStatus(Project $project): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('Count(t.state) as count, t.state as value')
+            ->andWhere('t.project = :project')
+            ->setParameter('project', $project)
+            ->groupBy('t.state')
+            ->getQuery()
+            ->getResult();
+    }
 }
