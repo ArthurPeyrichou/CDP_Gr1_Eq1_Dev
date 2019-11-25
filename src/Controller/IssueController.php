@@ -15,15 +15,22 @@ use App\Service\RenderService;
 
 class IssueController extends AbstractController {
 
+    private $issueRepository;
+
+    public function __construct( IssueRepository $issueRepository)
+    {
+        $this->issueRepository = $issueRepository;
+    }
+
     /**
      * @Route("/project/{id_project}/issues/new", name="createIssue")
      */
     public function viewCreationIssue(Request $request, ProjectRepository $projectRepository,
-                                      EntityManagerInterface $entityManager, IssueRepository $issueRepository,
+                                      EntityManagerInterface $entityManager,
                                       $id_project) : Response
     {
         $project = $projectRepository->find( $id_project);
-        $nextNumber = $issueRepository->getNextNumber($project);
+        $nextNumber = $this->issueRepository->getNextNumber($project);
         $form = $this->createForm(IssueType::class, ['number' => $nextNumber]);
         $form->handleRequest($request);
 
@@ -66,10 +73,10 @@ class IssueController extends AbstractController {
      * @Route("/project/{id_project}/issues/{id_issue}/edit", name="editIssue")
      */
     public function editIssue(Request $request, EntityManagerInterface $entityManager,
-                              ProjectRepository $projectRepository, IssueRepository $issueRepository,
+                              ProjectRepository $projectRepository,
                               $id_issue, $id_project): Response
     {
-        $issue = $issueRepository->find($id_issue);
+        $issue = $this->issueRepository->find($id_issue);
         $form = $this->createForm(IssueType::class, $issue);
         $form->handleRequest($request);
         $project = $projectRepository->find($id_project);
@@ -118,12 +125,18 @@ class IssueController extends AbstractController {
     private function renderIssue($error, $success, $project) {
         
         $issues = $project->getIssues();
+        $statusStat = $this->issueRepository->getProportionStatus( $project);
+        $diffStat = $this->issueRepository->getProportionDifficulty( $project);
+        $prioStat = $this->issueRepository->getProportionPriority( $project);
 
         return $this->render('issue/issue_list.html.twig', [
             'error' => $error,
             'success' => $success,
             'project'=> $project,
             'issues' => $issues,
+            'statusStat' => $statusStat,
+            'diffStat' => $diffStat,
+            'prioStat' => $prioStat,
             'user' => $this->getUser()
         ]);
     }

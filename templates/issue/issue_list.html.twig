@@ -51,5 +51,23 @@
             </div>
         </div>
     </div>
+    <select class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
+    <option>Selectionner un champ</option>
+    <option>Statut</option>
+    <option>Difficulté</option>
+    <option>Priorité</option>
+    </select>
+    {% set title = "Statut" %}
+    {% set statistic = statusStat %}
+    {% include 'graph.html.twig' %}
+
+    {% set title = "Difficulté" %}
+    {% set statistic = diffStat %}
+    {% include 'graph.html.twig' %}
+
+    {% set title = "Priorité" %}
+    {% set statistic = prioStat %}
+    {% include 'graph.html.twig' %}
+    </body>
 {% endblock %}
 
