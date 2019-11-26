@@ -17,18 +17,22 @@ class TaskController extends AbstractController
 {
     
     private $taskRepository;
+    private $notifications;
+    private $projectRepository;
 
-    public function __construct( TaskRepository $taskRepository)
+    public function __construct(TaskRepository $taskRepository, NotificationService $notifications, ProjectRepository $projectRepository)
     {
         $this->taskRepository = $taskRepository;
+        $this->notifications = $notifications;
+        $this->projectRepository = $projectRepository;
     }
 
     /**
      * @Route("/project/{id_project}/tasks", name="tasksList", methods={"GET"})
      */
-    public function viewTasks(ProjectRepository $projectRepository, $id_project)
+    public function viewTasks($id_project)
     {
-        $project = $projectRepository->find($id_project);
+        $project = $this->projectRepository->find($id_project);
 
         $todos = $this->taskRepository->getToDo($project);
         $doings = $this->taskRepository->getDoing($project);
@@ -55,10 +59,9 @@ class TaskController extends AbstractController
     /**
      * @Route("/project/{id_project}/tasks/new", name="createTask")
      */
-    public function createTask(Request $request, ProjectRepository $projectRepository,
-                               EntityManagerInterface $entityManager, $id_project)
+    public function createTask(Request $request, EntityManagerInterface $entityManager, $id_project)
     {
-        $project = $projectRepository->find($id_project);
+        $project = $this->projectRepository->find($id_project);
         $nextNumber = $this->taskRepository->getNextNumber($project);
         $form = $this->createForm(TaskType::class, ['number' => $nextNumber], [
             TaskType::PROJECT => $project
@@ -93,10 +96,9 @@ class TaskController extends AbstractController
     /**
      * @Route("/project/{id_project}/tasks/{id_task}/edit", name="editTask")
      */
-    public function editTask(Request $request, ProjectRepository $projectRepository,
-                             EntityManagerInterface $entityManager, $id_project, $id_task)
+    public function editTask(Request $request, EntityManagerInterface $entityManager, $id_project, $id_task)
     {
-        $project = $projectRepository->find($id_project);
+        $project = $this->projectRepository->find($id_project);
         $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
             'project' => $project
@@ -107,7 +109,13 @@ class TaskController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            try {
+                $entityManager->persist($task);
+                $entityManager->flush();
+                $this->notifications->addSuccess("Tâche {$task->getNumber()} éditée avec succés.");
+            } catch(\Exception $e) {
+                $this->notifications->addError($e->getMessage());
+            }
             return $this->redirectToRoute('tasksList', [
                 'id_project' => $project->getId()
             ]);
@@ -123,25 +131,27 @@ class TaskController extends AbstractController
     /**
      * @Route("/project/{id_project}/tasks/{id_task}/delete", name="deleteTask")
      */
-    public function deleteTask(ProjectRepository $projectRepository,
-                               EntityManagerInterface $entityManager, NotificationService $notifications,
-                               $id_project, $id_task)
+    public function deleteTask(EntityManagerInterface $entityManager, $id_project, $id_task)
     {
-        $project = $projectRepository->find($id_project);
+        $project = $this->projectRepository->find($id_project);
         $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
             'project' => $project
         ]);
 
         if (!$task) {
-            $notifications->addError("Aucune tâche n'existe avec l'id {$id_task}");
+            $this->notifications->addError("Aucune tâche n'existe avec l'id {$id_task}");
         } else {
-            $entityManager->remove($task);
-            $entityManager->flush();
-            $notifications->addSuccess("Tâche {$task->getNumber()} supprimée avec succès.");
+            try {
+                $entityManager->remove($task);
+                $entityManager->flush();
+                $notifications->addSuccess("Tâche {$task->getNumber()} supprimée avec succès.");
+            } catch(\Exception $e) {
+                $this->notifications->addError($e->getMessage());
+            }
         }
         return $this->redirectToRoute('tasksList', [
-            'id_project' => $project->getId()
+            'id_project' => $id_project
         ]);
     }
 
@@ -150,11 +160,9 @@ class TaskController extends AbstractController
      *     "status"="^doing|done$"
      * })
      */
-    public function changeTaskStatus(ProjectRepository $projectRepository,
-                                     NotificationService $notifications, EntityManagerInterface $entityManager,
-                                     $id_project, $id_task, $status)
+    public function changeTaskStatus(EntityManagerInterface $entityManager, $id_project, $id_task, $status)
     {
-        $project = $projectRepository->find($id_project);
+        $project = $this->projectRepository->find($id_project);
         $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
             'project' => $project
@@ -174,7 +182,7 @@ class TaskController extends AbstractController
         }
 
         return $this->redirectToRoute('tasksList', [
-            'id_project' => $project->getId()
+            'id_project' => $id_project
         ]);
     }
 }
