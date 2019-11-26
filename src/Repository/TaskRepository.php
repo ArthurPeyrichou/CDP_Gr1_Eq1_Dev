@@ -90,6 +90,18 @@ class TaskRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getProportionMansDPerMembersAssociated(Project $project): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('SUM(t.requiredManDays) as count, dev.name as value')
+            ->andWhere('t.project = :project')
+            ->setParameter('project', $project)
+            ->groupBy('t.developper')
+            ->join('t.developper', 'dev')
+            ->getQuery()
+            ->getResult();
+    }
+
     private function getByStatus(Project $project, string $status): array
     {
         return $this->findBy([

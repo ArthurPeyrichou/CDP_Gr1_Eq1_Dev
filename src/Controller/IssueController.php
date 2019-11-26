@@ -31,7 +31,9 @@ class IssueController extends AbstractController {
     {
         $project = $projectRepository->find( $id_project);
         $nextNumber = $this->issueRepository->getNextNumber($project);
-        $form = $this->createForm(IssueType::class, ['number' => $nextNumber]);
+        $form = $this->createForm(IssueType::class, ['number' => $nextNumber], [
+            IssueType::PROJECT => $project
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -43,7 +45,8 @@ class IssueController extends AbstractController {
                 $difficulty=$data['difficulty'];
                 $priority=$data['priority'];
                 $status=$data['status'];
-                $issue = new Issue($nextNumber, $description, $difficulty, $priority, $status, $project);
+                $sprint = $data['sprint'];
+                $issue = new Issue($nextNumber, $description, $difficulty, $priority, $status, $sprint, $project);
                 $success = "Issue {$issue->getNumber()} créée avec succés.";
                 $entityManager->persist($issue);
                 $entityManager->flush();
@@ -77,9 +80,12 @@ class IssueController extends AbstractController {
                               $id_issue, $id_project): Response
     {
         $issue = $this->issueRepository->find($id_issue);
-        $form = $this->createForm(IssueType::class, $issue);
+        $project = $projectRepository->find( $id_project);
+        $nextNumber = $this->issueRepository->getNextNumber($project);
+        $form = $this->createForm(IssueType::class, $issue, [
+            IssueType::PROJECT => $project
+        ]);
         $form->handleRequest($request);
-        $project = $projectRepository->find($id_project);
         $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {     

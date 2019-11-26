@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Issue;
+use App\Entity\Sprint;
+use App\Entity\Project;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -12,8 +15,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IssueType extends AbstractType
 {
+    public const PROJECT = 'project';
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /**@var $project Project*/
+        $project = $options[self::PROJECT];
+
         $builder
             ->add('number', IntegerType::class, [
                 'label' => 'Numéro',
@@ -52,14 +60,25 @@ class IssueType extends AbstractType
                 ],
                 'preferred_choices' => [
                     Issue::TODO
-                ],
-            ]);
+                ]
+            ])
+            ->add('sprint', EntityType::class, [
+                'label' => 'Sprints associées',
+                'class' => Sprint::class,
+                'choices' => $project->getSprints(),
+                'choice_label' => function (Sprint $issue) {
+                    return "{$issue->getNumber()} - {$issue->getDescription()}";
+                }
+            ])
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-
+            // Configure your form options here
         ]);
+
+        $resolver->setRequired([self::PROJECT]);
     }
 }

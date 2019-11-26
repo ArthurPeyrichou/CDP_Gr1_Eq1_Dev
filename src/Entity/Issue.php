@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\IssueRepository")
@@ -50,12 +52,18 @@ class Issue
     private $status;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Sprint")
+     */
+    private $sprint;
+
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="issues")
      * @ORM\JoinColumn(nullable=false)
      */
     private $project;
 
-    public function __construct($number, $description, $difficulty, $priority, $status, $project)
+    public function __construct($number, $description, $difficulty, $priority, $status, $sprint, $project)
     {
         $this->number = $number;
         $this->description = $description;
@@ -63,6 +71,7 @@ class Issue
         $this->priority = $priority;
         $this->status = $status;
         $this->project = $project;
+        $this->sprint = $sprint;
     }
     public function getId(): ?int
     {
@@ -125,6 +134,18 @@ class Issue
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getSprint(): ?Sprint
+    {
+        return $this->sprint;
+    }
+
+    public function setSprint(string $sprint): self
+    {
+        $this->sprint = $sprint;
 
         return $this;
     }

@@ -103,6 +103,10 @@
     {% set statistic = memberStat %}
     {% include 'graph.html.twig' %}
 
+    {% set title = "Jour/Homme par Membre" %}
+    {% set statistic = memberMansDayStat %}
+    {% include 'graph.html.twig' %}
+
 {% endblock %}
 
 {% block stylesheets %}

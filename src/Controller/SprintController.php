@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\SprintType;
 use App\Entity\Sprint;
 use App\Repository\SprintRepository;
+use App\Repository\IssueRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,8 +56,16 @@ class SprintController extends AbstractController {
     /**
      * @Route("/project/{id_project}/sprints", name="sprintsList", methods={"GET"})
      */
-    public function viewSprints(Request $request, ProjectRepository $projectRepository, $id_project) {
-        return $this->renderSprint(null, null, $projectRepository->find($id_project));
+    public function viewSprints(Request $request, ProjectRepository $projectRepository, IssueRepository $issueRepository, $id_project) {
+        $project = $projectRepository->find($id_project);
+        $sprints = $project->getSprints();
+        $burnDownStat = $issueRepository->getBurnDownStat($project);
+        return $this->render('sprint/sprint_list.html.twig', [
+            'project'=> $project,
+            'sprints' => $sprints,
+            'burnDownStat' => $burnDownStat,
+            'user' => $this->getUser()
+        ]);
     }
 
     /**

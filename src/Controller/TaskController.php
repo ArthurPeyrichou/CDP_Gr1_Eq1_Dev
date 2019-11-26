@@ -37,6 +37,7 @@ class TaskController extends AbstractController
         $manDaysStat = $this->taskRepository->getProportionEstimationManDays( $project);
         $statusStat = $this->taskRepository->getProportionStatus( $project);
         $memberStat = $this->taskRepository->getProportionMembersAssociated( $project);
+        $memberMansDayStat = $this->taskRepository->getProportionMansDPerMembersAssociated($project);
 
         return $this->render('task/task_list.html.twig', [
             'project' => $project,
@@ -44,6 +45,7 @@ class TaskController extends AbstractController
             'manDaysStat' => $manDaysStat,
             'statusStat' => $statusStat,
             'memberStat' => $memberStat,
+            'memberMansDayStat' => $memberMansDayStat,
             'todos' => $todos,
             'doings' => $doings,
             'dones' => $dones
