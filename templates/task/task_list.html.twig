@@ -99,6 +99,10 @@
     {% set statistic = statusStat %}
     {% include 'graph.html.twig' %}
 
+    {% set title = "Membre" %}
+    {% set statistic = memberStat %}
+    {% include 'graph.html.twig' %}
+
 {% endblock %}
 
 {% block stylesheets %}

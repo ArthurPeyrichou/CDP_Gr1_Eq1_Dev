@@ -81,10 +81,11 @@ class TaskRepository extends ServiceEntityRepository
     public function getProportionMembersAssociated(Project $project): array
     {
         return $this->createQueryBuilder('t')
-            ->select('t.developper')
+            ->select('Count(dev.name) as count, dev.name as value')
             ->andWhere('t.project = :project')
             ->setParameter('project', $project)
             ->groupBy('t.developper')
+            ->join('t.developper', 'dev')
             ->getQuery()
             ->getResult();
     }
