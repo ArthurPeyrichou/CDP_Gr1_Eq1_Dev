@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\RegistrationType;
+use App\Service\NotificationService;
 use App\Service\Registration\EmailAddressInUseException;
 use App\Service\Registration\MemberNameInUseException;
 use App\Service\Registration\RegistrationService;
@@ -16,12 +17,10 @@ class RegistrationController extends AbstractController {
     /**
      * @Route("/register", name="register")
      */
-    public function register(Request $request, RegistrationService $registrationService) : Response
+    public function register(Request $request, RegistrationService $registrationService, NotificationService $notifications) : Response
     {
         $form = $this->createForm(RegistrationType::class);
         $form->handleRequest($request);
-
-        $error = null;
         
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -32,21 +31,18 @@ class RegistrationController extends AbstractController {
 
             try {
                 $registrationService->registerUser($name, $emailAddress, $password);
+                $notifications->addSuccess('Votre compte a été créé, vous pouvez vous connecter!');
                 return $this->redirectToRoute('login');
             }
             catch (MemberNameInUseException $e) {
-                $error = 'Le nom d\'utilisateur choisi est déjà utilisé';
+                $notifications->addError($e->getMessage());
             }
             catch (EmailAddressInUseException $e) {
-                $error = 'L\'adresse email choisie est déjà utilisée';
-            }
-            if($error == null){
-                return $this->redirectToRoute('login');
+                $notifications->addError($e->getMessage());
             }
         }
 
-        return $this->render('member/register.html.twig', ["error"=> $error,
-                                                            "form"=> $form->createView()] );
+        return $this->render('member/register.html.twig', ["form"=> $form->createView()] );
     }
 
 }

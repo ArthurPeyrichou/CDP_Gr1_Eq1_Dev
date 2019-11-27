@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\NotificationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,7 +13,7 @@ class LoginController extends AbstractController
     /**
      * @Route("/login", name="login")
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, NotificationService $notifications): Response
     {
         if ($this->getUser()) {
              return $this->redirectToRoute('dashboard');
@@ -20,10 +21,12 @@ class LoginController extends AbstractController
 
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastEmail = $authenticationUtils->getLastUsername();
+        if($error){
+            $notifications->addError($error->getMessageKey());
+        }
 
         return $this->render('member/login.html.twig', [
             'last_typed_email' => $lastEmail,
-            'error' => $error ? $error->getMessageKey() : null
         ]);
     }
 }

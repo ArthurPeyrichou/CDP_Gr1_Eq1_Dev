@@ -30,11 +30,11 @@ class RegistrationService
     {
         $emailUsed = $this->memberRepository->findOneBy(['emailAddress' => $emailAddress]) !== null;
         if ($emailUsed) {
-            throw new EmailAddressInUseException("Email address {$emailAddress} is already used by a member");
+            throw new EmailAddressInUseException("L'adresse mail {$emailAddress} est déjà utilisée par un membre");
         }
         $nameUsed = $this->memberRepository->findOneBy(['name' => $name]) !== null;
         if ($nameUsed) {
-            throw new MemberNameInUseException("Name {$name} is already used by a member");
+            throw new MemberNameInUseException("Le pseudo {$name} est déjà utilisé par un membre");
         }
 
         $member = new Member($name, $emailAddress, $plainPassword);

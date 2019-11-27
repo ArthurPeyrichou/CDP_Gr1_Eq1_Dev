@@ -8,18 +8,25 @@ use App\Repository\ProjectRepository;
 use App\Repository\MemberRepository;
 use App\Repository\InvitationRepository;
 use App\Service\Invitation\InvitationService;
-use App\Service\RenderService;
+use App\Service\NotificationService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class InvitationController extends AbstractController
 {
 
+    private $notifications;
+
+    public function __construct(NotificationService $notifications)
+    {
+        $this->notifications = $notifications;
+    }
+
     /**
      * @Route("/project/{id}/sendInvitation", name="inviteToProject", methods={"POST"})
      */
     public function sendInvitationToProject(Request $request, InvitationService $invitationService,
-            RenderService $renderService,MemberRepository $memberRepository, ProjectRepository $projectRepository,
+            MemberRepository $memberRepository, ProjectRepository $projectRepository,
             $id) : Response
     {
 
@@ -32,9 +39,6 @@ class InvitationController extends AbstractController
         ]);
         $owner = $project->getOwner();
 
-        $success = null;
-        $error = null;
-
         $user = $this->getUser();
         $status = null;
 
@@ -43,42 +47,40 @@ class InvitationController extends AbstractController
             if($member && $project) {
                 try {    
                     $invitationService->inviteUser($member, $project);
-                    $success = 'Invitation envoyée avec succès';
+                    $this->notifications->addSuccess('Invitation envoyée avec succès');
                 }  catch(\Exception $e) {
-                    $error = $e->getMessage();
+                    $this->notifications->addError($e->getMessage());
                 }
             } else if($project) {
-                $error = 'Ce membre n\'apparait pas dans nos registres...';
+                $this->notifications->addError('Ce membre n\'apparait pas dans nos registres...');
             } else if($member) {
-                $error = 'Ce projet n\'apparait pas dans nos registres...';
+                $this->notifications->addError('Ce projet n\'apparait pas dans nos registres...');
             } else {
-                $error = 'Ni le membre ni le projet n\'apparaissent dans nos registres...';
+                $this->notifications->addError('Ni le membre ni le projet n\'apparaissent dans nos registres...');
             }
         } else {
-            $error = 'Vous ne pouvez pas inviter des membres dans ce projet';
+            $this->notifications->addError('Vous ne pouvez pas inviter des membres dans ce projet');
         }
 
-        return $this->render('project/project_details.html.twig',
-        $renderService->renderProjectDetails($this->getUser(), $error, $success, $status, $project, null));
+        return $this->redirectToRoute('projectDetails', [
+            'id' => $id
+        ]);
     }
 
     /**
      * @Route("/project/{invitationKey}/acceptInvitation", name="acceptInviteToProject", methods={"GET"})
      */
-    public function acceptInvitationToProject(Request $request, InvitationRepository $invitationRepository,
-            RenderService $renderService, $invitationKey) : Response
+    public function acceptInvitationToProject(Request $request, InvitationRepository $invitationRepository, $invitationKey) : Response
     {
 
         $member = $this->getUser();
-        $success = null;
-        $error = null;
 
         $invitation = $invitationRepository->findOneBy([
             'invitationKey' => $invitationKey,
             'member' => $member
         ]);
         if($invitation == null) {
-            $error = 'L\'invitation ne vous est pas adressée ou n\'existe pas';
+            $this->notifications->addError('L\'invitation ne vous est pas adressée ou n\'existe pas');
         }
         else {
             try {
@@ -88,21 +90,19 @@ class InvitationController extends AbstractController
                 $entityManager->persist($member);
                 $entityManager->remove($invitation);
                 $entityManager->flush();
-                $success = "Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre son projet";
+                $this->notifications->addSuccess("Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre son projet");
             } catch(\Exception $e) {
-                $error = $e->getMessage();
+                $this->notifications->addError($e->getMessage());
             }
         }
 
-        return $this->render('project/dashboard.html.twig', 
-        $renderService->renderDashboard($this->getUser(), $error, $success, $invitation));
+        return $this->redirectToRoute('dashboard');
     }
 
         /**
      * @Route("/project/{invitationKey}/denyInvitation", name="denyInviteToProject", methods={"GET"})
      */
-    public function denyInvitationToProject(Request $request, InvitationRepository $invitationRepository, 
-            RenderService $renderService, $invitationKey) : Response
+    public function denyInvitationToProject(Request $request, InvitationRepository $invitationRepository, $invitationKey) : Response
     {
 
         $member = $this->getUser();
@@ -126,8 +126,7 @@ class InvitationController extends AbstractController
             }
         }
 
-        return $this->render('project/dashboard.html.twig', 
-        $renderService->renderDashboard($this->getUser(), $error, $success, $invitation));
+        return $this->redirectToRoute('dashboard');
     }
 
 }
