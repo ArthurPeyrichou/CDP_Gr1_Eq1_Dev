@@ -44,6 +44,11 @@ class Member implements UserInterface
      */
     private $contributedProjects;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PlanningPoker", mappedBy="member")
+     */
+    private $planningPokers;
+
     public function __construct($name, $emailAddress, $password)
     {
         $this->name = $name;
@@ -51,6 +56,7 @@ class Member implements UserInterface
         $this->password = $password;
         $this->ownedProjects = new ArrayCollection();
         $this->contributedProjects = new ArrayCollection();
+        $this->planningPokers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +168,32 @@ class Member implements UserInterface
     {
         if ($this->contributedProjects->contains($contributedProject)) {
             $this->contributedProjects->removeElement($contributedProject);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Project[]
+     */
+    public function getPlanningPokers(): Collection
+    {
+        return $this->planningPokers;
+    }
+
+    public function addPlanningPoker(Project $planningPoker): self
+    {
+        if (!$this->planningPokers->contains($planningPoker)) {
+            $this->planningPokers[] = $planningPoker;
+        }
+
+        return $this;
+    }
+
+    public function removePlanningPoker(Project $planningPoker): self
+    {
+        if ($this->planningPokers->contains($planningPoker)) {
+            $this->planningPokers->removeElement($planningPoker);
         }
 
         return $this;

@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\PlanningPoker;
 use App\EntityException\InvalidStatusTransitionException;
 use App\Form\TaskType;
+use App\Form\PlanningPokerType;
 use App\Repository\ProjectRepository;
 use App\Repository\TaskRepository;
+use App\Repository\PlanningPokerRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,17 +72,37 @@ class TaskController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $number = $nextNumber;
-            $description = $data['description'];
-            $requiredManDays = $data['requiredManDays'];
-            $developper = $data['developper'];
-            $relatedIssues = $data['relatedIssues']->toArray();
+            try {
+                $data = $form->getData();
+                $number = $nextNumber;
+                $description = $data['description'];
+                $requiredManDays = 0;
+                $developper = $data['developper'];
+                $relatedIssues = $data['relatedIssues']->toArray();
 
-            $task = new Task($number, $description, $requiredManDays, $relatedIssues, $project, $developper);
+                $task = new Task($number, $description, $requiredManDays, $relatedIssues, $project, $developper);
+                $entityManager->persist($task);
+                $entityManager->flush();
+                foreach($project->getMembers() as $member) {
+                    $planningPoker = new PlanningPoker($task, $member);
+                    if($member->getId() == $this->getUser()->getId() ){
+                        $planningPoker->setValue($data['requiredManDays']);
+                    }
+                    $entityManager->persist($planningPoker);
+                    $entityManager->flush();
+                }
+                $member = $project->getOwner();
+                $planningPoker = new PlanningPoker($task, $member);
+                if($member->getId() == $this->getUser()->getId() ){
+                    $planningPoker->setValue($data['requiredManDays']);
+                }
+                $entityManager->persist($planningPoker);
+                $entityManager->flush();
 
-            $entityManager->persist($task);
-            $entityManager->flush();
+                $this->notifications->addSuccess("Tâche {$task->getNumber()} créée avec succés.");
+            } catch(\Exception $e) {
+                $this->notifications->addError($e->getMessage());
+            }
 
             return $this->redirectToRoute('tasksList', [
                 'id_project' => $id_project
@@ -183,6 +206,65 @@ class TaskController extends AbstractController
 
         return $this->redirectToRoute('tasksList', [
             'id_project' => $id_project
+        ]);
+    }
+
+
+    /**
+     * @Route("/project/{id_project}/tasks/{id_task}/plannigPoker", name="planningPoker")
+     */
+    public function plannigPokerForTask(Request $request, EntityManagerInterface $entityManager, 
+        PlanningPokerRepository $planningPokerRepository,$id_project, $id_task)
+    {
+        $project = $this->projectRepository->find($id_project);
+        $task = $this->taskRepository->findOneBy([
+            'id' => $id_task,
+            'project' => $project
+        ]);
+        $planningPoker = $planningPokerRepository->findOneBy([
+            'member' => $this->getUser(),
+            'task' => $task,
+        ]);
+
+        $form = $this->createForm(PlanningPokerType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $data = $form->getData();
+                $value = $data['value'];
+                $planningPoker->setValue($value);
+                $entityManager->persist($planningPoker);
+                $entityManager->flush();
+                $this->notifications->addSuccess("Tâche {$task->getNumber()} évaluée avec succés.");
+
+                if($planningPokerRepository->isPlanningPokerDoneByTask($task) ) {
+                    $cpt = 0;
+                    $amount = 0;
+                    foreach($planningPokerRepository->getPlanningPokerByTask($task) as $planningPoker) {
+                        ++$cpt;
+                        $amount += $planningPoker->getValue();
+                        $entityManager->remove($planningPoker);
+                        $entityManager->flush();
+                    }
+                }
+                $task->setRequiredManDays($amount / $cpt);
+                $entityManager->persist($task);
+                $entityManager->flush();
+                $this->notifications->addSuccess("Fin du planning poker pour la tâche {$task->getNumber()}.");
+                return $this->redirectToRoute('tasksList', [
+                    'id_project' => $id_project
+                ]);
+            } catch(\Exception $e) {
+                $this->notifications->addError($e->getMessage());
+            }
+        }
+
+        return $this->render('task/planning_poker_form.html.twig', [
+            'project' => $project,
+            'task' => $task,
+            'user' => $this->getUser(),
+            'form' => $form->createView()
         ]);
     }
 }

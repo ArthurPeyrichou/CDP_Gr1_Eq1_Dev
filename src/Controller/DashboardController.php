@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\InvitationRepository;
+use App\Repository\PlanningPokerRepository;
 
 class DashboardController extends AbstractController {
     
@@ -14,7 +15,7 @@ class DashboardController extends AbstractController {
      * @Route("/dashboard", name = "dashboard", methods = {"GET"})
      * @Route("/", name = "root", methods = {"GET"})
      */
-    public function viewDashboard(Request $request, InvitationRepository $invitationRepository) {
+    public function viewDashboard(Request $request, InvitationRepository $invitationRepository, PlanningPokerRepository $planningPokerRepository) {
         /**@var $member Member */
         $member = $this->getUser();
         $myProjects = $member->getOwnedProjects();
@@ -23,10 +24,14 @@ class DashboardController extends AbstractController {
         $myInvitations = $invitationRepository->findBy([
             'member' => $member
         ]);
+        $myPlanningPokers = $planningPokerRepository->findBy([
+            'member' => $member
+        ]);
 
         return $this->render('project/dashboard.html.twig', ["myProjects"=> $myProjects,
                                                             "myLinkedProjects"=> $myLinkedProjects, 
                                                             "myInvitations"=> $myInvitations, 
+                                                            "myPlanningPokers"=> $planningPokerRepository->getPlanningPokerNotDoneByMember($member), 
                                                             'user' => $member]);
     }
 
