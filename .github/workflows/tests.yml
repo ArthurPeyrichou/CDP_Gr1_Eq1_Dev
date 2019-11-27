@@ -1,0 +1,23 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  firescrum-tests:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: mysql://root:@127.0.0.1:3306/bd_cdp_test
+    steps:
+    - uses: actions/checkout@v1
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist && npm install
+    - name: Compile resources
+      run: npm run build
+    - name: Create Database
+      run: php bin/console doctrine:database:create && doctrine:migration:migrate
+    - name: Load test database fixtures
+      run: php bin/console doctrine:fixtures:load
+    - name: Execute tests via PHPUnit
+      run: php bin/phpunit
