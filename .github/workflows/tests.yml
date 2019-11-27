@@ -6,7 +6,7 @@ jobs:
   firescrum-tests:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: mysql://root:@127.0.0.1:3306/bd_cdp_test
+      DATABASE_URL: mysql://root:root@127.0.0.1:3306/bd_cdp_test
     steps:
     - uses: actions/checkout@v1
     - name: Validate composer.json and composer.lock
