@@ -47,7 +47,7 @@ class IssueController extends AbstractController {
                 $priority=$data['priority'];
                 $status=$data['status'];
                 $sprint = $data['sprint'];
-                $issue = new Issue($nextNumber, $description, $difficulty, $priority, $status, $sprint, $project);
+                $issue = new Issue($nextNumber, $description, $difficulty, $priority, $status, $project, $sprint);
                 $entityManager->persist($issue);
                 $entityManager->flush();
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} créée avec succés.");

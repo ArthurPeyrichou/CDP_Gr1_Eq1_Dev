@@ -63,7 +63,7 @@ class Issue
      */
     private $project;
 
-    public function __construct($number, $description, $difficulty, $priority, $status, $sprint, $project)
+    public function __construct($number, $description, $difficulty, $priority, $status, $project, $sprint = null)
     {
         $this->number = $number;
         $this->description = $description;
