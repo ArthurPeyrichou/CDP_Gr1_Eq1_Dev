@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Validate composer.json and composer.lock
-      run: composer validate
+      run: composer validate --no-check-publish
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist && npm install
     - name: Compile resources
