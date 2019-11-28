@@ -49,6 +49,11 @@ class Member implements UserInterface
      */
     private $planningPokers;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="member")
+     */
+    private $notifications;
+
     public function __construct($name, $emailAddress, $password)
     {
         $this->name = $name;
@@ -57,6 +62,7 @@ class Member implements UserInterface
         $this->ownedProjects = new ArrayCollection();
         $this->contributedProjects = new ArrayCollection();
         $this->planningPokers = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -194,6 +200,37 @@ class Member implements UserInterface
     {
         if ($this->planningPokers->contains($planningPoker)) {
             $this->planningPokers->removeElement($planningPoker);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->contains($notification)) {
+            $this->notifications->removeElement($notification);
+            // set the owning side to null (unless already changed)
+            if ($notification->getMember() === $this) {
+                $notification->setMember(null);
+            }
         }
 
         return $this;

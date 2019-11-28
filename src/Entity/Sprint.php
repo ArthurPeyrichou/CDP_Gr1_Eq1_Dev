@@ -31,10 +31,7 @@ class Sprint
      */
     private $startDate;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $endDate;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="sprints")
@@ -47,14 +44,19 @@ class Sprint
      */
     private $release;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $estimated_duration;
 
-    public function __construct($project, $name, $description, $startDate, $endDate)
+
+    public function __construct($project, $name, $description, $startDate,$estimated_duration)
     {
         $this->project = $project;
         $this->number = $name;
         $this->description = $description;
         $this->startDate = $startDate;
-        $this->endDate = $endDate;
+        $this->estimated_duration=$estimated_duration;
 
     }
 
@@ -99,17 +101,6 @@ class Sprint
         return $this;
     }
 
-    public function getEndDate(): ?\DateTimeInterface
-    {
-        return $this->endDate;
-    }
-
-    public function setEndDate(\DateTimeInterface $endDate): self
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
 
     public function getProject(): ?Project
     {
@@ -131,6 +122,18 @@ class Sprint
     public function setRelease(?Release $release): self
     {
         $this->release = $release;
+
+        return $this;
+    }
+
+    public function getEstimatedDuration(): ?float
+    {
+        return $this->estimated_duration;
+    }
+
+    public function setEstimatedDuration(float $estimated_duration): self
+    {
+        $this->estimated_duration = $estimated_duration;
 
         return $this;
     }

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -32,11 +33,10 @@ class SprintType extends AbstractType
                     'placeholder' => 'Date de début de votre sprint'
                 ]
             ])
-            ->add('endDate',DateType::class, [
-                'label' => 'Date de fin',
-                'widget' => 'single_text',
+            ->add('estimatedDuration',NumberType::class, [
+                'label' => 'Durée du sprint ',
                 'attr' => [
-                    'placeholder' => 'Date de fin de votre sprint'
+                    'placeholder' => 'Durée estimé en jour pour réaliser votre sprint  '
                 ]
             ]);
     }
