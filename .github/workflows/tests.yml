@@ -18,6 +18,6 @@ jobs:
     - name: Create Database
       run: php bin/console doctrine:database:create && php bin/console doctrine:migration:migrate
     - name: Load test database fixtures
-      run: php bin/console doctrine:fixtures:load
+      run: php bin/console doctrine:fixtures:load --no-interaction
     - name: Execute tests via PHPUnit
       run: php bin/phpunit
