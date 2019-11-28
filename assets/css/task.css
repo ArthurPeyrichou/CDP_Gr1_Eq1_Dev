@@ -6,9 +6,6 @@
 .link h4::before {
     display: inline;
     padding-right: 0.2rem;
-}
-
-.link h4::before {
     content: '˅';
 }
 
