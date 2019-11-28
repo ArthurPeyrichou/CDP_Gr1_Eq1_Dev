@@ -42,22 +42,10 @@
     margin-right: 0;
 }
 
-.alert {
-    margin-top: 25px !important;
-    position: fixed  !important;
-    margin-left: 300px  !important;
-    width: 50%  !important;
-}
-
 @media (max-width: 575px) {
 
     #main {
         padding-left: 40px;
-    }
-
-    .alert {
-        margin-left: 80px  !important;
-        width: 70% !important;
     }
 
     #sidebar {
