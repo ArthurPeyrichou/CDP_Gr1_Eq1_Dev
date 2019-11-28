@@ -109,8 +109,6 @@ class ProjectController extends AbstractController {
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
 
-        $error = null;
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $entityManager->persist($project);
@@ -137,9 +135,8 @@ class ProjectController extends AbstractController {
     public function deleteProject(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $entityManager, $id)
     {
         $project = $projectRepository->find($id);
-        $error = null;
         if (!$project) {
-            $error = "Aucun projet n'existe avec l'id {$id}";
+            $this->notifications->addError("Aucun projet n'existe avec l'id {$id}");
         }
         try {
             $entityManager->remove($project);
@@ -160,13 +157,10 @@ class ProjectController extends AbstractController {
      */
     public function deleteMember(ProjectRepository $projectRepository, MemberRepository $memberRepository, EntityManagerInterface $entityManager, $projectId, $memberId): Response
     {
-        $status = null;
-        $project =null;
         $user = $this->getUser();
-        $status = null;
-
         $member = $memberRepository->find($memberId);
         $project = $projectRepository->find($projectId);
+
         if (!$member) {
             $this->notifications->addError("Aucun membre n'existe avec l'id {$memberId}");
         }
@@ -178,7 +172,6 @@ class ProjectController extends AbstractController {
         }
         else {
             try {
-                $status = 'owner';
                 $project->removeMember($member);
                 $entityManager->flush();
                 if($project->getOwner() != $user) {
