@@ -15,21 +15,9 @@ class ProjectFixture extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager)
     {
-        /**@var $member1 Member*/
-        $member1 = $this->getReference(MemberFixture::MEMBER_1);
-        /**@var $member2 Member*/
-        $member2 = $this->getReference(MemberFixture::MEMBER_2);
-        /**@var $member3 Member*/
-        $member3 = $this->getReference(MemberFixture::MEMBER_3);
-
-        $project1 = new Project($member1, 'Project 1', 'The first project', new \DateTimeImmutable('2019-11-20'));
-        $manager->persist($project1);
-        $project2 = new Project($member2, 'Project 2', 'A project with a collaborator', new \DateTimeImmutable('2020-01-01'));
-        $project2->addMember($member3);
-        $manager->persist($project2);
-
-        $this->setReference(self::PROJECT_1, $project1);
-        $this->setReference(self::PROJECT_2, $project2);
+        foreach ($this->getProjectData() as [$reference, $ownerRef, $name, $description, $date, $contributorRefs]) {
+            $this->loadProject($manager, $reference, $ownerRef, $name, $description, $date, $contributorRefs);
+        }
 
         $manager->flush();
     }
@@ -38,6 +26,33 @@ class ProjectFixture extends Fixture implements DependentFixtureInterface
     {
         return [
             MemberFixture::class
+        ];
+    }
+
+    private function loadProject(ObjectManager $manager, string $reference, string $ownerRef, string $name,
+                                 string $description, \DateTimeInterface $date, array $contributorRefs)
+    {
+        /**@var $owner Member*/
+        $owner = $this->getReference($ownerRef);
+        $project = new Project($owner, $name, $description, $date);
+        foreach ($contributorRefs as $contributorRef) {
+            /**@var $contributor Member*/
+            $contributor = $this->getReference($contributorRef);
+            $project->addMember($contributor);
+        }
+
+        $manager->persist($project);
+        $this->addReference($reference, $project);
+    }
+
+    private function getProjectData(): array
+    {
+        return [
+            // reference, ownerRef, name, description, date, contributorRefs
+            [self::PROJECT_1, MemberFixture::MEMBER_1, 'Project 1', 'The first project with a collaborator',
+                new \DateTimeImmutable('2019-11-20'), [MemberFixture::MEMBER_2]],
+            [self::PROJECT_2, MemberFixture::MEMBER_1, 'Project 2', 'A second project',
+                new \DateTimeImmutable('2020-01-01'), []]
         ];
     }
 }

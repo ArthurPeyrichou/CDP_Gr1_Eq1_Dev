@@ -14,19 +14,29 @@ class MemberFixture extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $password = 'someReallySecurePassword';
+        $commonPass = 'someReallySecurePassword';
 
-        $this->createUser($manager, self::MEMBER_1, 'member1@domain.com', $password);
-        $this->createUser($manager, self::MEMBER_2, 'member2@domain.com', $password);
-        $this->createUser($manager, self::MEMBER_3, 'member3@domain.com', $password);
+        foreach ($this->getUserInfo() as [$email, $reference]) {
+            $this->loadUser($manager, $reference, $email, $commonPass);
+        }
 
         $manager->flush();
     }
 
-    private function createUser(ObjectManager $manager, string $name, string $email, string $password): void
+    private function loadUser(ObjectManager $manager, string $name, string $email, string $password): void
     {
         $member = new Member($name, $email, $password);
         $manager->persist($member);
         $this->addReference($name, $member);
+    }
+
+    private function getUserInfo(): array
+    {
+        return [
+            // email, reference
+            ['member1@domain.com', self::MEMBER_1],
+            ['member2@domain.com', self::MEMBER_2],
+            ['member3@domain.com', self::MEMBER_3]
+        ];
     }
 }
