@@ -42,8 +42,8 @@ class SprintController extends AbstractController {
                 $data = $form->getData();
                 $description= $data['description'];
                 $startDate=$data['startDate'];
-                $endDate=$data['endDate'];
-                $sprint = new Sprint($project, $nextNumber, $description, $startDate, $endDate);
+                $estimated_duration=$data['estimatedDuration'];
+                $sprint = new Sprint($project, $nextNumber, $description, $startDate, $estimated_duration);
                 $entityManager->persist($sprint);
                 $entityManager->flush();
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} créée avec succés.");
