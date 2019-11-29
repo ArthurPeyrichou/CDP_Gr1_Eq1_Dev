@@ -93,7 +93,6 @@ class TestController extends AbstractController {
             TestType::PROJECT => $project
         ]);
         $form->handleRequest($request);
-        $error = null;
 
         if ($form->isSubmitted() && $form->isValid()) {     
             try {

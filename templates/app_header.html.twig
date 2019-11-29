@@ -42,19 +42,3 @@
         {{ success }}
     </div>
 {% endif %}
-
-{% set errorList = getErrors() %}
-{% set successList = getSuccess() %}
-{% if errorList is not empty %}
-    {% for error in errorList %}
-        <div class="alert alert-danger container" role="alert" style="margin-top:10%;">
-            {{ error }}
-        </div>
-    {% endfor %}
-{% elseif successList is not empty %}
-    {% for success in successList %}
-        <div class="alert alert-success container" role="alert" style="margin-top:10%;">
-            {{ success }}
-        </div>
-    {% endfor %}
-{% endif %}

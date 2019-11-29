@@ -40,10 +40,8 @@ class InvitationController extends AbstractController
         $owner = $project->getOwner();
 
         $user = $this->getUser();
-        $status = null;
 
         if($owner == $user){
-            $status = 'owner';
             if($member && $project) {
                 try {    
                     $invitationService->inviteUser($member, $project);
@@ -106,23 +104,21 @@ class InvitationController extends AbstractController
     {
 
         $member = $this->getUser();
-        $success = null;
-        $error = null;
 
         $invitation = $invitationRepository->findOneBy([
             'invitationKey' => $invitationKey,
             'member' => $member
         ]);
         if($invitation == null) {
-            $error = 'L\'invitation ne vous est pas adressée ou n\'existe pas';
+            $this->notifications->addError('L\'invitation ne vous est pas adressée ou n\'existe pas');
         }  else {
             try {
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->remove($invitation);
                 $entityManager->flush();
-                $success = "Vous venez de refuser l'invitation de {$invitation->getProject()->getOwner()->getName()} à rejoindre son projet";
+                $this->notifications->addSuccess("Vous venez de refuser l'invitation de {$invitation->getProject()->getOwner()->getName()} à rejoindre son projet");
             } catch(\Exception $e) {
-                $error = $e->getMessage();
+                $this->notifications->addError($e->getMessage());
             }
         }
 

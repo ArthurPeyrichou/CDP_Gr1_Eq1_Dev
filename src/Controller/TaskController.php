@@ -168,7 +168,7 @@ class TaskController extends AbstractController
             try {
                 $entityManager->remove($task);
                 $entityManager->flush();
-                $notifications->addSuccess("Tâche {$task->getNumber()} supprimée avec succès.");
+                $this->notifications->addSuccess("Tâche {$task->getNumber()} supprimée avec succès.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }
@@ -201,7 +201,7 @@ class TaskController extends AbstractController
             $entityManager->flush();
         }
         catch (InvalidStatusTransitionException $e) {
-            $notifications->addError($e->getMessage());
+            $this->notifications->addError($e->getMessage());
         }
 
         return $this->redirectToRoute('tasksList', [

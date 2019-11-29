@@ -24,9 +24,6 @@ class DashboardController extends AbstractController {
         $myInvitations = $invitationRepository->findBy([
             'member' => $member
         ]);
-        $myPlanningPokers = $planningPokerRepository->findBy([
-            'member' => $member
-        ]);
 
         return $this->render('project/dashboard.html.twig', ["myProjects"=> $myProjects,
                                                             "myLinkedProjects"=> $myLinkedProjects, 
