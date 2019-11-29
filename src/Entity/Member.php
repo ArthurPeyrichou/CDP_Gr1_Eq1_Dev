@@ -54,6 +54,13 @@ class Member implements UserInterface
      */
     private $notifications;
 
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $resetToken;
+
+
     public function __construct($name, $emailAddress, $password)
     {
         $this->name = $name;
@@ -233,6 +240,19 @@ class Member implements UserInterface
             }
         }
 
+        return $this;
+    }
+
+
+    public function getResetToken(): string
+    {
+        return $this->resetToken;
+    }
+
+
+    public function setResetToken(string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
         return $this;
     }
 
