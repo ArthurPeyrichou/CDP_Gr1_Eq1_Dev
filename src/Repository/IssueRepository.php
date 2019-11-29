@@ -67,7 +67,14 @@ class IssueRepository extends ServiceEntityRepository
     
     public function getBurnDownStat(Project $project): array
     {
-        return $this->createQueryBuilder('i')
+        $points = $this->createQueryBuilder('i')
+            ->select('SUM(i.difficulty) as count, 0 as value')
+            ->where('i.project = :project')
+            ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult();
+        
+        $otherPoints = $this->createQueryBuilder('i')
             ->select('SUM(i.difficulty) as count, s.number as value')
             ->where('i.project = :project')
             ->andwhere('i.status = :done')
@@ -77,5 +84,14 @@ class IssueRepository extends ServiceEntityRepository
             ->join('i.sprint', 's')
             ->getQuery()
             ->getResult();
+
+        $cpt = 0;
+        foreach($otherPoints as $point) {
+            $cpt += $point['count'];
+            $point['count'] = $points[0]['count'] - $cpt;
+            $points[] = $point;
+        }
+
+        return $points;
     }
 }

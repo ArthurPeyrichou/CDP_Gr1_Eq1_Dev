@@ -1,0 +1,48 @@
+{% if statistic is defined %}
+    <div id="{{ title }}" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
+    <script defer>
+        // based on prepared DOM, initialize echarts instance
+        var myChart = echarts.init(document.getElementById('{{ title }}'));
+
+        // specify chart configuration item and data
+        var option = {
+            title: {
+                text: '{{ title }}'
+            },
+            tooltip: {},
+            legend: {
+                data: [
+                    {% for data in statistic %}
+                        "{{ data['value'] }}",
+                    {% endfor %}
+                    ]
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                data: [
+                    {% for data in statistic %}
+                        "{{ data['value'] }}",
+                    {% endfor %}
+                    ]
+            },
+            yAxis: {},
+            series: [{
+                name: 'Nombre',
+                type: 'bar',
+                data: [
+                    {% for data in statistic %}
+                        {{ data['count'] }},
+                    {% endfor %}
+                ]
+            }]
+
+        };
+
+        // use configuration item and data specified to show chart
+        myChart.setOption(option);
+    </script>
+{% endif %}

@@ -7,13 +7,18 @@
         // specify chart configuration item and data
         var option = {
             title: {
-                text: 'Proportion {{ title }}'
+                text: '{{ title }}'
             },
-            tooltip: {},
-            legend: {
-                data:['Status']
+            tooltip: {
+                trigger: 'axis'
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
             },
             xAxis: {
+                boundaryGap: false,
                 data: [
                     {% for data in statistic %}
                         "{{ data['value'] }}",
@@ -22,8 +27,7 @@
             },
             yAxis: {},
             series: [{
-                name: 'Nombre',
-                type: 'bar',
+                type: 'line',
                 data: [
                     {% for data in statistic %}
                         {{ data['count'] }},
