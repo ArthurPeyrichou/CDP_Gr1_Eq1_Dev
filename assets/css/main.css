@@ -10,3 +10,13 @@ body, html{
 .alert {
     margin-top: 25px !important;
 }
+
+.red {
+	background-color:rgba(255, 17, 45, 0.5) !important;
+}
+.yellow {
+	background-color:rgba(255, 235, 59, 0.8) !important;
+}
+.green {
+	background-color:rgba(0, 255, 33, 0.5) !important;
+}

@@ -12,18 +12,18 @@
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
                     <div class="card card-height" style="overflow-y: scroll; height: 450px;">
                         <div class="card-body">
-                            <h3>A faire</h3>
+                            <h3 class= "{{ getClassForStatus("todo")}} badge" style="display: block; font-size: 110%;">A faire</h3>
                             <div class="container-fluid">
                                 <ul class="list-unstyled">
                                     {% for task in todos %}
                                         {% embed 'task/_task_details.html.twig'%}
                                             {% block buttons %}
                                                 <div class="text-center row justify-content-around">
-                                                    <a class="col-5 btn btn-primary px-2"
+                                                    <a class="col-5 btn px-2 border {{ getClassForStatus("doing")}}"
                                                        href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing'}) }}">
                                                         En cours
                                                     </a>
-                                                    <a class="col-5 btn btn-success px-2"
+                                                    <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
                                                        href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done'}) }}">
                                                         Fait
                                                     </a>
@@ -39,14 +39,14 @@
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
                     <div class="card card-height" style="overflow-y: scroll; height: 450px;">
                         <div class="card-body">
-                            <h3>En cours</h3>
+                            <h3 class= "{{ getClassForStatus("doing")}} badge" style="display: block; font-size: 110%;">En cours</h3>
                             <div class="container-fluid">
                                 <ul class="list-unstyled">
                                     {% for task in doings %}
                                         {% embed 'task/_task_details.html.twig' %}
                                             {% block buttons %}
                                                 <div class="text-center row justify-content-around">
-                                                    <a class="col-5 btn btn-success px-2"
+                                                    <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
                                                        href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done'}) }}">
                                                         Fait
                                                     </a>
@@ -62,7 +62,7 @@
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
                     <div class="card card-height" style="overflow-y: scroll; height: 450px;">
                         <div class="card-body">
-                            <h3>Faite(s)</h3>
+                            <h3 class= "{{ getClassForStatus("done")}} badge" style="display: block; font-size: 110%;">Faite(s)</h3>
                             <div class="container-fluid">
                                 <ul class="list-unstyled">
                                     {% for task in dones %}
