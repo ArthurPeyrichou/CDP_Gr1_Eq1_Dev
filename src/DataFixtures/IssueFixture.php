@@ -27,7 +27,8 @@ class IssueFixture extends Fixture implements DependentFixtureInterface
     }
 
     private function loadIssue(ObjectManager $manager, string $projectRef, int $number, string $description,
-                               int $difficulty, string $priority, string $status) {
+                               int $difficulty, string $priority, string $status): void
+    {
         /**@var $project Project*/
         $project = $this->getReference($projectRef);
         $issue = new Issue($number, $description, $difficulty, $priority, $status, $project);

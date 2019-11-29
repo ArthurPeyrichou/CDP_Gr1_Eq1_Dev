@@ -30,7 +30,7 @@ class ProjectFixture extends Fixture implements DependentFixtureInterface
     }
 
     private function loadProject(ObjectManager $manager, string $reference, string $ownerRef, string $name,
-                                 string $description, \DateTimeInterface $date, array $contributorRefs)
+                                 string $description, \DateTimeInterface $date, array $contributorRefs): void
     {
         /**@var $owner Member*/
         $owner = $this->getReference($ownerRef);
