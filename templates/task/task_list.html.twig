@@ -10,7 +10,7 @@
                     <a class="btn btn-primary" href="{{ path('createTask', {'id_project' : project.id}) }}">Créer une tâche</a>
                 </div>
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
-                    <div class="card card-height">
+                    <div class="card card-height" style="overflow-y: scroll; height: 450px;">
                         <div class="card-body">
                             <h3>A faire</h3>
                             <div class="container-fluid">
@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
-                    <div class="card card-height">
+                    <div class="card card-height" style="overflow-y: scroll; height: 450px;">
                         <div class="card-body">
                             <h3>En cours</h3>
                             <div class="container-fluid">
@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
-                    <div class="card card-height">
+                    <div class="card card-height" style="overflow-y: scroll; height: 450px;">
                         <div class="card-body">
                             <h3>Faite(s)</h3>
                             <div class="container-fluid">
@@ -93,19 +93,19 @@
     
     {% set title = "Jour/Homme" %}
     {% set statistic = manDaysStat %}
-    {% include 'graph.html.twig' %}
+    {% include 'graph/graph_column.html.twig' %}
 
     {% set title = "Difficulté" %}
     {% set statistic = statusStat %}
-    {% include 'graph.html.twig' %}
+    {% include 'graph/graph_column.html.twig' %}
 
     {% set title = "Membre" %}
     {% set statistic = memberStat %}
-    {% include 'graph.html.twig' %}
+    {% include 'graph/graph_column.html.twig' %}
 
     {% set title = "Jour/Homme par Membre" %}
     {% set statistic = memberMansDayStat %}
-    {% include 'graph.html.twig' %}
+    {% include 'graph/graph_column.html.twig' %}
 
 {% endblock %}
 

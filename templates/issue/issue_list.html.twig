@@ -59,15 +59,15 @@
     </select>
     {% set title = "Statut" %}
     {% set statistic = statusStat %}
-    {% include 'graph.html.twig' %}
+    {% include 'graph/graph_column.html.twig' %}
 
     {% set title = "Difficulté" %}
     {% set statistic = diffStat %}
-    {% include 'graph.html.twig' %}
+    {% include 'graph/graph_column.html.twig' %}
 
     {% set title = "Priorité" %}
     {% set statistic = prioStat %}
-    {% include 'graph.html.twig' %}
+    {% include 'graph/graph_column.html.twig' %}
     </body>
 {% endblock %}
 
