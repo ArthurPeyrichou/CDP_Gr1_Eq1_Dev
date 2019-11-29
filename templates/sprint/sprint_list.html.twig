@@ -50,8 +50,15 @@
         </div>
     </div>
 
+    <div id="graphic" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
+
     {% set title = "Burn Down Chart" %}
+    {% set function = "BDC" %}
     {% set statistic = burnDownStat %}
     {% include 'graph/graph_area.html.twig' %}
+
+    <script defer> 
+        showBDC();
+    </script>
 {% endblock %}
 

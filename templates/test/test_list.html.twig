@@ -47,9 +47,17 @@
             </div>
         </div>
     </div>
+    
+    <div id="graphic" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
 
     {% set title = "Statut" %}
+    {% set function = "Status" %}
+    {% set statistic = statusStat %}
     {% include 'graph/graph_column.html.twig' %}
+
+    <script defer> 
+        showStatus();
+    </script>
 
 {% endblock %}
 
