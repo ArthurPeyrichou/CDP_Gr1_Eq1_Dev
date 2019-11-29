@@ -2,9 +2,12 @@
 // src/Controller/IssueController.php
 namespace App\Controller;
 
-use App\Form\IssueType;
 use App\Entity\Issue;
+use App\Entity\PlanningPoker;
+use App\Form\IssueType;
+use App\Form\PlanningPokerType;
 use App\Repository\IssueRepository;
+use App\Repository\PlanningPokerRepository;
 use App\Service\NotificationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,13 +46,30 @@ class IssueController extends AbstractController {
             try {
                 $data = $form->getData();
                 $description= $data['description'];
-                $difficulty=$data['difficulty'];
+                $difficulty= 0;
                 $priority=$data['priority'];
                 $status=$data['status'];
                 $sprint = $data['sprint'];
                 $issue = new Issue($nextNumber, $description, $difficulty, $priority, $status, $project, $sprint);
                 $entityManager->persist($issue);
                 $entityManager->flush();
+
+                foreach($project->getMembers() as $member) {
+                    $planningPoker = new PlanningPoker($issue, $member);
+                    if($member->getId() == $this->getUser()->getId() ){
+                        $planningPoker->setValue($data['difficulty']);
+                    }
+                    $entityManager->persist($planningPoker);
+                    $entityManager->flush();
+                }
+                $member = $project->getOwner();
+                $planningPoker = new PlanningPoker($issue, $member);
+                if($member->getId() == $this->getUser()->getId() ){
+                    $planningPoker->setValue($data['difficulty']);
+                }
+                $entityManager->persist($planningPoker);
+                $entityManager->flush();
+
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} créée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -143,6 +163,64 @@ class IssueController extends AbstractController {
 
         return $this->redirectToRoute('issuesList', [
             'id_project' => $id_project
+        ]);
+    }
+    
+    /**
+     * @Route("/project/{id_project}/issues/{id_issue}/plannigPoker", name="planningPoker")
+     */
+    public function plannigPokerForIssue(Request $request, EntityManagerInterface $entityManager, 
+        PlanningPokerRepository $planningPokerRepository,$id_project, $id_issue)
+    {
+        $project = $this->projectRepository->find($id_project);
+        $issue = $this->issueRepository->findOneBy([
+            'id' => $id_issue,
+            'project' => $project
+        ]);
+        $planningPoker = $planningPokerRepository->findOneBy([
+            'member' => $this->getUser(),
+            'issue' => $issue,
+        ]);
+
+        $form = $this->createForm(PlanningPokerType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $data = $form->getData();
+                $value = $data['value'];
+                $planningPoker->setValue($value);
+                $entityManager->persist($planningPoker);
+                $entityManager->flush();
+                $this->notifications->addSuccess("Issue {$issue->getNumber()} évaluée avec succés.");
+
+                if($planningPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
+                    $cpt = 0;
+                    $amount = 0;
+                    foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPoker) {
+                        ++$cpt;
+                        $amount += $planningPoker->getValue();
+                        $entityManager->remove($planningPoker);
+                        $entityManager->flush();
+                    }
+                }
+                $issue->setDifficulty($amount / $cpt);
+                $entityManager->persist($issue);
+                $entityManager->flush();
+                $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
+                return $this->redirectToRoute('issuesList', [
+                    'id_project' => $id_project
+                ]);
+            } catch(\Exception $e) {
+                $this->notifications->addError($e->getMessage());
+            }
+        }
+
+        return $this->render('issue/planning_poker_form.html.twig', [
+            'project' => $project,
+            'issue' => $issue,
+            'user' => $this->getUser(),
+            'form' => $form->createView()
         ]);
     }
 }

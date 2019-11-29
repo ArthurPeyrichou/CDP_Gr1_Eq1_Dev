@@ -24,7 +24,7 @@ class IssueRepository extends ServiceEntityRepository
     {
         $result = $this->createQueryBuilder('i')
             ->select('MAX(i.number) as maxNumber')
-            ->andWhere('i.project = :project')
+            ->where('i.project = :project')
             ->setParameter('project', $project)
             ->getQuery()
             ->getResult()[0]['maxNumber'];
@@ -36,7 +36,7 @@ class IssueRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->select('Count(i.status) as count, i.status as value')
-            ->andWhere('i.project = :project')
+            ->where('i.project = :project')
             ->setParameter('project', $project)
             ->groupBy('i.status')
             ->getQuery()
@@ -47,7 +47,7 @@ class IssueRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->select('Count(i.priority) as count, i.priority as value')
-            ->andWhere('i.project = :project')
+            ->where('i.project = :project')
             ->setParameter('project', $project)
             ->groupBy('i.priority')
             ->getQuery()
@@ -58,6 +58,7 @@ class IssueRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('i')
             ->select('Count(i.difficulty) as count, i.difficulty as value')
+            ->where('i.difficulty > 0')
             ->andWhere('i.project = :project')
             ->setParameter('project', $project)
             ->groupBy('i.difficulty')

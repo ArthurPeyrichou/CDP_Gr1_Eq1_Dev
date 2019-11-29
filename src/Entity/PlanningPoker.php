@@ -33,14 +33,14 @@ class PlanningPoker
     private $member;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Task")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Issue")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $task;
+    private $issue;
 
-    public function __construct($task, $member)
+    public function __construct($issue, $member)
     {
-        $this->task= $task;
+        $this->issue= $issue;
         $this->member= $member;
         $this->value= -1;
         $dt = new \DateTime();
@@ -88,14 +88,14 @@ class PlanningPoker
         return $this;
     }
 
-    public function getTask(): ?Task
+    public function getIssue(): ?Issue
     {
-        return $this->task;
+        return $this->issue;
     }
 
-    public function setTask(Task $task): self
+    public function setIssue(Issue $issue): self
     {
-        $this->task = $task;
+        $this->issue = $issue;
 
         return $this;
     }

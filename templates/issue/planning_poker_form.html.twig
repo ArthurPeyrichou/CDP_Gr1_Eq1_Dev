@@ -1,13 +1,13 @@
 {% extends 'project_frame.html.twig' %}
 
-{% block title %}Planning poker de la tache {{task.number}}{% endblock %}
+{% block title %}Planning poker de l'issue {{issue.number}}{% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <h3>Evaluez le nombre de jour/Homme que devrais prendre cette tâche</h3>
-                <p>{{task.description}}</p>
+                <h3>Evaluez la difficulté que devrais prendre cette issue</h3>
+                <p>{{issue.description}}</p>
                 {{ form_start(form) }}
                 {{ form_errors(form) }}
                 {{ form_row(form.value) }}

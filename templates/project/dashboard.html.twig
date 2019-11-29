@@ -18,8 +18,8 @@
         <div id="invitation-list-container" class="container" style="margin-top:10%;">
             {% for myPlanningPoker in myPlanningPokers %}
                 <div class="alert alert-secondary" role="alert">
-                    <a href="{{ path('planningPoker', {'id_project': myPlanningPoker.task.project.id, 'id_task': myPlanningPoker.task.id}) }}">
-                        Vous êtes invité à faire le planning poker pour la tache {{ myPlanningPoker.task.number }}
+                    <a href="{{ path('planningPoker', {'id_project': myPlanningPoker.issue.project.id, 'id_issue': myPlanningPoker.issue.id}) }}">
+                        Vous êtes invité à faire le planning poker pour l'issue {{ myPlanningPoker.issue.number }}
                     </a>
                 </div>
             {% endfor %}

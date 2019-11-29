@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Project;
 use App\Entity\Member;
-use App\Entity\Task;
+use App\Entity\Issue;
 use App\Entity\PlanningPoker;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -33,21 +33,21 @@ class PlanningPokerRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getPlanningPokerByTask(Task $task): array
+    public function getPlanningPokerByIssue(Issue $issue): array
     {
         return $this->createQueryBuilder('p')
-            ->Where('p.task = :task')
-            ->setParameter('task', $task)
+            ->Where('p.issue = :issue')
+            ->setParameter('issue', $issue)
             ->getQuery()
             ->getResult();
     }
 
-    public function isPlanningPokerDoneByTask(Task $task): bool
+    public function isPlanningPokerDoneByIssue(Issue $issue): bool
     {
         return empty($this->createQueryBuilder('p')
-            ->Where('p.task = :task')
+            ->Where('p.issue = :issue')
             ->andWhere('p.value < :val')
-            ->setParameter('task', $task)
+            ->setParameter('issue', $issue)
             ->setParameter('val', 0)
             ->getQuery()
             ->getResult());
