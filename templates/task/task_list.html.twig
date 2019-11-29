@@ -37,8 +37,8 @@
                     </div>
                 </div>
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
-                    <div class="card card-height" style="overflow-y: scroll; height: 450px;">
-                        <div class="card-body">
+                    <div class="card card-height" style="overflow-y: scroll; height: 450px;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <div class="card-body doing">
                             <h3 class= "{{ getClassForStatus("doing")}} badge" style="display: block; font-size: 110%;">En cours</h3>
                             <div class="container-fluid">
                                 <ul class="list-unstyled">
@@ -60,8 +60,8 @@
                     </div>
                 </div>
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
-                    <div class="card card-height" style="overflow-y: scroll; height: 450px;">
-                        <div class="card-body">
+                    <div class="card card-height" style="overflow-y: scroll; height: 450px;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <div class="card-body done">
                             <h3 class= "{{ getClassForStatus("done")}} badge" style="display: block; font-size: 110%;">Faite(s)</h3>
                             <div class="container-fluid">
                                 <ul class="list-unstyled">
@@ -84,6 +84,7 @@
             </div>
         {% endif %}
     </div>
+
     <select id="select-graph" class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
     <option value="Status">Statut</option>
     <option value="JH">Temps estimé</option>
@@ -114,6 +115,33 @@
     {% include 'graph/graph_column.html.twig' %}
 
     <script defer>
+        function dragStart(event) {
+            event.dataTransfer.setData("Text", event.target.id);
+        }
+
+        function dragging(event) {
+            
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            event.preventDefault();
+            var data = event.dataTransfer.getData("Text");
+            event.target.children[1].children[0].appendChild(document.getElementById(data));
+            ref = document.getElementById(data).getAttribute('value');
+           if(event.target.getAttribute('class').includes('doing')){
+                ref = ref.replace('done','doing');
+            }
+            window.location = ref;
+        }
+
         function showGraph(title) {
             switch(title){
                 case "Status":
