@@ -1,43 +1,44 @@
 {% if statistic is defined %}
-    <div id="{{ title }}" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
     <script defer>
-        // based on prepared DOM, initialize echarts instance
-        var myChart = echarts.init(document.getElementById('{{ title }}'));
+        function show{{ function }}(){
+            // based on prepared DOM, initialize echarts instance
+            var myChart = echarts.init(document.getElementById('graphic'));
 
-        // specify chart configuration item and data
-        var option = {
-            title: {
-                text: '{{ title }}'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            xAxis: {
-                boundaryGap: false,
-                data: [
-                    {% for data in statistic %}
-                        "{{ data['value'] }}",
-                    {% endfor %}
+            // specify chart configuration item and data
+            var option = {
+                title: {
+                    text: '{{ title }}'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    boundaryGap: false,
+                    data: [
+                        {% for data in statistic %}
+                            "{{ data['value'] }}",
+                        {% endfor %}
+                        ]
+                },
+                yAxis: {},
+                series: [{
+                    type: 'line',
+                    data: [
+                        {% for data in statistic %}
+                            {{ data['count'] }},
+                        {% endfor %}
                     ]
-            },
-            yAxis: {},
-            series: [{
-                type: 'line',
-                data: [
-                    {% for data in statistic %}
-                        {{ data['count'] }},
-                    {% endfor %}
-                ]
-            }]
+                }]
 
-        };
+            };
 
-        // use configuration item and data specified to show chart
-        myChart.setOption(option);
+            // use configuration item and data specified to show chart
+            myChart.setOption(option);
+        }
     </script>
 {% endif %}

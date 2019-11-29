@@ -72,11 +72,11 @@ class TestController extends AbstractController {
         $project = $this->projectRepository->find($id_project);
         $tests = $project->getTests();
 
-        $statTests = $this->testRepository->getProportionStatus($project);
+        $statusStat = $this->testRepository->getProportionStatus($project);
 
         return $this->render('test/test_list.html.twig', [
             'project'=> $project,
-            'statistic' => $statTests,
+            'statusStat' => $statusStat,
             'tests' => $tests,
             'user' => $this->getUser()
         ]);

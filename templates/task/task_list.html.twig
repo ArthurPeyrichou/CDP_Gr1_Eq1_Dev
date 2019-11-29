@@ -84,28 +84,65 @@
             </div>
         {% endif %}
     </div>
-    <select class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
-    <option>Selectionner un champ</option>
-    <option>Statut</option>
-    <option>Temps estimé</option>
-    <option>Membres associés</option>
+    <select id="select-graph" class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
+    <option value="Status">Statut</option>
+    <option value="JH">Temps estimé</option>
+    <option value="Membre">Membres associés</option>
+    <option value="JHParMembre">Jour/Homme par Membre</option>
     </select>
     
-    {% set title = "Jour/Homme" %}
-    {% set statistic = manDaysStat %}
-    {% include 'graph/graph_column.html.twig' %}
+    <div id="graphic" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
 
-    {% set title = "Difficulté" %}
+    {% set title = "Statut" %}
+    {% set function = "Status" %}
     {% set statistic = statusStat %}
     {% include 'graph/graph_column.html.twig' %}
 
+    {% set title = "Jour/Homme" %}
+    {% set function = "JH" %}
+    {% set statistic = manDaysStat %}
+    {% include 'graph/graph_column.html.twig' %}
+
     {% set title = "Membre" %}
+    {% set function = "Membre" %}
     {% set statistic = memberStat %}
     {% include 'graph/graph_column.html.twig' %}
 
     {% set title = "Jour/Homme par Membre" %}
+    {% set function = "JHParMembre" %}
     {% set statistic = memberMansDayStat %}
     {% include 'graph/graph_column.html.twig' %}
+
+    <script defer>
+        function showGraph(title) {
+            switch(title){
+                case "Status":
+                    showStatus();
+                break;
+                case "JH":
+                    showJH();
+                break;
+                case "Membre":
+                    showMembre();
+                break;
+                case "JHParMembre":
+                    showJHParMembre();
+                break;
+            }
+        }
+
+        function init() {
+            // ajout d'un écouteur d'évènement
+            var el = document.getElementById("select-graph");
+            el.addEventListener("change", 
+            (event) => showGraph(event.target.value)
+            , false);
+        }
+
+        init();
+        showStatus();
+
+    </script>
 
 {% endblock %}
 
