@@ -1,0 +1,48 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Liste des ressources de documentation{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Documentation</h3>
+                {% if ressourcesDoc  is not empty %}
+                    <ul class="list-group">
+                        {% for index, ressourceDoc in ressourcesDoc  %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="font-weight-bold">{{ ressourceDoc.name}} - {{ ressourceDoc.description }}</div>
+                                        <a class="font-weight-bold" href="{{(ressourceDoc.link)}}">Lien vers la ressource de documentation</a>
+                                        <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                            <a class="btn btn-primary my-auto mr-1" href="{{ path('editRessourceDoc', {'id_project': project.id , 'id_documentation': ressourceDoc.id}) }}">Editer</a>
+                                            <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#ressource-delete-confirm{{ index }}">Supprimer</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            {% embed 'components/_modal.html.twig' with {'modalId': "ressource-delete-confirm#{index}"} %}
+                                {% block header %}
+                                    <h3>Veuillez confirmer la suppression</h3>
+                                {% endblock %}
+                                {% block body %}
+                                    <p>Êtes-vous sûr(e) de vouloir supprimer la ressource de documentation {{ ressourceDoc.name}}</p>
+                                {% endblock %}
+                                {% block footer %}
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                    <a href="{{ path('deleteRessourceDoc', {'id_project' : project.id,  'id_documentation': ressourceDoc.id}) }}" class="btn btn-primary">Oui</a>
+                                {% endblock %}
+                            {% endembed %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p> Vous n'avez pour l'instant créé aucun ressource de documentation.</p>
+                {% endif %}
+                <a class="btn btn-primary mt-3" href="{{ path('createRessourceDoc', {'id_project' : project.id}) }}">Créer un ressource Doc</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

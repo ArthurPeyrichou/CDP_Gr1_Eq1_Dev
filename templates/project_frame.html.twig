@@ -93,6 +93,22 @@
                         </a>
                     </div>
                 </li>
+                <li class="py-sm-2">
+                    <a href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {#<img class="icon" src="{{ asset('build/images/documentation.svg') }}" alt="Documentation" style="max-width: 30px;">#}
+                        <span class="d-none d-sm-inline">Documentation</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ path('ressourcesDocList', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/list.svg') }}" alt="Documentations">
+                            <span class="d-none d-sm-inline">Liste des ressourcesDoc</span>
+                        </a>
+                        <a class="dropdown-item"  href="{{ path('createRessourceDoc', {'id_project': project.id}) }}">
+                            <img class="icon" src="{{ asset('build/images/add.svg') }}" alt="NewDocumentation">
+                            <span class="d-none d-sm-inline">Nouvelle documentation</span>
+                        </a>
+                    </div>
+                </li>
             </ul>
         </div>
         <div id="content" style="padding-top: 10%;">

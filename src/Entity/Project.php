@@ -69,6 +69,11 @@ class Project
      */
     private $tests;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Documentation", mappedBy="project")
+     */
+    private $ressourcesDoc;
+
     public function __construct($owner, $name, $description, $creationDate)
     {
         $this->owner = $owner;
@@ -81,6 +86,7 @@ class Project
 
         $this->sprints = new ArrayCollection();
         $this->releases = new ArrayCollection();
+        $this->ressourcesDoc = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -315,6 +321,37 @@ class Project
             // set the owning side to null (unless already changed)
             if ($test->getProject() === $this) {
                 $test->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Documentation[]
+     */
+    public function getRessourcesDoc(): Collection
+    {
+        return $this->ressourcesDoc;
+    }
+
+    public function addRessourcesDoc(Documentation $ressourcesDoc): self
+    {
+        if (!$this->ressourcesDoc->contains($ressourcesDoc)) {
+            $this->ressourcesDoc[] = $ressourcesDoc;
+            $ressourcesDoc->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRessourcesDoc(Documentation $ressourcesDoc): self
+    {
+        if ($this->ressourcesDoc->contains($ressourcesDoc)) {
+            $this->ressourcesDoc->removeElement($ressourcesDoc);
+            // set the owning side to null (unless already changed)
+            if ($ressourcesDoc->getProject() === $this) {
+                $ressourcesDoc->setProject(null);
             }
         }
 
