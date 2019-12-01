@@ -76,7 +76,21 @@ class SprintController extends AbstractController {
             'user' => $this->getUser()
         ]);
     }
+    /**
+     * @Route("/project/{id_project}/sprints/{id_sprint}", name="sprintDetails", methods={"GET"})
+     */
+    public function viewSprint(Request $request,SprintRepository $sprintRepository,$id_project,$id_sprint): Response
+    {   $project = $this->projectRepository->find($id_project);
+        $sprint= $sprintRepository->findOneBy([
+            'id'=> $id_sprint
+        ]);
+        $tasks=$sprint->getTasks();
 
+        return $this->render('sprint/sprint_details.html.twig',
+            [   'project'=> $project,
+                'sprint' => $sprint
+            ]);
+    }
     /**
      * @Route("/project/{id_project}/sprints/{id_sprint}/edit", name="editSprint")
      */

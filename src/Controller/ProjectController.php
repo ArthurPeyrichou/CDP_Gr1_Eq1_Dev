@@ -87,7 +87,6 @@ class ProjectController extends AbstractController {
                 return $this->redirectToRoute('dashboard');
             }
         }
-
         return $this->render('project/project_details.html.twig',
         [
             'status' => $status,

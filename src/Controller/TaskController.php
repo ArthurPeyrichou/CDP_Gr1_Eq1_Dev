@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\EntityException\InvalidStatusTransitionException;
 use App\Form\TaskType;
 use App\Repository\ProjectRepository;
+use App\Repository\SprintRepository;
 use App\Repository\TaskRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,32 +20,35 @@ class TaskController extends AbstractController
     private $taskRepository;
     private $notifications;
     private $projectRepository;
+    private $sprintRepository;
 
-    public function __construct(TaskRepository $taskRepository, NotificationService $notifications, ProjectRepository $projectRepository)
+    public function __construct(TaskRepository $taskRepository, NotificationService $notifications, ProjectRepository $projectRepository,SprintRepository $sprintRepository)
     {
         $this->taskRepository = $taskRepository;
         $this->notifications = $notifications;
         $this->projectRepository = $projectRepository;
+        $this->sprintRepository=$sprintRepository;
     }
 
     /**
-     * @Route("/project/{id_project}/tasks", name="tasksList", methods={"GET"})
+     * @Route("/project/{id_project}/sprints/{id_sprint}/tasks", name="tasksList", methods={"GET"})
      */
-    public function viewTasks($id_project)
+    public function viewTasks($id_project,$id_sprint)
     {
         $project = $this->projectRepository->find($id_project);
+        $sprint=$this->sprintRepository->find($id_sprint);
+        $todos = $this->taskRepository->getToDo($project,$sprint);
+        $doings = $this->taskRepository->getDoing($project,$sprint);
+        $dones = $this->taskRepository->getDone($project,$sprint);
 
-        $todos = $this->taskRepository->getToDo($project);
-        $doings = $this->taskRepository->getDoing($project);
-        $dones = $this->taskRepository->getDone($project);
-
-        $manDaysStat = $this->taskRepository->getProportionEstimationManDays( $project);
-        $statusStat = $this->taskRepository->getProportionStatus( $project);
-        $memberStat = $this->taskRepository->getProportionMembersAssociated( $project);
-        $memberMansDayStat = $this->taskRepository->getProportionMansDPerMembersAssociated($project);
+        $manDaysStat = $this->taskRepository->getProportionEstimationManDays( $project,$sprint);
+        $statusStat = $this->taskRepository->getProportionStatus( $project,$sprint);
+        $memberStat = $this->taskRepository->getProportionMembersAssociated( $project,$sprint);
+        $memberMansDayStat = $this->taskRepository->getProportionMansDPerMembersAssociated($project,$sprint);
 
         return $this->render('task/task_list.html.twig', [
             'project' => $project,
+            'sprint' => $sprint,
             'user' => $this->getUser(),
             'manDaysStat' => $manDaysStat,
             'statusStat' => $statusStat,
@@ -57,12 +61,13 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("/project/{id_project}/tasks/new", name="createTask")
+     * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/new", name="createTask")
      */
-    public function createTask(Request $request, EntityManagerInterface $entityManager, $id_project)
+    public function createTask(Request $request, EntityManagerInterface $entityManager, $id_project,$id_sprint)
     {
         $project = $this->projectRepository->find($id_project);
-        $nextNumber = $this->taskRepository->getNextNumber($project);
+        $sprint= $this->sprintRepository->find($id_sprint);
+        $nextNumber = $this->taskRepository->getNextNumber($project,$sprint);
         $form = $this->createForm(TaskType::class, ['number' => $nextNumber], [
             TaskType::PROJECT => $project
         ]);
@@ -77,7 +82,7 @@ class TaskController extends AbstractController
                 $developper = $data['developper'];
                 $relatedIssues = $data['relatedIssues']->toArray();
 
-                $task = new Task($number, $description, $requiredManDays, $relatedIssues, $project, $developper);
+                $task = new Task($number, $description, $requiredManDays, $relatedIssues, $project, $developper,$sprint);
                 $entityManager->persist($task);
                 $entityManager->flush();
 
@@ -87,7 +92,8 @@ class TaskController extends AbstractController
             }
 
             return $this->redirectToRoute('tasksList', [
-                'id_project' => $id_project
+                'id_project' => $id_project,
+                'id_sprint' => $id_sprint
             ]);
         }
 
@@ -99,14 +105,16 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("/project/{id_project}/tasks/{id_task}/edit", name="editTask")
+     * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/{id_task}/edit", name="editTask")
      */
-    public function editTask(Request $request, EntityManagerInterface $entityManager, $id_project, $id_task)
+    public function editTask(Request $request, EntityManagerInterface $entityManager,$id_sprint, $id_project, $id_task)
     {
         $project = $this->projectRepository->find($id_project);
+        $sprint= $this->sprintRepository->find($id_sprint);
         $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
-            'project' => $project
+            'project' => $project,
+            'sprint' => $sprint
         ]);
         $form = $this->createForm(TaskType::class, $task, [
             TaskType::PROJECT => $project
@@ -122,7 +130,8 @@ class TaskController extends AbstractController
                 $this->notifications->addError($e->getMessage());
             }
             return $this->redirectToRoute('tasksList', [
-                'id_project' => $project->getId()
+                'id_project' => $project->getId(),
+                'id_sprint' => $id_sprint
             ]);
         }
 
@@ -134,11 +143,12 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("/project/{id_project}/tasks/{id_task}/delete", name="deleteTask")
+     * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/{id_task}/delete", name="deleteTask")
      */
-    public function deleteTask(EntityManagerInterface $entityManager, $id_project, $id_task)
+    public function deleteTask(EntityManagerInterface $entityManager, $id_sprint,$id_project, $id_task)
     {
         $project = $this->projectRepository->find($id_project);
+        $sprint= $this->sprintRepository->find($id_sprint);
         $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
             'project' => $project
@@ -156,21 +166,24 @@ class TaskController extends AbstractController
             }
         }
         return $this->redirectToRoute('tasksList', [
-            'id_project' => $id_project
+            'id_project' => $id_project,
+                 'id_sprint' => $id_sprint
         ]);
     }
 
     /**
-     * @Route("/project/{id_project}/tasks/{id_task}/{status}", name="changeTaskStatus", requirements={
+     * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/{id_task}/{status}", name="changeTaskStatus", requirements={
      *     "status"="^doing|done$"
      * })
      */
-    public function changeTaskStatus(EntityManagerInterface $entityManager, $id_project, $id_task, $status)
+    public function changeTaskStatus(EntityManagerInterface $entityManager, $id_project,$id_sprint, $id_task, $status)
     {
         $project = $this->projectRepository->find($id_project);
+        $sprint= $this->sprintRepository->find($id_sprint);
         $task = $this->taskRepository->findOneBy([
             'id' => $id_task,
-            'project' => $project
+            'project' => $project,
+            'sprint' => $sprint
         ]);
 
         try {
@@ -187,7 +200,8 @@ class TaskController extends AbstractController
         }
 
         return $this->redirectToRoute('tasksList', [
-            'id_project' => $id_project
+            'id_project' => $id_project,
+            'id_sprint' => $id_sprint
         ]);
     }
 

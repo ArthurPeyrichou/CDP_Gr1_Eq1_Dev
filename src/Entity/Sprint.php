@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -49,6 +51,11 @@ class Sprint
      */
     private $estimated_duration;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="sprint")
+     */
+    private $tasks;
+
 
     public function __construct($project, $name, $description, $startDate,$estimated_duration)
     {
@@ -57,6 +64,7 @@ class Sprint
         $this->description = $description;
         $this->startDate = $startDate;
         $this->estimated_duration=$estimated_duration;
+        $this->tasks = new ArrayCollection();
 
     }
 
@@ -134,6 +142,37 @@ class Sprint
     public function setEstimatedDuration(float $estimated_duration): self
     {
         $this->estimated_duration = $estimated_duration;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setSprint($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+            // set the owning side to null (unless already changed)
+            if ($task->getSprint() === $this) {
+                $task->setSprint(null);
+            }
+        }
 
         return $this;
     }

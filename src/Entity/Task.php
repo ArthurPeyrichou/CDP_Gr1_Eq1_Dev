@@ -60,8 +60,14 @@ class Task
      */
     private $project;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Sprint", inversedBy="tasks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $sprint;
+
     public function __construct(int $number, string $description, float $requiredManDays,
-                                array $relatedIssues, Project $project, ?Member $developper)
+                                array $relatedIssues, Project $project, ?Member $developper,Sprint $sprint)
     {
         $this->number = $number;
         $this->description = $description;
@@ -70,6 +76,7 @@ class Task
         $this->project = $project;
         $this->relatedIssues = new ArrayCollection($relatedIssues);
         $this->status = self::TODO;
+        $this->sprint=$sprint;
     }
 
     public function getId(): ?int
@@ -182,6 +189,18 @@ class Task
     public function setProject(Project $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getSprint(): ?Sprint
+    {
+        return $this->sprint;
+    }
+
+    public function setSprint(?Sprint $sprint): self
+    {
+        $this->sprint = $sprint;
 
         return $this;
     }

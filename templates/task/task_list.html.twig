@@ -7,7 +7,7 @@
         {% if todos is not empty or doings is not empty or dones is not empty %}
             <div class="row">
                 <div class="col-12 px-0 px-lg-1 text-center mb-2">
-                    <a class="btn btn-primary" href="{{ path('createTask', {'id_project' : project.id}) }}">Créer une tâche</a>
+                    <a class="btn btn-primary" href="{{ path('createTask', {'id_project' : project.id,'id_sprint':sprint.id}) }}">Créer une tâche</a>
                 </div>
                 <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
                     <div class="card card-height" style="overflow-y: scroll; height: 450px;">
@@ -20,11 +20,11 @@
                                             {% block buttons %}
                                                 <div class="text-center row justify-content-around">
                                                     <a class="col-5 btn px-2 border {{ getClassForStatus("doing")}}"
-                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing'}) }}">
+                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing', 'id_sprint':sprint.id}) }}">
                                                         En cours
                                                     </a>
                                                     <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
-                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done'}) }}">
+                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done', 'id_sprint':sprint.id}) }}">
                                                         Fait
                                                     </a>
                                                 </div>
@@ -47,7 +47,7 @@
                                             {% block buttons %}
                                                 <div class="text-center row justify-content-around">
                                                     <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
-                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done'}) }}">
+                                                       href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done','id_sprint':sprint.id}) }}">
                                                         Fait
                                                     </a>
                                                 </div>
@@ -79,7 +79,7 @@
                 <div class="card-body">
                     <h3 class="mb-4">Tâches</h3>
                     <p>Vous n'avez pour l'instant créé aucune tâche.</p>
-                    <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id}) }}">Créer une tâche</a>
+                    <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
                 </div>
             </div>
         {% endif %}
