@@ -77,6 +77,10 @@ class Task
         $this->relatedIssues = new ArrayCollection($relatedIssues);
         $this->status = self::TODO;
         $this->sprint=$sprint;
+
+        foreach($this->relatedIssues as $issue) {
+            $issue->addTask($this);
+        }
     }
 
     public function getId(): ?int

@@ -23,7 +23,11 @@
                                             <span>| Priorité :</span>
                                             <span class="font-weight-bold badge badge-light" style="font-size: 110%;">{{ issue.priority |capitalize }}</span>
                                             <span>| Statut :</span>
-                                            <span class="font-weight-bold {{ getClassForStatus(issue.status)}} badge" style="font-size: 110%;">{{ issue.status |capitalize }}</span>
+                                            <span class="font-weight-bold {{ getClassForStatus(issue.status)}} badge" style="font-size: 110%;">{{ issue.status |capitalize }}
+                                            {% if issue.status  == "doing" %}
+                                            {{ issue.getProportionOfDone() }}
+                                            {% endif %}
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">

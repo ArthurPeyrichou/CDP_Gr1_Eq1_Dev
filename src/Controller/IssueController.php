@@ -48,9 +48,8 @@ class IssueController extends AbstractController {
                 $description= $data['description'];
                 $difficulty= 0;
                 $priority=$data['priority'];
-                $status=$data['status'];
                 $sprint = $data['sprint'];
-                $issue = new Issue($nextNumber, $description, $difficulty, $priority, $status, $project, $sprint);
+                $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprint);
                 $entityManager->persist($issue);
                 $entityManager->flush();
 
@@ -155,6 +154,12 @@ class IssueController extends AbstractController {
             try {
                 $entityManager->remove($issue);
                 $entityManager->flush();
+
+                foreach($issue->getTasks() as $task) {
+                    $task->removeRelatedIssue($issue);
+                    $entityManager->persist($task);
+                    $entityManager->flush();
+                }
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());

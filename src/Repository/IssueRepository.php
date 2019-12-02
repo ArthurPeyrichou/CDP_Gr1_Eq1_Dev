@@ -6,6 +6,8 @@ use App\Entity\Issue;
 use App\Entity\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @method Issue|null find($id, $lockMode = null, $lockVersion = null)
@@ -34,13 +36,34 @@ class IssueRepository extends ServiceEntityRepository
 
     public function getProportionStatus(Project $project): array
     {
-        return $this->createQueryBuilder('i')
-            ->select('Count(i.status) as count, i.status as value')
-            ->where('i.project = :project')
-            ->setParameter('project', $project)
-            ->groupBy('i.status')
-            ->getQuery()
-            ->getResult();
+        $todo = new ArrayCollection();
+        $doing = new ArrayCollection();
+        $done = new ArrayCollection();
+
+        $todo['count'] = 0;
+        $todo['value'] = 'Todo';
+        $doing['count'] = 0;
+        $doing['value'] = 'Doing';
+        $done['count'] = 0;
+        $done['value'] = 'Done';
+
+        foreach($this->findAll() as $issue){
+            if($issue->getProject()->getId() == $project->getId()) {
+                switch($issue->getStatus()){
+                    case Issue::TODO :
+                        $todo['count']+=1;
+                    break;
+                    case Issue::DOING :
+                        $doing['count']+=1;
+                    break;
+                    case Issue::DONE :
+                        $done['count']+=1;
+                    break;
+                }
+            }
+        }
+        
+        return array($todo, $doing, $done);
     }
 
     public function getProportionPriority(Project $project): array
@@ -75,19 +98,22 @@ class IssueRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
         
-        $otherPoints = $this->createQueryBuilder('i')
-            ->select('SUM(i.difficulty) as count, s.number as value')
-            ->where('i.project = :project')
-            ->andwhere('i.status = :done')
-            ->setParameter('project', $project)
-            ->setParameter('done', "done")
-            ->groupBy('i.sprint')
-            ->join('i.sprint', 's')
-            ->getQuery()
-            ->getResult();
+        $res = array(); 
+        foreach($this->findAll() as $issue){
+            
+            if($issue->getStatus() == Issue::DONE && $issue->getProject()->getId() == $project->getId()) {
+                $line = $issue->getSprint()->getNumber()-1;
+                if( empty($res[$line] ) ){
+                    $res[$line]["value"] = $line + 1;
+                    $res[$line]["count"] = $issue->getDifficulty();
+                } else {
+                    $res[$line]["count"]+= $issue->getDifficulty();
+                }
+            }
+        }
 
         $cpt = 0;
-        foreach($otherPoints as $point) {
+        foreach($res as $point) {
             $cpt += $point['count'];
             $point['count'] = $points[0]['count'] - $cpt;
             $points[] = $point;

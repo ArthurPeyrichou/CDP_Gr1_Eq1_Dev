@@ -47,15 +47,14 @@ class Issue
     private $priority;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $status;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Sprint")
      */
     private $sprint;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Task", mappedBy="relatedIssues")
+     */
+    private $tasks;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="issues")
@@ -63,15 +62,15 @@ class Issue
      */
     private $project;
 
-    public function __construct($number, $description, $difficulty, $priority, $status, $project, $sprint = null)
+    public function __construct($number, $description, $difficulty, $priority, $project, $sprint = null)
     {
         $this->number = $number;
         $this->description = $description;
         $this->difficulty = $difficulty;
         $this->priority = $priority;
-        $this->status = $status;
         $this->project = $project;
         $this->sprint = $sprint;
+        $this->tasks = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -128,14 +127,31 @@ class Issue
 
     public function getStatus(): string
     {
-        return $this->status;
+        if(count($this->tasks) == 0)
+            return self::TODO;
+        
+        foreach($this->tasks as $task) {
+            if($task->getStatus() == Task::DOING)
+                return self::DOING;
+        }  
+        
+        return $this->tasks[0]->getStatus();
+        
     }
 
-    public function setStatus(string $status): self
+    public function getProportionOfDone(): string
     {
-        $this->status = $status;
-
-        return $this;
+        if(count($this->tasks) == 0)
+            return "0%";
+        
+        $cptDone = 0;
+        foreach($this->tasks as $task) {
+            if($task->getStatus() == Task::DONE){
+                $cptDone+=1;
+            }
+        }  
+        
+        return intval($cptDone / count($this->tasks) * 100.0) . "%";
     }
 
     public function getSprint(): ?Sprint
@@ -158,6 +174,34 @@ class Issue
     public function setProject(?Project $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->addRelatedIssue($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->relatedIssues->removeElement($task);
+            $task->removeRelatedIssue($this);
+        }
 
         return $this;
     }

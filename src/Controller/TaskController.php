@@ -86,6 +86,10 @@ class TaskController extends AbstractController
                 $entityManager->persist($task);
                 $entityManager->flush();
 
+                foreach($relatedIssues as $issue) {
+                    $entityManager->persist($issue);
+                    $entityManager->flush();
+                }
                 $this->notifications->addSuccess("Tâche {$task->getNumber()} créée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -125,6 +129,11 @@ class TaskController extends AbstractController
             try {
                 $entityManager->persist($task);
                 $entityManager->flush();
+                
+                foreach($task->getRelatedIssues() as $issue) {
+                    $entityManager->persist($issue);
+                    $entityManager->flush();
+                }
                 $this->notifications->addSuccess("Tâche {$task->getNumber()} éditée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -160,6 +169,12 @@ class TaskController extends AbstractController
             try {
                 $entityManager->remove($task);
                 $entityManager->flush();
+                
+                foreach($task->getRelatedIssues() as $issue) {
+                    $issue->removeTask($task);
+                    $entityManager->persist($issue);
+                    $entityManager->flush();
+                }
                 $this->notifications->addSuccess("Tâche {$task->getNumber()} supprimée avec succès.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());

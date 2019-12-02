@@ -51,17 +51,6 @@ class IssueType extends AbstractType
                 ]
 
             ])
-            ->add('status',ChoiceType::class, [
-                'label' => 'Statut',
-                'choices' => [
-                    'ToDo' => Issue::TODO,
-                    'Doing' => Issue::DOING,
-                    'Done' => Issue::DONE
-                ],
-                'preferred_choices' => [
-                    Issue::TODO
-                ]
-            ])
             ->add('sprint', EntityType::class, [
                 'label' => 'Sprints associées',
                 'class' => Sprint::class,
