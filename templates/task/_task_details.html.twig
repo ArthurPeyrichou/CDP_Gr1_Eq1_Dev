@@ -17,13 +17,13 @@ ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" value="
         <div class="ellipsis">{{ task.description }}</div>
     </a>
     <div class="collapse mw-100" id="taskDetail{{ task.id }}">
-        <span>{{ task.description }}</span>
+        <span>Jour/H : {{ task.requiredManDays }}</span>
         <h6 class="mt-1 mb-0">Issues associées</h6>
         <ul class="mb-4">
             {% for issue in task.relatedIssues %}
                 <li>
-                    <span class="font-weight-bold">{{ issue.number }}</span>
-                    <div class="ellipsis">{{ issue.description }}</div>
+                    
+                    <div class="ellipsis"><span class="font-weight-bold">{{ issue.number }}</span>: {{ issue.description }}</div>
                 </li>
             {% endfor %}
         </ul>

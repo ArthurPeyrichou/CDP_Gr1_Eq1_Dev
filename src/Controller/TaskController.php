@@ -96,7 +96,7 @@ class TaskController extends AbstractController
                 $this->notifications->addError($e->getMessage());
             }
 
-            return $this->redirectToRoute('sprint/sprintDetails', [
+            return $this->redirectToRoute('sprintDetails', [
                 'id_project' => $id_project,
                 'id_sprint' => $id_sprint
             ]);
