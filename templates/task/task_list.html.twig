@@ -139,7 +139,10 @@
            if(event.target.getAttribute('class').includes('doing')){
                 ref = ref.replace('done','doing');
             }
-            window.location = ref;
+
+            var ajax = new XMLHttpRequest();
+            ajax.open("GET", ref, true);
+            ajax.send();
         }
 
         function showGraph(title) {
