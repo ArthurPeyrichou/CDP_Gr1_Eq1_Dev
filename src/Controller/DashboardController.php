@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\InvitationRepository;
+use App\Service\NotificationService;
 use App\Repository\PlanningPokerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
