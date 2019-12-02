@@ -83,7 +83,7 @@ class TaskTest extends TestCase
             $member = new Member('name', 'email@email.com', 'pass');
             $project = new Project($member, 'projName', 'projDesc', new \DateTimeImmutable());
             $this->sprint = new Sprint($project, 'Sprint 1', 'A test sprint',
-                new \DateTimeImmutable('2019-01-01'), new \DateTimeImmutable('2019-01-15'));
+                new \DateTimeImmutable('2019-01-01'), 14);
         }
         return $this->sprint;
     }
