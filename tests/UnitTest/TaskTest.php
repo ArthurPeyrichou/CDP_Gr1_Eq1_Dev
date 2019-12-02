@@ -6,6 +6,7 @@ namespace App\Tests\UnitTest;
 
 use App\Entity\Member;
 use App\Entity\Project;
+use App\Entity\Sprint;
 use App\Entity\Task;
 use App\EntityException\InvalidStatusTransitionException;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class TaskTest extends TestCase
 {
 
-    private $project;
+    private $sprint;
 
     /**
      * @dataProvider getTodoTasks
@@ -52,9 +53,9 @@ class TaskTest extends TestCase
     public function getTodoTasks(): array
     {
         return [
-            [new Task(1, 'abcd', 1, [], $this->getTestProject(), null)],
-            [new Task(2, 'dcab', 0.2, [], $this->getTestProject(), null)],
-            [new Task(3, 'test', 0, [], $this->getTestProject(), null)]
+            [new Task(1, 'abcd', 1, [], null, $this->getTestSprint())],
+            [new Task(2, 'dcab', 0.2, [], null, $this->getTestSprint())],
+            [new Task(3, 'test', 0, [], null, $this->getTestSprint())]
         ];
     }
 
@@ -76,13 +77,15 @@ class TaskTest extends TestCase
         }, $this->getDoingTasks());
     }
 
-    private function getTestProject(): Project
+    private function getTestSprint(): Sprint
     {
-        if (!$this->project) {
+        if (!$this->sprint) {
             $member = new Member('name', 'email@email.com', 'pass');
-            $this->project = new Project($member, 'projName', 'projDesc', new \DateTimeImmutable());
+            $project = new Project($member, 'projName', 'projDesc', new \DateTimeImmutable());
+            $this->sprint = new Sprint($project, 'Sprint 1', 'A test sprint',
+                new \DateTimeImmutable('2019-01-01'), new \DateTimeImmutable('2019-01-15'));
         }
-        return $this->project;
+        return $this->sprint;
     }
 
 }
