@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Tests\DBIntegration;
+namespace App\Tests\Integration\DB;
 
 
 use App\Entity\Project;
