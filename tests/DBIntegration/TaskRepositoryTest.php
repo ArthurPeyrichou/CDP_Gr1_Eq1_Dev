@@ -4,6 +4,7 @@
 namespace App\Tests\DBIntegration;
 
 
+use App\Entity\Sprint;
 use App\Entity\Task;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -29,38 +30,48 @@ class TaskRepositoryTest extends KernelTestCase
 
     public function testGetNextNumber(): void
     {
-        $issues = $this->taskRepository->findAll();
+        foreach ($this->getTestSprints() as $sprint) {
+            self::assertEquals($this->computeNextTaskNumber($sprint), $this->taskRepository->getNextNumber($sprint));
+        }
+    }
 
-        $maxNumberInProject1 = array_reduce($issues, function(int $number, Task $task) {
-            return $task->getProject()->getId() == $this->project1->getId() ? max($number, $task->getNumber()) : $number;
-        }, 0);
-        $maxNumberInProject2 = array_reduce($issues, function(int $number, Task $task) {
-            return $task->getProject()->getId() == $this->project2->getId() ? max($number, $task->getNumber()) : $number;
-        }, 0);
-
-        $this->assertEquals($maxNumberInProject1 + 1, $this->taskRepository->getNextNumber($this->project1));
-        $this->assertEquals($maxNumberInProject2 + 1, $this->taskRepository->getNextNumber($this->project2));
+    private function computeNextTaskNumber(Sprint $sprint) : int
+    {
+        return  array_reduce($sprint->getTasks(), function(int $max, Task $task) {
+                return max($max, $task->getNumber());
+            }, 0) + 1;
     }
 
     public function testGetDone(): void
     {
-        foreach ($this->taskRepository->getDone($this->project1) as $task) {
-            self::assertEquals(Task::DONE, $task->getStatus());
+        foreach ($this->getTestSprints() as $sprint) {
+            foreach ($this->taskRepository->getDone($sprint) as $task) {
+                self::assertEquals(Task::DONE, $task->getStatus());
+            }
         }
     }
 
     public function testGetDoing(): void
     {
-        foreach ($this->taskRepository->getDoing($this->project1) as $task) {
-            self::assertEquals(Task::DOING, $task->getStatus());
+        foreach ($this->getTestSprints() as $sprint) {
+            foreach ($this->taskRepository->getDoing($sprint) as $task) {
+                self::assertEquals(Task::DOING, $task->getStatus());
+            }
         }
     }
 
     public function testGetToDo(): void
     {
-        foreach ($this->taskRepository->getToDo($this->project1) as $task) {
-            self::assertEquals(Task::TODO, $task->getStatus());
+        foreach ($this->getTestSprints() as $sprint) {
+            foreach ($this->taskRepository->getToDo($sprint) as $task) {
+                self::assertEquals(Task::TODO, $task->getStatus());
+            }
         }
+    }
+
+    private function getTestSprints(): array
+    {
+        return array_merge($this->project1->getSprints()->getValues(), $this->project2->getSprints()->getValues());
     }
 
     protected function tearDown(): void
