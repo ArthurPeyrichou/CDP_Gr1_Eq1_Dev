@@ -33,8 +33,6 @@ class Sprint
      */
     private $startDate;
 
-
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="sprints")
      * @ORM\JoinColumn(nullable=false)
@@ -47,7 +45,7 @@ class Sprint
     private $release;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="integer")
      */
     private $estimated_duration;
 
@@ -57,13 +55,14 @@ class Sprint
     private $tasks;
 
 
-    public function __construct($project, $name, $description, $startDate,$estimated_duration)
+    public function __construct(Project $project, int $number, string $description, \DateTimeInterface $startDate,
+                                int $estimated_duration)
     {
         $this->project = $project;
-        $this->number = $name;
+        $this->number = $number;
         $this->description = $description;
         $this->startDate = $startDate;
-        $this->estimated_duration=$estimated_duration;
+        $this->estimated_duration = $estimated_duration;
         $this->tasks = new ArrayCollection();
 
     }
@@ -134,12 +133,12 @@ class Sprint
         return $this;
     }
 
-    public function getEstimatedDuration(): ?float
+    public function getEstimatedDuration(): int
     {
         return $this->estimated_duration;
     }
 
-    public function setEstimatedDuration(float $estimated_duration): self
+    public function setEstimatedDuration(int $estimated_duration): self
     {
         $this->estimated_duration = $estimated_duration;
 
