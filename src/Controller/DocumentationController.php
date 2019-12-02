@@ -4,11 +4,9 @@ namespace App\Controller;
 
 
 use App\Entity\Documentation;
-use App\Entity\Project;
 use App\Form\DocumentationType;
 use App\Repository\DocumentationRepository;
 use App\Service\NotificationService;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,9 +35,7 @@ class DocumentationController extends AbstractController
     {
         $project = $this->projectRepository->find($id_project);
 
-        $form = $this->createForm(DocumentationType::class, [], [
-            DocumentationType::PROJECT => $project
-        ]);
+        $form = $this->createForm(DocumentationType::class);
 
         $form->handleRequest($request);
 
@@ -88,9 +84,7 @@ class DocumentationController extends AbstractController
     {
         $project = $this->projectRepository->find($id_project);
         $documentation = $this->documentationRepository->find($id_documentation);
-        $form = $this->createForm(DocumentationType::class, $documentation, [
-            DocumentationType::PROJECT => $project
-        ]);
+        $form = $this->createForm(DocumentationType::class, $documentation);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

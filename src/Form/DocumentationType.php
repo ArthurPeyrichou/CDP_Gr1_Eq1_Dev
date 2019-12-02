@@ -2,9 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Documentation;
-use App\Entity\Project;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -15,9 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DocumentationType extends AbstractType
 {    public const PROJECT = 'project';
     public function buildForm(FormBuilderInterface $builder, array $options)
-    {  /**@var $project Project*/
-        $project = $options[self::PROJECT];
-
+    {
         $builder
             ->add('name', TextType::class,[
                 'label' => 'Nom',
@@ -45,6 +40,5 @@ class DocumentationType extends AbstractType
     {
         $resolver->setDefaults([
         ]);
-        $resolver->setRequired([self::PROJECT]);
     }
 }
