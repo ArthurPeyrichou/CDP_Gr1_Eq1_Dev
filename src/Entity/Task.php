@@ -55,28 +55,21 @@ class Task
     private $relatedIssues;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="tasks")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $project;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Sprint", inversedBy="tasks")
      * @ORM\JoinColumn(nullable=false)
      */
     private $sprint;
 
     public function __construct(int $number, string $description, float $requiredManDays,
-                                array $relatedIssues, Project $project, ?Member $developper,Sprint $sprint)
+                                array $relatedIssues, ?Member $developper, Sprint $sprint)
     {
         $this->number = $number;
         $this->description = $description;
         $this->requiredManDays = $requiredManDays;
         $this->developper = $developper;
-        $this->project = $project;
         $this->relatedIssues = new ArrayCollection($relatedIssues);
         $this->status = self::TODO;
-        $this->sprint=$sprint;
+        $this->sprint = $sprint;
 
         foreach($this->relatedIssues as $issue) {
             $issue->addTask($this);
@@ -181,18 +174,6 @@ class Task
         if ($this->relatedIssues->contains($relatedIssue)) {
             $this->relatedIssues->removeElement($relatedIssue);
         }
-
-        return $this;
-    }
-
-    public function getProject(): Project
-    {
-        return $this->project;
-    }
-
-    public function setProject(Project $project): self
-    {
-        $this->project = $project;
 
         return $this;
     }

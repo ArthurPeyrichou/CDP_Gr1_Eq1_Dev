@@ -50,11 +50,6 @@ class Project
     private $issues;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    private $tasks;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Sprint", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $sprints;
@@ -82,7 +77,6 @@ class Project
         $this->creationDate = $creationDate;
         $this->members = new ArrayCollection();
         $this->issues = new ArrayCollection();
-        $this->tasks = new ArrayCollection();
 
         $this->sprints = new ArrayCollection();
         $this->releases = new ArrayCollection();
@@ -197,37 +191,6 @@ class Project
             // set the owning side to null (unless already changed)
             if ($issue->getProject() === $this) {
                 $issue->setProject(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Task[]
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
-    }
-
-    public function addTask(Task $task): self
-    {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks[] = $task;
-            $task->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTask(Task $task): self
-    {
-        if ($this->tasks->contains($task)) {
-            $this->tasks->removeElement($task);
-            // set the owning side to null (unless already changed)
-            if ($task->getProject() === $this) {
-                $task->setProject(null);
             }
         }
 
