@@ -2,6 +2,8 @@
     "devDependencies": {
         "@symfony/webpack-encore": "^0.28.0",
         "core-js": "^3.0.0",
+        "eslint": "^6.7.2",
+        "eslint-config-google": "^0.14.0",
         "regenerator-runtime": "^0.13.2"
     },
     "license": "UNLICENSED",
