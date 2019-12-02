@@ -96,7 +96,7 @@ class TaskController extends AbstractController
                 $this->notifications->addError($e->getMessage());
             }
 
-            return $this->redirectToRoute('tasksList', [
+            return $this->redirectToRoute('sprint/sprintDetails', [
                 'id_project' => $id_project,
                 'id_sprint' => $id_sprint
             ]);
@@ -138,7 +138,7 @@ class TaskController extends AbstractController
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }
-            return $this->redirectToRoute('tasksList', [
+            return $this->redirectToRoute('sprintDetails', [
                 'id_project' => $id_project,
                 'id_sprint' => $id_sprint
             ]);
@@ -146,6 +146,7 @@ class TaskController extends AbstractController
 
         return $this->render('task/edit.html.twig', [
             'project' => $project,
+            'sprint' => $sprint,
             'user' => $this->getUser(),
             'form' => $form->createView()
         ]);
@@ -179,7 +180,7 @@ class TaskController extends AbstractController
                 $this->notifications->addError($e->getMessage());
             }
         }
-        return $this->redirectToRoute('tasksList', [
+        return $this->redirectToRoute('sprintDetails', [
             'id_project' => $id_project,
             'id_sprint' => $id_sprint
         ]);
@@ -211,7 +212,7 @@ class TaskController extends AbstractController
             $this->notifications->addError($e->getMessage());
         }
 
-        return $this->redirectToRoute('tasksList', [
+        return $this->redirectToRoute('sprintDetails', [
             'id_project' => $id_project,
             'id_sprint' => $id_sprint
         ]);

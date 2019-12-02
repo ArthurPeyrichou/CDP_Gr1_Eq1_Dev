@@ -15,7 +15,7 @@
                 {{ form_row(form.developper) }}
                 {{ form_row(form.relatedIssues) }}
                 <button type="submit" class="btn btn-primary">Modifier la tâche</button>
-                <a class="btn btn-outline-danger" href="{{ path('tasksList', {'id_project' : project.id}) }}">Annuler</a>
+                <a class="btn btn-outline-danger" href="{{ path('sprintsList', {'id_project' : project.id, 'id_sprint' : sprint.id}) }}">Annuler</a>
                 {{ form_end(form) }}
             </div>
         </div>

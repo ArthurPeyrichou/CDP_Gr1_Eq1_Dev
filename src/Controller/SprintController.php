@@ -6,6 +6,7 @@ use App\Form\SprintType;
 use App\Entity\Sprint;
 use App\Repository\SprintRepository;
 use App\Repository\IssueRepository;
+use App\Repository\TaskRepository;
 use App\Service\NotificationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,17 +82,31 @@ class SprintController extends AbstractController {
     /**
      * @Route("/project/{id_project}/sprints/{id_sprint}", name="sprintDetails", methods={"GET"})
      */
-    public function viewSprint(Request $request,SprintRepository $sprintRepository,$id_project,$id_sprint): Response
-    {   $project = $this->projectRepository->find($id_project);
-        $sprint= $sprintRepository->findOneBy([
-            'id'=> $id_sprint
-        ]);
-        $tasks=$sprint->getTasks();
+    public function viewSprint(Request $request, TaskRepository $taskRepository, $id_project,$id_sprint): Response
+    {   
+        $project = $this->projectRepository->find($id_project);
+        $sprint=$this->sprintRepository->find($id_sprint);
+        $todos = $taskRepository->getToDo($sprint);
+        $doings = $taskRepository->getDoing($sprint);
+        $dones = $taskRepository->getDone($sprint);
 
-        return $this->render('sprint/sprint_details.html.twig',
-            [   'project'=> $project,
-                'sprint' => $sprint
-            ]);
+        $manDaysStat = $taskRepository->getProportionEstimationManDays( $sprint);
+        $statusStat = $taskRepository->getProportionStatus($sprint);
+        $memberStat = $taskRepository->getProportionMembersAssociated($sprint);
+        $memberMansDayStat = $taskRepository->getProportionMansDPerMembersAssociated($sprint);
+
+        return $this->render('sprint/sprint_details.html.twig', [
+            'project' => $project,
+            'sprint' => $sprint,
+            'user' => $this->getUser(),
+            'manDaysStat' => $manDaysStat,
+            'statusStat' => $statusStat,
+            'memberStat' => $memberStat,
+            'memberMansDayStat' => $memberMansDayStat,
+            'todos' => $todos,
+            'doings' => $doings,
+            'dones' => $dones
+        ]);
     }
     /**
      * @Route("/project/{id_project}/sprints/{id_sprint}/edit", name="editSprint")

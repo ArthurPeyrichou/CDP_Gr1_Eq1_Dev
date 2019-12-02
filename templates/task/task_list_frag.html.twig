@@ -1,0 +1,218 @@
+<div class="container">
+    {% if todos is not empty or doings is not empty or dones is not empty %}
+        <div class="row">
+            <div class="col-12 px-0 px-lg-1 text-center mb-2">
+                <a class="btn btn-primary" href="{{ path('createTask', {'id_project' : project.id,'id_sprint':sprint.id}) }}">Créer une tâche</a>
+            </div>
+            <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                <div class="card card-height" style="overflow-y: scroll; height: 450px;">
+                    <div class="card-body">
+                        <h3 class= "{{ getClassForStatus("todo")}} badge" style="display: block; font-size: 110%;">A faire</h3>
+                        <div class="container-fluid">
+                            <ul class="list-unstyled">
+                                {% for task in todos %}
+                                    {% embed 'task/_task_details.html.twig'%}
+                                        {% block buttons %}
+                                            <div class="text-center row justify-content-around">
+                                                <a class="col-5 btn px-2 border {{ getClassForStatus("doing")}}"
+                                                    href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing', 'id_sprint':sprint.id}) }}">
+                                                    En cours
+                                                </a>
+                                                <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
+                                                    href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done', 'id_sprint':sprint.id}) }}">
+                                                    Fait
+                                                </a>
+                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : sprint.id, 'id_task' : task.id}) }}">Editer</a>
+                                                <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
+                                            </div>
+                                        {% endblock %}
+                                    {% endembed %}
+                                    {% embed 'components/_modal.html.twig' with {'modalId': "task-delete-confirm"} %}
+                                        {% block header %}
+                                            <h3>Veuillez confirmer la suppression</h3>
+                                        {% endblock %}
+                                        {% block body %}
+                                            <p>Êtes-vous sûr(e) de vouloir supprimer la tâche {{ task.number }}</p>
+                                        {% endblock %}
+                                        {% block footer %}
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                            <a href="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : sprint.id, 'id_task' : task.id}) }}" class="btn btn-primary">Oui</a>
+                                        {% endblock %}
+                                    {% endembed %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                <div class="card card-height" style="overflow-y: scroll; height: 450px;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="card-body doing">
+                        <h3 class= "{{ getClassForStatus("doing")}} badge" style="display: block; font-size: 110%;">En cours</h3>
+                        <div class="container-fluid">
+                            <ul class="list-unstyled">
+                                {% for task in doings %}
+                                    {% embed 'task/_task_details.html.twig' %}
+                                        {% block buttons %}
+                                            <div class="text-center row justify-content-around">
+                                                <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
+                                                    href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done','id_sprint':sprint.id}) }}">
+                                                    Fait
+                                                </a>
+                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : sprint.id, 'id_task' : task.id}) }}">Editer</a>
+                                                <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
+                                            </div>
+                                        {% endblock %}
+                                    {% endembed %}
+                                    {% embed 'components/_modal.html.twig' with {'modalId': "task-delete-confirm"} %}
+                                        {% block header %}
+                                            <h3>Veuillez confirmer la suppression</h3>
+                                        {% endblock %}
+                                        {% block body %}
+                                            <p>Êtes-vous sûr(e) de vouloir supprimer la tâche {{ task.number }}</p>
+                                        {% endblock %}
+                                        {% block footer %}
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                            <a href="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : sprint.id, 'id_task' : task.id}) }}" class="btn btn-primary">Oui</a>
+                                        {% endblock %}
+                                    {% endembed %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                <div class="card card-height" style="overflow-y: scroll; height: 450px;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="card-body done">
+                        <h3 class= "{{ getClassForStatus("done")}} badge" style="display: block; font-size: 110%;">Faite(s)</h3>
+                        <div class="container-fluid">
+                            <ul class="list-unstyled">
+                                {% for task in dones %}
+                                    {% embed 'task/_task_details.html.twig' %}
+                                        {% block buttons %}
+                                            <div class="text-center row justify-content-around">
+                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : sprint.id, 'id_task' : task.id}) }}">Editer</a>
+                                                <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
+                                            </div>
+                                        {% endblock %}
+                                    {% endembed %}
+                                    {% embed 'components/_modal.html.twig' with {'modalId': "task-delete-confirm"} %}
+                                        {% block header %}
+                                            <h3>Veuillez confirmer la suppression</h3>
+                                        {% endblock %}
+                                        {% block body %}
+                                            <p>Êtes-vous sûr(e) de vouloir supprimer la tâche {{ task.number }}</p>
+                                        {% endblock %}
+                                        {% block footer %}
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                            <a href="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : sprint.id, 'id_task' : task.id}) }}" class="btn btn-primary">Oui</a>
+                                        {% endblock %}
+                                    {% endembed %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <h3 class="mb-4">Tâches</h3>
+                <p>Vous n'avez pour l'instant créé aucune tâche.</p>
+                <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<select id="select-graph" class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
+<option value="Status">Statut</option>
+<option value="JH">Temps estimé</option>
+<option value="Membre">Membres associés</option>
+<option value="JHParMembre">Jour/Homme par Membre</option>
+</select>
+
+<div id="graphic" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
+
+{% set title = "Statut" %}
+{% set function = "Status" %}
+{% set statistic = statusStat %}
+{% include 'graph/graph_column.html.twig' %}
+
+{% set title = "Jour/Homme" %}
+{% set function = "JH" %}
+{% set statistic = manDaysStat %}
+{% include 'graph/graph_column.html.twig' %}
+
+{% set title = "Membre" %}
+{% set function = "Membre" %}
+{% set statistic = memberStat %}
+{% include 'graph/graph_column.html.twig' %}
+
+{% set title = "Jour/Homme par Membre" %}
+{% set function = "JHParMembre" %}
+{% set statistic = memberMansDayStat %}
+{% include 'graph/graph_column.html.twig' %}
+
+<script defer>
+    function dragStart(event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    }
+
+    function dragging(event) {
+        
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        event.preventDefault();
+        var data = event.dataTransfer.getData("Text");
+        event.target.children[1].children[0].appendChild(document.getElementById(data));
+        ref = document.getElementById(data).getAttribute('value');
+        if(event.target.getAttribute('class').includes('doing')){
+            ref = ref.replace('done','doing');
+        }
+
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", ref, true);
+        ajax.send();
+    }
+
+    function showGraph(title) {
+        switch(title){
+            case "Status":
+                showStatus();
+            break;
+            case "JH":
+                showJH();
+            break;
+            case "Membre":
+                showMembre();
+            break;
+            case "JHParMembre":
+                showJHParMembre();
+            break;
+        }
+    }
+
+    function init() {
+        // ajout d'un écouteur d'évènement
+        var el = document.getElementById("select-graph");
+        el.addEventListener("change", 
+        (event) => showGraph(event.target.value)
+        , false);
+    }
+
+    init();
+    showStatus();
+
+</script>

@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="container" style="margin-bottom:10%;">
         <div class="card">
             <div class="card-body">
                 <p class="text-justify" class="card-text">Sprint: {{ sprint.number }}</p>
@@ -21,15 +21,10 @@
               </div>
 
             </div>
-
-            <div class="btn-group btn-group-justified">
-                <a class="btn btn-primary" href="{{ path('tasksList', {'id_project': project.id,'id_sprint': sprint.id}) }}">Listes des tâches associés à ce sprint</a>
-                <a class="btn btn-primary"  href="{{ path('createTask', {'id_project': project.id,'id_sprint': sprint.id}) }}">Créer une tâche</a>
-            </div>
         </div>
     </div>
 
-
+    {% include 'task/task_list_frag.html.twig' %}
 
 {% endblock %}
 
