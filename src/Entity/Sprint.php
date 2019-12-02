@@ -47,7 +47,7 @@ class Sprint
     /**
      * @ORM\Column(type="integer")
      */
-    private $estimated_duration;
+    private $durationInDays;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="sprint")
@@ -56,13 +56,13 @@ class Sprint
 
 
     public function __construct(Project $project, int $number, string $description, \DateTimeInterface $startDate,
-                                int $estimated_duration)
+                                int $durationInDays)
     {
         $this->project = $project;
         $this->number = $number;
         $this->description = $description;
         $this->startDate = $startDate;
-        $this->estimated_duration = $estimated_duration;
+        $this->durationInDays = $durationInDays;
         $this->tasks = new ArrayCollection();
 
     }
@@ -133,14 +133,14 @@ class Sprint
         return $this;
     }
 
-    public function getEstimatedDuration(): int
+    public function getDurationInDays(): int
     {
-        return $this->estimated_duration;
+        return $this->durationInDays;
     }
 
-    public function setEstimatedDuration(int $estimated_duration): self
+    public function setDurationInDays(int $durationInDays): self
     {
-        $this->estimated_duration = $estimated_duration;
+        $this->durationInDays = $durationInDays;
 
         return $this;
     }

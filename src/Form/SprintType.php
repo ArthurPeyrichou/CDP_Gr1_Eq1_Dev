@@ -33,10 +33,10 @@ class SprintType extends AbstractType
                     'placeholder' => 'Date de début de votre sprint'
                 ]
             ])
-            ->add('estimatedDuration',NumberType::class, [
+            ->add('durationInDays',NumberType::class, [
                 'label' => 'Durée du sprint ',
                 'attr' => [
-                    'placeholder' => 'Durée estimé en jour pour réaliser votre sprint  '
+                    'placeholder' => 'Durée du sprint (en jours)'
                 ]
             ]);
     }
