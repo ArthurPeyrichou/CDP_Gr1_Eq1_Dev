@@ -9,6 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PlanningPoker
 {
+
+    public const TIME = 2;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

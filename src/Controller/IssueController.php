@@ -49,11 +49,23 @@ class IssueController extends AbstractController {
                 $difficulty= 0;
                 $priority=$data['priority'];
                 $sprint = $data['sprint'];
+                if(count($project->getMembers()) == 0) {
+                    $difficulty = $data['difficulty'];
+                }
                 $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprint);
                 $entityManager->persist($issue);
                 $entityManager->flush();
 
-                foreach($project->getMembers() as $member) {
+                if(count($project->getMembers()) > 0) {
+                    foreach($project->getMembers() as $member) {
+                        $planningPoker = new PlanningPoker($issue, $member);
+                        if($member->getId() == $this->getUser()->getId() ){
+                            $planningPoker->setValue($data['difficulty']);
+                        }
+                        $entityManager->persist($planningPoker);
+                        $entityManager->flush();
+                    }
+                    $member = $project->getOwner();
                     $planningPoker = new PlanningPoker($issue, $member);
                     if($member->getId() == $this->getUser()->getId() ){
                         $planningPoker->setValue($data['difficulty']);
@@ -61,13 +73,6 @@ class IssueController extends AbstractController {
                     $entityManager->persist($planningPoker);
                     $entityManager->flush();
                 }
-                $member = $project->getOwner();
-                $planningPoker = new PlanningPoker($issue, $member);
-                if($member->getId() == $this->getUser()->getId() ){
-                    $planningPoker->setValue($data['difficulty']);
-                }
-                $entityManager->persist($planningPoker);
-                $entityManager->flush();
 
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} créée avec succés.");
             } catch(\Exception $e) {
@@ -208,11 +213,12 @@ class IssueController extends AbstractController {
                         $entityManager->remove($planningPoker);
                         $entityManager->flush();
                     }
+                    $issue->setDifficulty($amount / $cpt);
+                    $entityManager->persist($issue);
+                    $entityManager->flush();
+                    $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
                 }
-                $issue->setDifficulty($amount / $cpt);
-                $entityManager->persist($issue);
-                $entityManager->flush();
-                $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
+                
                 return $this->redirectToRoute('issuesList', [
                     'id_project' => $id_project
                 ]);
