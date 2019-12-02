@@ -69,10 +69,12 @@ class SprintController extends AbstractController {
         $project = $this->projectRepository->find($id_project);
         $sprints = $project->getSprints();
         $burnDownStat = $issueRepository->getBurnDownStat($project);
+        $burnDownTheoricStat = $issueRepository->getBurnDownTheoricStat($project);
         return $this->render('sprint/sprint_list.html.twig', [
             'project'=> $project,
             'sprints' => $sprints,
             'burnDownStat' => $burnDownStat,
+            'burnDownTheoricStat' => $burnDownTheoricStat,
             'user' => $this->getUser()
         ]);
     }

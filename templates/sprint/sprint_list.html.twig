@@ -50,7 +50,10 @@
 
     {% set title = "Burn Down Chart" %}
     {% set function = "BDC" %}
-    {% set statistic = burnDownStat %}
+    {% set statistic = burnDownTheoricStat %}
+    {% set statisticTitle = "BDC Théorique" %}
+    {% set statistic2 = burnDownStat %}
+    {% set statistic2Title = "BDC Réel" %}
     {% include 'graph/graph_area.html.twig' %}
 
     <script defer>
