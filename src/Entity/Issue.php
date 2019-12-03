@@ -153,6 +153,7 @@ class Issue
         foreach ($this->tasks as $task) {
             $count = $task->getStatus() == $status ? $count + 1 : $count;
         }
+        return $count;
     }
 
     public function getProportionOfDone(): string
