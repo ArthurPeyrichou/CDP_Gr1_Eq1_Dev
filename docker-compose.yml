@@ -8,6 +8,7 @@ services:
             - '3306:3306'
     web:
         build: .
-        command: 'bash -c "sh /var/www/firescrum/docker/database-create.sh && apache2-foreground"'
+        command: 'bash -c "sh /var/www/firescrum/docker/database-create.sh
+         && apache2-foreground"'
         ports:
             - '80:80'
