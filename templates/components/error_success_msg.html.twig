@@ -1,5 +1,6 @@
 {% set errorList = getErrors() %}
 {% set successList = getSuccess() %}
+{% set infoList = getInfo() %}
 {% if errorList is not empty %}
     {% for error in errorList %}
         <div class="alert alert-danger container" role="alert" style="margin-top:10%;">
@@ -10,6 +11,14 @@
     {% for success in successList %}
         <div class="alert alert-success container" role="alert" style="margin-top:10%;">
             {{ success }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if infoList is not empty %}
+    {% for info in infoList %}
+        <div class="alert alert-dark container" role="alert" style="margin-top:10%;">
+            {{ info }}
         </div>
     {% endfor %}
 {% endif %}

@@ -13,7 +13,8 @@ class NotificationExtension extends AbstractExtension
     {
         return [
             new TwigFunction('getErrors', [NotificationRuntime::class, 'getErrors']),
-            new TwigFunction('getSuccess', [NotificationRuntime::class, 'getSuccess'])
+            new TwigFunction('getSuccess', [NotificationRuntime::class, 'getSuccess']),
+            new TwigFunction('getInfo', [NotificationRuntime::class, 'getInfo'])
         ];
     }
 }

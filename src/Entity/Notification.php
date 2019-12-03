@@ -32,6 +32,13 @@ class Notification
      */
     private $date;
 
+    public function __construct($description)
+    {
+        $this->description = $description;
+        $dt = new \DateTime();
+        $this->date = $dt;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
