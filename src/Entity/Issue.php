@@ -178,7 +178,7 @@ class Issue
         return $this->sprint;
     }
 
-    public function setSprint(string $sprint): self
+    public function setSprint(?Sprint $sprint): self
     {
         $this->sprint = $sprint;
 
