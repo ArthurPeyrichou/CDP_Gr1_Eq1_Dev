@@ -13,16 +13,21 @@ class StatusRuntime implements RuntimeExtensionInterface
      */
     public function getClassForStatus($status): string
     {
+        $statusClass = '';
         switch($status){
-            case "todo":
-                return "red";
-            case "doing":
-                return "yellow";
-            case "done":
-                return "green";   
+            case 'todo':
+                $statusClass = 'red';
+                break;
+            case 'doing':
+                $statusClass = 'yellow';
+                break;
+            case 'done':
+                $statusClass = 'green';
+                break;
             default :
-                return "";
+                $statusClass = '';
+                break;
         }
-
+        return $statusClass;
     }
 }

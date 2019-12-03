@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Member;
+use App\Repository\MemberRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Swift_Mailer;
@@ -31,7 +31,7 @@ class LoginController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils, NotificationService $notifications): Response
     {
         if ($this->getUser()) {
-             return $this->redirectToRoute('dashboard');
+            return $this->redirectToRoute('dashboard');
         }
 
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -46,75 +46,68 @@ class LoginController extends AbstractController
     }
 
     /**
-     * @Route("/login/forgottenPassword", name="forgotten_password")
+     * @Route("/login/forgottenPassword", name="forgottenPassword")
      */
-    public function forgottenPassword( Request $request,EntityManagerInterface $entityManager,
-                                       UserPasswordEncoderInterface $encoder,
-                                       Swift_Mailer $mailer,
+    public function forgottenPassword(Request $request,EntityManagerInterface $entityManager,
+                                       Swift_Mailer $mailer, MemberRepository $memberRepository,
                                        TokenGeneratorInterface $tokenGenerator): Response
     {
         if ($request->isMethod('POST')) {
 
             $email = $request->request->get('emailAddress');
 
-            $member = $entityManager->getRepository(Member::class)->findOneBy(['emailAddress'=>$email]);
+            $member = $memberRepository->findOneBy(['emailAddress'=>$email]);
 
-            if ($member === null) {
-                $this->notifications->getMessages('danger','cette adresse email n"existe pas');
-                return $this->redirectToRoute('login');
+            if ($member == null) {
+                $this->notifications->addError('Cette adresse email n\'existe pas');
             }
-            $token = $tokenGenerator->generateToken();
-            try{
+            else {
+                $token = $tokenGenerator->generateToken();
                 $member->setResetToken($token);
                 $entityManager->flush();
-            } catch (\Exception $e) {
-                $this->notifications->addError($e->getMessage());
-                return $this->redirectToRoute('login');
+                $url = $this->generateUrl('resetPassword', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $message = (new \Swift_Message('Mot de passe oublié'))
+                    ->setFrom(array('firescrum2019@gmail.com' => 'EquipeFirescrum'))
+                    ->setTo($member->getEmailAddress())
+                    ->setBody(
+                        "Réinitialiser votre mot de passe : <a href=\"{$url}\">ici</a>",
+                        'text/html'
+                    );
+                $mailer->send($message);
+
+                $this->notifications->addSuccess('Mail envoyé');
             }
-            $url = $this->generateUrl('reset_password', array('token' => $token), UrlGeneratorInterface::ABSOLUTE_URL);
-
-            $message = (new \Swift_Message('Mot de passe oublié '))
-                ->setFrom(array('firescrum2019@gmail.com' => 'EquipeFirescrum'))
-                ->setTo($member->getEmailAddress())
-                ->setBody(
-                    "reinitialiser votre mot de passe : <a href=\"" . $url . "\">ici</a>",
-                    'text/html'
-                );
-            $mailer->send($message);
-
-            $this->notifications->addSuccess("Mail envoyé");
             return $this->redirectToRoute('login');
         }
 
-            return $this->render('member/forgotten_password.html.twig');
+        return $this->render('member/forgotten_password.html.twig');
     }
 
 
     /**
-     * @Route("/login/reset_password/{token}", name="reset_password")
+     * @Route("/login/resetPassword/{token}", name="resetPassword")
      */
     public function resetPassword(Request $request, string $token, EntityManagerInterface $entityManager,
-                                  UserPasswordEncoderInterface $passwordEncoder)
+                                  MemberRepository $memberRepository, UserPasswordEncoderInterface $passwordEncoder)
     {
         if ($request->isMethod('POST')) {
 
-            $member = $entityManager->getRepository(Member::class)->findOneBy(['resetToken' => $token]);
+            $member = $memberRepository->findOneBy(['resetToken' => $token]);
 
             if ($member === null) {
-                $this->notifications->getMessages('danger','Token inconnue');
-                return $this->redirectToRoute('login');
+                $this->notifications->addError('Token inconnu');
             }
-
-
-            $member->setPassword($passwordEncoder->encodePassword($member, $request->request->get('password')));
-            $member->setResetToken("");
-            $entityManager->flush();
-            $this->notifications->addSuccess("Mot de passe mis à jour");
+            else {
+                $member->setPassword($passwordEncoder->encodePassword($member, $request->request->get('password')));
+                $member->setResetToken('');
+                $entityManager->flush();
+                $this->notifications->addSuccess('Mot de passe mis à jour');
+            }
             return $this->redirectToRoute('login');
-        } else {
-
-            return $this->render('member/reset_password.html.twig', ['token' => $token]);
         }
+
+        return $this->render('member/reset_password.html.twig', ['token' => $token]);
 
     }
 
