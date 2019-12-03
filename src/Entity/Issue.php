@@ -216,7 +216,7 @@ class Issue
     public function removeTask(Task $task): self
     {
         if ($this->tasks->contains($task)) {
-            $this->relatedIssues->removeElement($task);
+            $this->tasks->removeElement($task);
             $task->removeRelatedIssue($this);
         }
 
