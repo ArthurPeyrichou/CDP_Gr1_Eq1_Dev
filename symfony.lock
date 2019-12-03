@@ -108,6 +108,9 @@
     "egulias/email-validator": {
         "version": "2.1.11"
     },
+    "facebook/webdriver": {
+        "version": "1.7.1"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -236,6 +239,12 @@
             "./src/Kernel.php"
         ]
     },
+    "symfony/http-client": {
+        "version": "v4.3.9"
+    },
+    "symfony/http-client-contracts": {
+        "version": "v1.1.8"
+    },
     "symfony/http-foundation": {
         "version": "v4.3.5"
     },
@@ -265,6 +274,9 @@
     },
     "symfony/orm-pack": {
         "version": "v1.0.7"
+    },
+    "symfony/panther": {
+        "version": "v0.6.0"
     },
     "symfony/phpunit-bridge": {
         "version": "4.3",
