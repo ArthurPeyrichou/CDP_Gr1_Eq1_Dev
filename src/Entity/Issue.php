@@ -131,13 +131,29 @@ class Issue
             return self::TODO;
         }
         
+        $cptTodo = 0;
+        $cptDone = 0;
         foreach ($this->tasks as $task) {
-            if ($task->getStatus() == Task::DOING) {
-                return self::DOING;
+            switch($task->getStatus()){
+                case Task::TODO :
+                    $cptTodo++;
+                    break;
+                case Task::DOING :
+                    return self::DOING;
+                    break;
+                case Task::DONE :
+                    $cptDone++;
+                    break;
             }
         }  
+
+        if( $cptDone > 0 && $cptTodo == 0 ) {
+            return self::DONE;
+        } else if($cptDone > 0 && $cptTodo > 0) {
+            return self::DOING;
+        }
         
-        return $this->tasks[0]->getStatus();
+        return self::TODO;
         
     }
 
