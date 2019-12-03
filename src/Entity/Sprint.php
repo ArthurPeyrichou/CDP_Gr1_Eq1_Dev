@@ -54,6 +54,11 @@ class Sprint
      */
     private $tasks;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="sprint")
+     */
+    private $issues;
+
 
     public function __construct(Project $project, int $number, string $description, \DateTimeInterface $startDate,
                                 int $durationInDays)
@@ -64,7 +69,7 @@ class Sprint
         $this->startDate = $startDate;
         $this->durationInDays = $durationInDays;
         $this->tasks = new ArrayCollection();
-
+        $this->issues = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -170,6 +175,37 @@ class Sprint
             // set the owning side to null (unless already changed)
             if ($task->getSprint() === $this) {
                 $task->setSprint(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Issue[]
+     */
+    public function getIssues(): Collection
+    {
+        return $this->issues;
+    }
+
+    public function addIssue(Issue $issue): self
+    {
+        if (!$this->issues->contains($issue)) {
+            $this->issues[] = $issue;
+            $issue->setSprint($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIssue(Issue $issue): self
+    {
+        if ($this->issues->contains($issue)) {
+            $this->issues->removeElement($issue);
+            // set the owning side to null (unless already changed)
+            if ($issue->getSprint() === $this) {
+                $issue->setSprint(null);
             }
         }
 

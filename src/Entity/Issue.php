@@ -47,7 +47,7 @@ class Issue
     private $priority;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Sprint")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Sprint", inversedBy="issues")
      */
     private $sprint;
 
