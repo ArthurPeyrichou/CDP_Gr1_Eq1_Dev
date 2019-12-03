@@ -101,10 +101,11 @@ class IssueRepository extends ServiceEntityRepository
             ->getResult();
         
         $res = array(); 
-        foreach($this->findAll() as $issue){
+        foreach($this->findBy(['project' => $project]) as $issue){
             
-            if($issue->getStatus() == Issue::DONE && $issue->getProject()->getId() == $project->getId()) {
-                $line = $issue->getSprint()->getNumber()-1;
+            if($issue->getStatus() == Issue::DONE
+                && $issue->getSprint() != null) {
+                $line = $issue->getSprint()->getNumber() - 1;
                 if( empty($res[$line] ) ){
                     $res[$line]["value"] = $line + 1;
                     $res[$line]["count"] = $issue->getDifficulty();
