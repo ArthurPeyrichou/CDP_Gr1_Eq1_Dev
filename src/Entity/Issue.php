@@ -127,12 +127,14 @@ class Issue
 
     public function getStatus(): string
     {
-        if(count($this->tasks) == 0)
+        if (count($this->tasks) == 0) {
             return self::TODO;
+        }
         
-        foreach($this->tasks as $task) {
-            if($task->getStatus() == Task::DOING)
+        foreach ($this->tasks as $task) {
+            if ($task->getStatus() == Task::DOING) {
                 return self::DOING;
+            }
         }  
         
         return $this->tasks[0]->getStatus();
@@ -141,12 +143,13 @@ class Issue
 
     public function getProportionOfDone(): string
     {
-        if(count($this->tasks) == 0)
+        if (count($this->tasks) == 0) {
             return "0%";
+        }
         
         $cptDone = 0;
-        foreach($this->tasks as $task) {
-            if($task->getStatus() == Task::DONE){
+        foreach ($this->tasks as $task) {
+            if ($task->getStatus() == Task::DONE) {
                 $cptDone+=1;
             }
         }  
