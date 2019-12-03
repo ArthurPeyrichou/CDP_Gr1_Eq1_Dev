@@ -37,7 +37,7 @@ class TaskRepositoryTest extends KernelTestCase
 
     private function computeNextTaskNumber(Sprint $sprint) : int
     {
-        return  array_reduce($sprint->getTasks(), function(int $max, Task $task) {
+        return  array_reduce($sprint->getTasks()->getValues(), function(int $max, Task $task) {
                 return max($max, $task->getNumber());
             }, 0) + 1;
     }
