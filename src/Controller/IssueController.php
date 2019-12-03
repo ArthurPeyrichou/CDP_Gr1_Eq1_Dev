@@ -43,42 +43,26 @@ class IssueController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $data = $form->getData();
-                $description= $data['description'];
-                $difficulty= 0;
-                $priority=$data['priority'];
-                $sprint = $data['sprint'];
-                if(count($project->getMembers()) == 0) {
-                    $difficulty = $data['difficulty'];
-                }
-                $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprint);
-                $entityManager->persist($issue);
-                $entityManager->flush();
+            $data = $form->getData();
+            $description= $data['description'];
+            $priority=$data['priority'];
+            $sprint = $data['sprint'];
+            $difficulty = $data['difficulty'];
+            $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprint);
+            $entityManager->persist($issue);
 
-                if(count($project->getMembers()) > 0) {
-                    foreach($project->getMembers() as $member) {
+            if (count($project->getMembers()) > 0) {
+                foreach($project->getMembersAndOwner() as $member) {
+                    if ($member->getId() != $this->getUser()->getId()){
                         $planningPoker = new PlanningPoker($issue, $member);
-                        if($member->getId() == $this->getUser()->getId() ){
-                            $planningPoker->setValue($data['difficulty']);
-                        }
                         $entityManager->persist($planningPoker);
-                        $entityManager->flush();
                     }
-                    $member = $project->getOwner();
-                    $planningPoker = new PlanningPoker($issue, $member);
-                    if($member->getId() == $this->getUser()->getId() ){
-                        $planningPoker->setValue($data['difficulty']);
-                    }
-                    $entityManager->persist($planningPoker);
-                    $entityManager->flush();
                 }
-
-                $this->notifications->addSuccess("Issue {$issue->getNumber()} créée avec succés.");
-            } catch(\Exception $e) {
-                $this->notifications->addError($e->getMessage());
             }
-            
+
+            $entityManager->flush();
+            $this->notifications->addSuccess("Issue {$issue->getNumber()} créée avec succés.");
+
             return $this->redirectToRoute('issuesList', [
                 'id_project' => $id_project
             ]);
@@ -125,7 +109,7 @@ class IssueController extends AbstractController {
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {     
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $entityManager->persist($issue);
                 $entityManager->flush();
@@ -133,7 +117,7 @@ class IssueController extends AbstractController {
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }
-            
+
             return $this->redirectToRoute('issuesList', [
                 'id_project' => $id_project
             ]);
@@ -175,12 +159,12 @@ class IssueController extends AbstractController {
             'id_project' => $id_project
         ]);
     }
-    
+
     /**
      * @Route("/project/{id_project}/issues/{id_issue}/plannigPoker", name="planningPoker")
      */
-    public function plannigPokerForIssue(Request $request, EntityManagerInterface $entityManager, 
-        PlanningPokerRepository $planningPokerRepository,$id_project, $id_issue)
+    public function plannigPokerForIssue(Request $request, EntityManagerInterface $entityManager,
+                                         PlanningPokerRepository $planningPokerRepository,$id_project, $id_issue)
     {
         $project = $this->projectRepository->find($id_project);
         $issue = $this->issueRepository->findOneBy([
@@ -218,7 +202,7 @@ class IssueController extends AbstractController {
                     $entityManager->flush();
                     $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
                 }
-                
+
                 return $this->redirectToRoute('issuesList', [
                     'id_project' => $id_project
                 ]);

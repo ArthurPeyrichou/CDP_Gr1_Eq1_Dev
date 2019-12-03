@@ -45,7 +45,7 @@ class TaskType extends AbstractType
             ->add('developper', EntityType::class, [
                 'label' => 'Assigné à',
                 'class' => Member::class,
-                'choices' => array_merge($project->getMembers()->toArray(), [$project->getOwner()]),
+                'choices' => $project->getMembersAndOwner(),
                 'choice_label' => function (Member $member) {
                     return "{$member->getName()} - {$member->getEmailAddress()}";
                 },

@@ -15,16 +15,17 @@ use PHPUnit\Framework\TestCase;
 class IssueTest extends TestCase
 {
 
-    private $project;
-    private $sprint;
+    private $testProject;
+
+    private $testSprint;
 
     public function getTestProject(): Project
     {
-        if (!$this->project) {
+        if (!$this->testProject) {
             $member = new Member('name', 'email@email.com', 'pass');
-            $this->project = new Project($member, 'projName', 'projDesc', new \DateTimeImmutable());
+            $this->testProject = new Project($member, 'projName', 'projDesc', new \DateTimeImmutable());
         }
-        return $this->project;
+        return $this->testProject;
     }
 
     public function getTestIssue(): Issue
@@ -34,10 +35,10 @@ class IssueTest extends TestCase
 
     public function getTestSprint(): Sprint
     {
-        if (!$this->sprint) {
-            $this->sprint = new Sprint($this->getTestProject(), 0, 'A test sprint', new \DateTimeImmutable('2019-01-01'), 14);
+        if (!$this->testSprint) {
+            $this->testSprint = new Sprint($this->getTestProject(), 0, 'A test sprint', new \DateTimeImmutable('2019-01-01'), 14);
         }
-        return $this->sprint;
+        return $this->testSprint;
     }
 
     public function testgetStatus() {

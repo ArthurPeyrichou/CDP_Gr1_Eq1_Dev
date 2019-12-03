@@ -131,30 +131,28 @@ class Issue
             return self::TODO;
         }
         
-        $cptTodo = 0;
-        $cptDone = 0;
-        foreach ($this->tasks as $task) {
-            switch($task->getStatus()){
-                case Task::TODO :
-                    $cptTodo++;
-                    break;
-                case Task::DOING :
-                    return self::DOING;
-                    break;
-                case Task::DONE :
-                    $cptDone++;
-                    break;
-            }
-        }  
+        $nbTodos = $this->getTasksNumberByStatus(Task::TODO);
+        $nbDoing = $this->getTasksNumberByStatus(Task::DOING);
+        $nbDones = $this->getTasksNumberByStatus(Task::DONE);
 
-        if( $cptDone > 0 && $cptTodo == 0 ) {
-            return self::DONE;
-        } else if($cptDone > 0 && $cptTodo > 0) {
-            return self::DOING;
+        $globalStatus = self::TODO;
+
+        if($nbDoing > 0 || $nbDones > 0 && $nbTodos > 0) {
+            $globalStatus = self::DOING;
+        }
+        else if ($nbDones > 0 && $nbTodos == 0) {
+            $globalStatus = self::DONE;
         }
         
-        return self::TODO;
-        
+        return $globalStatus;
+    }
+
+    private function getTasksNumberByStatus(string $status): int
+    {
+        $count = 0;
+        foreach ($this->tasks as $task) {
+            $count = $task->getStatus() == $status ? $count + 1 : $count;
+        }
     }
 
     public function getProportionOfDone(): string

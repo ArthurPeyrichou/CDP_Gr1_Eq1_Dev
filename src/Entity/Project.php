@@ -167,6 +167,14 @@ class Project
     }
 
     /**
+     * @return Member[]
+     */
+    public function getMembersAndOwner(): array
+    {
+        return array_merge($this->getMembers()->getValues(), [$this->getOwner()]);
+    }
+
+    /**
      * @return Collection|Issue[]
      */
     public function getIssues(): Collection

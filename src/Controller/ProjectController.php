@@ -2,6 +2,7 @@
 // src/Controller/ProjectController.php
 namespace App\Controller;
 
+use App\Entity\Invitation;
 use App\Entity\Member;
 use App\Entity\Project;
 use App\Entity\PlanningPoker;
@@ -65,69 +66,69 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}", name="projectDetails", methods={"GET"})
      */
-    public function viewProject(Request $request, ProjectRepository $projectRepository, 
-            PlanningPokerRepository $planningPokerRepository, InvitationRepository $invitationRepository,
-            IssueRepository $issueRepository, EntityManagerInterface $entityManager, 
-            NotificationService $notifications, $id): Response
+    public function viewProject(ProjectRepository $projectRepository, PlanningPokerRepository $planPokerRepository,
+                                InvitationRepository $invitationRepository, EntityManagerInterface $entityManager, $id)
+    : Response
     {
         $project = $projectRepository->findOneBy([
             'id' => intval($id)
         ]);
-
+        /**@var $user Member*/
         $user = $this->getUser();
         $status = null;
-        $myInvitation = null;
 
-        if($project->getOwner() == $user){
-            $status = 'owner';
-        } else if($project->getMembers()->contains($user) ) {
-            $status = 'member';
-        } else {
-            $myInvitation = $invitationRepository->findOneBy([
-                'project' => $project,
-                'member' => $user
-            ]);
-            if($myInvitation){
-                $status = 'invited';
-            } else {
-                return $this->redirectToRoute('dashboard');
-            }
-        }
+        $invitation = $invitationRepository->findOneBy([
+            'project' => $project,
+            'member' => $user
+        ]);
+        $status = $this->getMemberStatus($user, $project, $invitation);
+
         $today = new \DateTime();
         foreach($project->getIssues() as $issue){
-            foreach($planningPokerRepository->getPlanningPokerNotDoneByIssue($issue) as $planningPoker){
-                if(date_diff($planningPoker->getCreationDate(),$today)->format('%d') > PlanningPoker::TIME) {
+            foreach($planPokerRepository->getPlanningPokerNotDoneByIssue($issue) as $planningPoker){
+                if(date_diff($planningPoker->getCreationDate(), $today)->format('%d') > PlanningPoker::TIME) {
                     $entityManager->remove($planningPoker);
-                    $entityManager->flush();
-    
-                    if($planningPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
-                        $cpt = 0;
-                        $amount = 0;
-                        foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPokerDone) {
-                            ++$cpt;
-                            $amount += $planningPokerDone->getValue();
-                            $entityManager->remove($planningPokerDone);
-                            $entityManager->flush();
-                        }
-                        $issue->setDifficulty($amount / $cpt);
-                        $entityManager->persist($issue);
-                        $entityManager->flush();
-                        $notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
-                    }
                 }
             }
+            if($planPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
+                $cpt = 0;
+                $amount = 0;
+                foreach($planPokerRepository->getPlanningPokerByIssue($issue) as $planningPokerDone) {
+                    ++$cpt;
+                    $amount += $planningPokerDone->getValue();
+                    $entityManager->remove($planningPokerDone);
+                }
+                $issue->setDifficulty($amount / $cpt);
+                $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
+            }
         }
-        
+        $entityManager->flush();
 
-        return $this->render('project/project_details.html.twig',
-        [
-            'status' => $status,
-            'myInvitation' => $myInvitation,
-            'project' => $project,
-            'owner' => $project->getOwner(),
-            'members' => $project->getMembers(),
-            'user' => $user
-        ]);
+
+        return $this->render('project/project_details.html.twig', [
+                'status' => $status,
+                'myInvitation' => $invitation,
+                'project' => $project,
+                'owner' => $project->getOwner(),
+                'members' => $project->getMembers(),
+                'user' => $user
+            ]);
+    }
+
+    private function getMemberStatus(Member $member, Project $project, ?Invitation $invitation)
+    : string
+    {
+        $status = '';
+        if ($project->getOwner()->getId() == $member->getId()){
+            $status = 'owner';
+        }
+        else if ($project->getMembers()->contains($member) ) {
+            $status = 'member';
+        }
+        else if ($invitation) {
+            $status = 'invited';
+        }
+        return $status;
     }
 
     /**

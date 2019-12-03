@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class TaskTest extends TestCase
 {
 
-    private $sprint;
+    private $testSprint;
 
     /**
      * @dataProvider getTodoTasks
@@ -79,13 +79,13 @@ class TaskTest extends TestCase
 
     private function getTestSprint(): Sprint
     {
-        if (!$this->sprint) {
+        if (!$this->testSprint) {
             $member = new Member('name', 'email@email.com', 'pass');
             $project = new Project($member, 'projName', 'projDesc', new \DateTimeImmutable());
-            $this->sprint = new Sprint($project, 1, 'A test sprint',
+            $this->testSprint = new Sprint($project, 1, 'A test sprint',
                 new \DateTimeImmutable('2019-01-01'), 14);
         }
-        return $this->sprint;
+        return $this->testSprint;
     }
 
 }
