@@ -22,6 +22,9 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     use TargetPathTrait;
 
+    private const EMAIL = 'emailAddress';
+    private const PASSWORD = 'password';
+
     private $memberRepository;
     private $urlGenerator;
     private $csrfTokenManager;
@@ -45,13 +48,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     public function getCredentials(Request $request)
     {
         $credentials = [
-            'emailAddress' => $request->request->get('emailAddress'),
-            'password' => $request->request->get('password'),
+            self::EMAIL => $request->request->get(self::EMAIL),
+            self::PASSWORD => $request->request->get(self::PASSWORD),
             'csrf_token' => $request->request->get('_csrf_token'),
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
-            $credentials['emailAddress']
+            $credentials[self::EMAIL]
         );
 
         return $credentials;
@@ -65,7 +68,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         }
 
         $user = $this->memberRepository->findOneBy([
-            'emailAddress' => $credentials['emailAddress']
+            self::EMAIL => $credentials[self::EMAIL]
         ]);
 
         if (!$user) {
@@ -77,7 +80,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if (!$this->passwordEncoder->isPasswordValid($user, $credentials['password'])) {
+        if (!$this->passwordEncoder->isPasswordValid($user, $credentials[self::PASSWORD])) {
             throw new CustomUserMessageAuthenticationException('Mot de passe incorrect.');
         }
         return true;
