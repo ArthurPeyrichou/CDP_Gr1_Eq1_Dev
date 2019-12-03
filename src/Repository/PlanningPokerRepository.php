@@ -33,6 +33,17 @@ class PlanningPokerRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getPlanningPokerNotDoneByIssue(Issue $issue): array
+    {
+        return $this->createQueryBuilder('p')
+            ->Where('p.issue = :issue')
+            ->andWhere('p.value < :val')
+            ->setParameter('issue', $issue)
+            ->setParameter('val', 0)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getPlanningPokerByIssue(Issue $issue): array
     {
         return $this->createQueryBuilder('p')

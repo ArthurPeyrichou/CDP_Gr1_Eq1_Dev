@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Member;
 use App\Entity\Project;
+use App\Entity\PlanningPoker;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
 use App\Repository\InvitationRepository;
 use App\Repository\MemberRepository;
+use App\Repository\PlanningPokerRepository;
+use App\Repository\IssueRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -62,7 +65,10 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}", name="projectDetails", methods={"GET"})
      */
-    public function viewProject(Request $request, ProjectRepository $projectRepository, InvitationRepository $invitationRepository, $id): Response
+    public function viewProject(Request $request, ProjectRepository $projectRepository, 
+            PlanningPokerRepository $planningPokerRepository, InvitationRepository $invitationRepository,
+            IssueRepository $issueRepository, EntityManagerInterface $entityManager, 
+            NotificationService $notifications, $id): Response
     {
         $project = $projectRepository->findOneBy([
             'id' => intval($id)
@@ -87,6 +93,32 @@ class ProjectController extends AbstractController {
                 return $this->redirectToRoute('dashboard');
             }
         }
+        $today = new \DateTime();
+        foreach($project->getIssues() as $issue){
+            foreach($planningPokerRepository->getPlanningPokerNotDoneByIssue($issue) as $planningPoker){
+                if(date_diff($planningPoker->getCreationDate(),$today)->format('%d') > PlanningPoker::TIME) {
+                    $entityManager->remove($planningPoker);
+                    $entityManager->flush();
+    
+                    if($planningPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
+                        $cpt = 0;
+                        $amount = 0;
+                        foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPokerDone) {
+                            ++$cpt;
+                            $amount += $planningPokerDone->getValue();
+                            $entityManager->remove($planningPokerDone);
+                            $entityManager->flush();
+                        }
+                        $issue->setDifficulty($amount / $cpt);
+                        $entityManager->persist($issue);
+                        $entityManager->flush();
+                        $notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
+                    }
+                }
+            }
+        }
+        
+
         return $this->render('project/project_details.html.twig',
         [
             'status' => $status,
