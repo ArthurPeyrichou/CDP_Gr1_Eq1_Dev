@@ -9,10 +9,10 @@ use App\Entity\Member;
 use App\Entity\Project;
 use App\Repository\InvitationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\Invitation\MemberAlreadyExistsException;
-use App\Service\Invitation\MemberIsOwnerException;
-use App\Service\Invitation\InvitationAlreadySentException;
 
+/**
+ * A service allowing to invite a member to a project.
+ */
 class InvitationService
 {
 
@@ -26,6 +26,15 @@ class InvitationService
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * Creates an invitation for a member to a project, persists it and returns it.
+     * @param Member $newMember The member to invite.
+     * @param Project $project The project which the member will be invited to.
+     * @return Invitation The created invitation.
+     * @throws InvitationAlreadySentException If there is already an invitation for that member in the project.
+     * @throws MemberAlreadyExistsException If the member is already collaborator in the project.
+     * @throws MemberIsOwnerException If the member if the owner of the project.
+     */
     public function inviteUser(Member $newMember, Project $project): Invitation
     {
 
