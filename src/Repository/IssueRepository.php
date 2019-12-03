@@ -59,6 +59,8 @@ class IssueRepository extends ServiceEntityRepository
                     case Issue::DONE :
                         $done['count']+=1;
                     break;
+                    default:
+                        break;
                 }
             }
         }
