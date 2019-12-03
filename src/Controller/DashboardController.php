@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Member;
+use App\Entity\Notification;
 use App\Entity\PlanningPoker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,6 +52,12 @@ class DashboardController extends AbstractController {
                 
                 $notifications->addError("Vous avez dépassé le temps permis pour participer au planning poker de l'issue {$issue->getNumber()}.");
             }
+        }
+
+        foreach($this->getUser()->getNotifications() as $notif) {
+            $notifications->addInfo($notif->getDescription());
+            $entityManager->remove($notif);
+            $entityManager->flush();
         }
 
         $myInvitations = $invitationRepository->findBy([

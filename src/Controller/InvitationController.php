@@ -2,6 +2,7 @@
 // src/Controller/IdentificationController.php
 namespace App\Controller;
 
+use App\Entity\Notification;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProjectRepository;
@@ -87,6 +88,11 @@ class InvitationController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($member);
                 $entityManager->remove($invitation);
+                
+                $notif = new Notification("Bonne nouvelle! {$member->getName()} a accepté votre invitation.");
+                $project->getOwner()->addNotification($notif);
+                $entityManager->persist($notif);
+
                 $entityManager->flush();
                 $this->notifications->addSuccess("Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre son projet");
             } catch(\Exception $e) {
@@ -115,6 +121,11 @@ class InvitationController extends AbstractController
             try {
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->remove($invitation);
+                
+                $notif = new Notification("Aie.. {$member->getName()} a refusé votre invitation.");
+                $project->getOwner()->addNotification($notif);
+                $entityManager->persist($notif);
+                
                 $entityManager->flush();
                 $this->notifications->addSuccess("Vous venez de refuser l'invitation de {$invitation->getProject()->getOwner()->getName()} à rejoindre son projet");
             } catch(\Exception $e) {
