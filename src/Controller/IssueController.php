@@ -189,8 +189,8 @@ class IssueController extends AbstractController {
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} évaluée avec succés.");
 
                 if($planningPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
-                    $cpt = 0;
-                    $amount = 0;
+                    $cpt = 1;
+                    $amount = $issue->getDifficulty();
                     foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPoker) {
                         ++$cpt;
                         $amount += $planningPoker->getValue();

@@ -91,8 +91,8 @@ class ProjectController extends AbstractController {
                 }
             }
             if($planPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
-                $cpt = 0;
-                $amount = 0;
+                $cpt = 1;
+                $amount = $issue->getDifficulty();
                 foreach($planPokerRepository->getPlanningPokerByIssue($issue) as $planningPokerDone) {
                     ++$cpt;
                     $amount += $planningPokerDone->getValue();
