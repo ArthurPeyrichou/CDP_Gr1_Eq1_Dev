@@ -35,4 +35,12 @@ class NotificationRuntime implements RuntimeExtensionInterface
         return $this->notificationService->getMessages(NotificationService::SUCCESS);
     }
 
+    /**
+     * @return string[]
+     */
+    public function getInfo(): array
+    {
+        return $this->notificationService->getMessages(NotificationService::INFO);
+    }
+
 }

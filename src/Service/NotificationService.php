@@ -11,6 +11,7 @@ class NotificationService
 {
     public const ERROR = 'error';
     public const SUCCESS = 'success';
+    public const INFO = 'info';
 
     /**
      * @var Session
@@ -30,6 +31,11 @@ class NotificationService
     public function addError(string $message): void
     {
         $this->addMessage($message, self::ERROR);
+    }
+
+    public function addInfo(string $message): void
+    {
+        $this->addMessage($message, self::INFO);
     }
 
     private function addMessage(string $message, string $type): void
