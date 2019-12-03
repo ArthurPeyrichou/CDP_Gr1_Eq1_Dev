@@ -5,7 +5,6 @@ namespace App\Tests\EndToEnd;
 
 
 use App\Entity\Member;
-use Doctrine\ORM\EntityManagerInterface;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Symfony\Component\Panther\PantherTestCase;
@@ -14,20 +13,15 @@ class UserManagementTest extends PantherTestCase
 {
     private const LOGIN = 'A random user';
     private const EMAIL = 'randomuser@random.com';
-    private const PASSWD = 'randomPass';
+    private const PW = 'randomPass';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    use E2ETestTrait;
 
-    protected function setUp(): void
+    public static function setUpBeforeClass(): void
     {
         $kernel = self::bootKernel();
 
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
+        self::setUpBeforeClassTrait($kernel);
     }
 
     public function testRegister(): void
@@ -43,15 +37,15 @@ class UserManagementTest extends PantherTestCase
         $emailField = $client->findElement(WebDriverBy::id('registration_emailAddress'));
         $emailField->sendKeys(self::EMAIL);
         $passField = $client->findElement(WebDriverBy::id('registration_password_first'));
-        $passField->sendKeys(self::PASSWD);
+        $passField->sendKeys(self::PW);
         $passFieldSec = $client->findElement(WebDriverBy::id('registration_password_second'));
-        $passFieldSec->sendKeys(self::PASSWD);
+        $passFieldSec->sendKeys(self::PW);
         $button = $client->findElement(WebDriverBy::cssSelector('body > div > div > div > form > button'));
         $button->click();
 
         $client->wait()->until(WebDriverExpectedCondition::urlContains('/login'));
 
-        $this->assertNotNull($this->entityManager->getRepository(Member::class)->findOneBy([
+        $this->assertNotNull($this->getAndMarkAsDeletable(Member::class, [
             'emailAddress' => self::EMAIL,
             'name' => self::LOGIN
         ]));
@@ -71,7 +65,7 @@ class UserManagementTest extends PantherTestCase
         $loginField = $client->findElement(WebDriverBy::id('email'));
         $loginField->sendKeys(self::EMAIL);
         $emailField = $client->findElement(WebDriverBy::id('password'));
-        $emailField->sendKeys(self::PASSWD);
+        $emailField->sendKeys(self::PW);
         $button = $client->findElement(WebDriverBy::cssSelector('body > div > div > div > form > button'));
         $button->click();
 
@@ -79,7 +73,12 @@ class UserManagementTest extends PantherTestCase
 
         $loginTitle = $client->findElement(WebDriverBy::cssSelector('#navbarContent > div.dropdown.px-lg-3 > a'));
 
-        $this->assertContains(self::LOGIN, $loginTitle->getText());
+        $this->assertStringContainsString(self::LOGIN, $loginTitle->getText());
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        self::tearDownAfterClassTrait();
     }
 
 }

@@ -25,6 +25,9 @@
         <testsuite name="integration">
             <directory>tests/Integration</directory>
         </testsuite>
+        <testsuite name="e2e">
+            <directory>tests/EndToEnd</directory>
+        </testsuite>
     </testsuites>
 
     <filter>
@@ -38,7 +41,6 @@
     </listeners>
 
     <extensions>
-        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
         <extension class="Symfony\Component\Panther\ServerExtension" />
     </extensions>
 </phpunit>
