@@ -6,8 +6,6 @@ use App\Entity\Issue;
 use App\Entity\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * @method Issue|null find($id, $lockMode = null, $lockVersion = null)
@@ -36,9 +34,9 @@ class IssueRepository extends ServiceEntityRepository
 
     public function getProportionStatus(Project $project): array
     {
-        $todo = new ArrayCollection();
-        $doing = new ArrayCollection();
-        $done = new ArrayCollection();
+        $todo = [];
+        $doing = [];
+        $done = [];
 
         $todo['count'] = 0;
         $todo['value'] = 'Todo';
@@ -47,25 +45,23 @@ class IssueRepository extends ServiceEntityRepository
         $done['count'] = 0;
         $done['value'] = 'Done';
 
-        foreach($this->findAll() as $issue){
-            if($issue->getProject()->getId() == $project->getId()) {
-                switch($issue->getStatus()){
-                    case Issue::TODO :
-                        $todo['count']+=1;
+        foreach($this->findBy(['project' => $project]) as $issue){
+            switch($issue->getStatus()){
+                case Issue::TODO :
+                    $todo['count']++;
                     break;
-                    case Issue::DOING :
-                        $doing['count']+=1;
+                case Issue::DOING :
+                    $doing['count']++;
                     break;
-                    case Issue::DONE :
-                        $done['count']+=1;
+                case Issue::DONE :
+                    $done['count']++;
                     break;
-                    default:
-                        break;
-                }
+                default:
+                    break;
             }
         }
-        
-        return array($todo, $doing, $done);
+
+        return [$todo, $doing, $done];
     }
 
     public function getProportionPriority(Project $project): array
@@ -90,7 +86,7 @@ class IssueRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    
+
     public function getBurnDownStat(Project $project): array
     {
         $points = $this->createQueryBuilder('i')
@@ -99,10 +95,10 @@ class IssueRepository extends ServiceEntityRepository
             ->setParameter('project', $project)
             ->getQuery()
             ->getResult();
-        
-        $res = array(); 
+
+        $res = array();
         foreach($this->findBy(['project' => $project]) as $issue){
-            
+
             if($issue->getStatus() == Issue::DONE
                 && $issue->getSprint() != null) {
                 $line = $issue->getSprint()->getNumber() - 1;
@@ -133,7 +129,7 @@ class IssueRepository extends ServiceEntityRepository
             ->setParameter('project', $project)
             ->getQuery()
             ->getResult();
-        
+
         $res = $this->createQueryBuilder('i')
             ->select('SUM(i.difficulty) as count, s.number as value')
             ->where('i.difficulty > 0')
