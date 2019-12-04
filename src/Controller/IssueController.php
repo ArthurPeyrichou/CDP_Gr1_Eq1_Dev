@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Issue;
 use App\Entity\PlanningPoker;
+use App\Entity\Notification;
 use App\Form\IssueType;
 use App\Form\PlanningPokerType;
 use App\Repository\IssueRepository;
@@ -50,6 +51,10 @@ class IssueController extends AbstractController {
             $priority=$data['priority'];
             $sprint = $data['sprint'];
             $difficulty = $data['difficulty'];
+            if (count($project->getMembers()) > 0) {
+                $difficulty = 0;
+            }
+
             $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprint);
             $this->entityManager->persist($issue);
 
@@ -201,7 +206,26 @@ class IssueController extends AbstractController {
                     $issue->setDifficulty($amount / $cpt);
                     $this->entityManager->persist($issue);
                     $this->entityManager->flush();
-                    $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
+                    $message = "Fin du planning poker pour l'issue {$issue->getNumber()}.";
+                    foreach($project->getMembers() as $member) {
+                        if($member->getId() == $this->getUser()->getId() ){
+                            $this->notifications->addInfo($message);
+                        } else {
+                            $notif = new Notification($message);
+                            $member->addNotification($notif);
+                            $this->entityManager->persist($notif);
+                            $this->entityManager->flush();
+                        }
+                    }
+
+                    if($project->getOwner()->getId() == $this->getUser()->getId() ){
+                        $this->notifications->addInfo($message);
+                    } else {
+                        $notif = new Notification($message);
+                        $project->getOwner()->addNotification($notif);
+                        $entityManager->persist($notif);
+                        $entityManager->flush();
+                    }
                 }
 
                 return $this->redirectToRoute('issuesList', [

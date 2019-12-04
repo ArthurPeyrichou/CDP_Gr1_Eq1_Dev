@@ -6,6 +6,7 @@ use App\Entity\Invitation;
 use App\Entity\Member;
 use App\Entity\Project;
 use App\Entity\PlanningPoker;
+use App\Entity\Notification;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
 use App\Repository\InvitationRepository;
@@ -88,24 +89,50 @@ class ProjectController extends AbstractController {
 
         $today = new \DateTime();
         foreach($project->getIssues() as $issue){
+            $cptPP = 0;
             foreach($planPokerRepository->getPlanningPokerNotDoneByIssue($issue) as $planningPoker){
                 if(date_diff($planningPoker->getCreationDate(), $today)->format('%d') > PlanningPoker::TIME) {
                     $this->entityManager->remove($planningPoker);
+                    $this->entityManager->flush();
+                    $cptPP++;
                 }
             }
-            if($planPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
+            if($cptPP > 0 && $planPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
                 $cpt = 1;
                 $amount = $issue->getDifficulty();
                 foreach($planPokerRepository->getPlanningPokerByIssue($issue) as $planningPokerDone) {
                     ++$cpt;
                     $amount += $planningPokerDone->getValue();
                     $this->entityManager->remove($planningPokerDone);
+                    $this->entityManager->flush();
                 }
                 $issue->setDifficulty($amount / $cpt);
-                $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
+                $entityManager->persist($issue);
+                $entityManager->flush();
+                $message = "Fin du planning poker pour l'issue {$issue->getNumber()}.";
+                foreach($project->getMembers() as $member) {
+                    if($member->getId() == $user->getId() ){
+                        $this->notifications->addInfo($message);
+                    } else {
+                        $notif = new Notification($message);
+                        $member->addNotification($notif);
+                        $entityManager->persist($notif);
+                        $entityManager->flush();
+                    }
+                }
+
+                if($project->getOwner()->getId() == $user->getId() ){
+                    $this->notifications->addInfo($message);
+                } else {
+                    $notif = new Notification($message);
+                    $project->getOwner()->addNotification($notif);
+                    $this->entityManager->persist($notif);
+                    $this->entityManager->flush();
+                }
+               
             }
         }
-        $this->entityManager->flush();
+        
 
 
         return $this->render('project/project_details.html.twig', [

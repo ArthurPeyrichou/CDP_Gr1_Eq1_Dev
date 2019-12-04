@@ -44,6 +44,9 @@ class DashboardController extends AbstractController {
                         $entityManager->remove($planningPokerDone);
                         $entityManager->flush();
                     }
+                    if($cpt==0) {
+                        $cpt = 1;
+                    }
                     $issue->setDifficulty($amount / $cpt);
                     $entityManager->persist($issue);
                     $entityManager->flush();
