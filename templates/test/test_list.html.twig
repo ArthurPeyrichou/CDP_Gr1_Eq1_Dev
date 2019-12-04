@@ -47,17 +47,19 @@
             </div>
         </div>
     </div>
-    
-    <div id="graphic" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
 
-    {% set title = "Statut" %}
-    {% set function = "Status" %}
-    {% set statistic = statusStat %}
-    {% include 'graph/graph_column.html.twig' %}
+    <div id="chart" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
 
-    <script defer> 
-        showStatus();
-    </script>
+    {% set data = {
+        title: 'Statut',
+        datasetTitle: 'Nombre pour ce statut',
+        dataset: statusStat,
+    } %}
+
+    <div id="data" data-status="{{ data | json_encode }}" class="d-none"></div>
 
 {% endblock %}
 
+{% block javascripts %}
+    {{ encore_entry_script_tags('testList') }}
+{% endblock %}

@@ -32,36 +32,6 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("/project/{id_project}/sprints/{id_sprint}/tasks", name="tasksList", methods={"GET"})
-     */
-    public function viewTasks($id_project,$id_sprint)
-    {
-        $project = $this->projectRepository->find($id_project);
-        $sprint=$this->sprintRepository->find($id_sprint);
-        $todos = $this->taskRepository->getToDo($sprint);
-        $doings = $this->taskRepository->getDoing($sprint);
-        $dones = $this->taskRepository->getDone($sprint);
-
-        $manDaysStat = $this->taskRepository->getProportionEstimationManDays( $sprint);
-        $statusStat = $this->taskRepository->getProportionStatus($sprint);
-        $memberStat = $this->taskRepository->getProportionMembersAssociated($sprint);
-        $memberMansDayStat = $this->taskRepository->getProportionMansDPerMembersAssociated($sprint);
-
-        return $this->render('task/task_list.html.twig', [
-            'project' => $project,
-            'sprint' => $sprint,
-            'user' => $this->getUser(),
-            'manDaysStat' => $manDaysStat,
-            'statusStat' => $statusStat,
-            'memberStat' => $memberStat,
-            'memberMansDayStat' => $memberMansDayStat,
-            'todos' => $todos,
-            'doings' => $doings,
-            'dones' => $dones
-        ]);
-    }
-
-    /**
      * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/new", name="createTask")
      */
     public function createTask(Request $request, EntityManagerInterface $entityManager, $id_project,$id_sprint)

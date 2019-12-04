@@ -15,7 +15,7 @@
                                 <div class="row">
                                         <div class="col-md-6 col-lg-8">
                                             <div class="font-weight-bold">
-                                                <a class="hoverable list-group-item-action" href="{{ path('sprintDetails', {'id_project': project.id,'id_sprint':sprint.id}) }}" title="Voir les tâches associées" >     
+                                                <a class="hoverable list-group-item-action" href="{{ path('sprintDetails', {'id_project': project.id,'id_sprint':sprint.id}) }}" title="Voir les tâches associées" >
                                                     <b>{{ sprint.number }}</b> : {{ sprint.description }}
                                                 </a>
                                             </div>
@@ -51,18 +51,20 @@
     </div>
 
 
-    <div id="graphic" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
+    <div id="chart" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
 
-    {% set title = "Burn Down Chart" %}
-    {% set function = "BDC" %}
-    {% set statistic = burnDownStat %}
-    {% set statisticTitle = "BDC Réel" %}
-    {% set statistic2 = burnDownTheoricStat %}
-    {% set statistic2Title = "BDC Théorique" %}
-    {% include 'graph/graph_area.html.twig' %}
+    {% set data = {
+        title: 'Burn Down Chart',
+        firstTitle: 'BDC Réel',
+        secondTitle: 'BDC Théorique',
+        firstDataset: burnDownStat,
+        secondDataset: burnDownTheoricStat
+    } %}
 
-    <script defer>
-        showBDC();
-    </script>
+    <div id="data" data-bdc="{{ data | json_encode }}" class="d-none"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('sprintList') }}
 {% endblock %}
 

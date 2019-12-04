@@ -15,11 +15,11 @@
                                         {% block buttons %}
                                             <div class="text-center row justify-content-around">
                                                 <a class="col-5 btn px-2 border {{ getClassForStatus("doing")}}"
-                                                    href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing', 'id_sprint':sprint.id}) }}">
+                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing', 'id_sprint':sprint.id}) }}">
                                                     En cours
                                                 </a>
                                                 <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
-                                                    href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done', 'id_sprint':sprint.id}) }}">
+                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done', 'id_sprint':sprint.id}) }}">
                                                     Fait
                                                 </a>
                                             </div>
@@ -58,11 +58,11 @@
                                         {% block buttons %}
                                             <div class="text-center row justify-content-around">
                                                 <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
-                                                    href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done','id_sprint':sprint.id}) }}">
+                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done','id_sprint':sprint.id}) }}">
                                                     Fait
                                                 </a>
                                             </div>
-                                            <div class="text-center row justify-content-around" style="margin-top:5px;">    
+                                            <div class="text-center row justify-content-around" style="margin-top:5px;">
                                                 <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : sprint.id, 'id_task' : task.id}) }}">Editer</a>
                                                 <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
                                             </div>
@@ -131,92 +131,39 @@
     {% endif %}
 </div>
 
-<select id="select-graph" class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
-<option value="Status">Statut</option>
-<option value="JH">Temps estimé</option>
-<option value="Membre">Membres associés</option>
-<option value="JHParMembre">Jour/Homme par Membre</option>
+<select id="select-chart" class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
+    <option value="Status">Statut</option>
+    <option value="JH">Tâches par jour/homme</option>
+    <option value="Membre">Tâches par membre</option>
+    <option value="JHParMembre">Jour/Homme par Membre</option>
 </select>
 
-<div id="graphic" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
+<div id="chart" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
 
-{% set title = "Statut" %}
-{% set function = "Status" %}
-{% set statistic = statusStat %}
-{% include 'graph/graph_column.html.twig' %}
+{% set dataStatus = {
+    title: 'Statut',
+    datasetTitle: 'Nombre pour ce statut',
+    dataset: statusStat,
+} %}
+{% set dataManDays = {
+    title: 'Tâches par Jour/Homme',
+    datasetTitle: 'Tâches pour cette estimation en J/H',
+    dataset: manDaysStat,
+} %}
+{% set dataMember = {
+    title: 'Tâches par membre',
+    datasetTitle: 'Nombre de tâches pour ce membre',
+    dataset: memberStat,
+} %}
+{% set dataManDaysMember = {
+    title: 'Jour/Homme par Membre',
+    datasetTitle: 'J/H pour ce member',
+    dataset: memberMansDayStat,
+} %}
 
-{% set title = "Jour/Homme" %}
-{% set function = "JH" %}
-{% set statistic = manDaysStat %}
-{% include 'graph/graph_column.html.twig' %}
-
-{% set title = "Membre" %}
-{% set function = "Membre" %}
-{% set statistic = memberStat %}
-{% include 'graph/graph_column.html.twig' %}
-
-{% set title = "Jour/Homme par Membre" %}
-{% set function = "JHParMembre" %}
-{% set statistic = memberMansDayStat %}
-{% include 'graph/graph_column.html.twig' %}
-
-<script defer>
-    function dragStart(event) {
-        event.dataTransfer.setData("Text", event.target.id);
-    }
-
-    function dragging(event) {
-        
-    }
-
-    function allowDrop(event) {
-        event.preventDefault();
-    }
-
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-    }
-
-    function drop(ev) {
-        event.preventDefault();
-        var data = event.dataTransfer.getData("Text");
-        event.target.children[1].children[0].appendChild(document.getElementById(data));
-        ref = document.getElementById(data).getAttribute('value');
-        if(event.target.getAttribute('class').includes('doing')){
-            ref = ref.replace('done','doing');
-        }
-
-        var ajax = new XMLHttpRequest();
-        ajax.open("GET", ref, true);
-        ajax.send();
-    }
-
-    function showGraph(title) {
-        switch(title){
-            case "Status":
-                showStatus();
-            break;
-            case "JH":
-                showJH();
-            break;
-            case "Membre":
-                showMembre();
-            break;
-            case "JHParMembre":
-                showJHParMembre();
-            break;
-        }
-    }
-
-    function init() {
-        // ajout d'un écouteur d'évènement
-        var el = document.getElementById("select-graph");
-        el.addEventListener("change", 
-        (event) => showGraph(event.target.value)
-        , false);
-    }
-
-    init();
-    showStatus();
-
-</script>
+<div id="data"
+     data-status="{{ dataStatus | json_encode }}"
+     data-manDays="{{ dataManDays | json_encode }}"
+     data-member="{{ dataMember | json_encode }}"
+     data-manDaysMember="{{ dataManDaysMember | json_encode }}"
+     class="d-none"></div>
