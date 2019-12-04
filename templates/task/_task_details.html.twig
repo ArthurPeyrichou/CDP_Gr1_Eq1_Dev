@@ -1,6 +1,6 @@
-<li id="drag{{ task.id }}"class="mt-2 {{ task.status }}" 
+<li id="drag{{ task.id }}"class="mt-2 {{ task.status }}"
 {% if task.status != 'done' %}
-ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" value="{{ path('changeTaskStatus', {'id_project': project.id, 'id_task' : task.id, 'status' : "done", 'id_sprint':sprint.id}) }}"
+ draggable="true" value="{{ path('changeTaskStatus', {'id_project': project.id, 'id_task' : task.id, 'status' : "done", 'id_sprint':sprint.id}) }}"
 {% endif %}
 >
     <a class="link collapsed" data-toggle="collapse" href="#taskDetail{{ task.id }}" aria-expanded="false">
@@ -22,7 +22,7 @@ ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" value="
         <ul class="mb-4">
             {% for issue in task.relatedIssues %}
                 <li>
-                    
+
                     <div class="ellipsis"><span class="font-weight-bold">{{ issue.number }}</span>: {{ issue.description }}</div>
                 </li>
             {% endfor %}

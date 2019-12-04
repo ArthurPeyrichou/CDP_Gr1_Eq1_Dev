@@ -41,32 +41,40 @@ document.getElementById('select-chart').addEventListener('change',
 showSpecificChart(ChartNames.STATUS);
 
 
-function dragStart(event) {
-    event.dataTransfer.setData("Text", event.target.id);
+function taskDragStart(event) {
+    event.dataTransfer.setData('text/plain', event.target.id);
 }
 
-function dragging(event) {
-
-}
-
-function allowDrop(event) {
+function taskAllowDrop(event) {
     event.preventDefault();
 }
 
-function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
-}
-
-function drop(ev) {
-    ev.preventDefault();
-    const data = ev.dataTransfer.getData("Text");
-    ev.target.children[1].children[0].appendChild(document.getElementById(data));
-    let ref = document.getElementById(data).getAttribute('value');
-    if(ev.target.getAttribute('class').includes('doing')){
+function taskDrop(event) {
+    event.preventDefault();
+    const data = event.dataTransfer.getData('text/plain');
+    const toMove = document.getElementById(data);
+    let ref = toMove.getAttribute('value');
+    if(event.target.classList.contains('doing')){
         ref = ref.replace('done','doing');
     }
 
-    const ajax = new XMLHttpRequest();
-    ajax.open("GET", ref, true);
-    ajax.send();
+    fetch(ref).then(
+        response => {
+            if (response.ok) {
+                event.target.children[1].children[0].appendChild(toMove);
+            }
+        }
+    );
 }
+
+document.querySelectorAll('li.todo, li.doing').forEach(
+    element => element.addEventListener('dragstart', taskDragStart)
+);
+
+document.querySelectorAll('.dropping-card').forEach(
+    element => {
+        element.addEventListener('drop', taskDrop);
+        element.addEventListener('dragover', taskAllowDrop);
+    }
+);
+
