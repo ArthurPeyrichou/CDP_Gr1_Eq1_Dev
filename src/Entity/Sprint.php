@@ -77,19 +77,12 @@ class Sprint
         return $this->id;
     }
 
-    public function getNumber(): ?int
+    public function getNumber(): int
     {
         return $this->number;
     }
 
-    public function setNumber(int $number): self
-    {
-        $this->number = $number;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -101,7 +94,7 @@ class Sprint
         return $this;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDate(): \DateTimeInterface
     {
         return $this->startDate;
     }

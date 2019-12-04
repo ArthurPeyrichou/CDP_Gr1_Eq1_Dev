@@ -23,7 +23,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     use TargetPathTrait;
 
     private const EMAIL = 'emailAddress';
-    private const PASSWORD = 'password';
+    private const USERPASS = 'password';
 
     private $memberRepository;
     private $urlGenerator;
@@ -49,7 +49,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     {
         $credentials = [
             self::EMAIL => $request->request->get(self::EMAIL),
-            self::PASSWORD => $request->request->get(self::PASSWORD),
+            self::USERPASS => $request->request->get(self::USERPASS),
             'csrf_token' => $request->request->get('_csrf_token'),
         ];
         $request->getSession()->set(
@@ -80,7 +80,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if (!$this->passwordEncoder->isPasswordValid($user, $credentials[self::PASSWORD])) {
+        if (!$this->passwordEncoder->isPasswordValid($user, $credentials[self::USERPASS])) {
             throw new CustomUserMessageAuthenticationException('Mot de passe incorrect.');
         }
         return true;

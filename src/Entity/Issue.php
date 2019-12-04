@@ -62,7 +62,8 @@ class Issue
      */
     private $project;
 
-    public function __construct($number, $description, $difficulty, $priority, $project, $sprint = null)
+    public function __construct(int $number, string $description, int $difficulty, string $priority, Project $project,
+                                ?Sprint $sprint = null)
     {
         $this->number = $number;
         $this->description = $description;
@@ -80,13 +81,6 @@ class Issue
     public function getNumber(): int
     {
         return $this->number;
-    }
-
-    public function setNumber(int $number): self
-    {
-        $this->number = $number;
-
-        return $this;
     }
 
     public function getDescription(): string
@@ -130,7 +124,7 @@ class Issue
         if (count($this->tasks) == 0) {
             return self::TODO;
         }
-        
+
         $nbTodos = $this->getTasksNumberByStatus(Task::TODO);
         $nbDoing = $this->getTasksNumberByStatus(Task::DOING);
         $nbDones = $this->getTasksNumberByStatus(Task::DONE);
@@ -143,7 +137,7 @@ class Issue
         else if ($nbDones > 0 && $nbTodos == 0) {
             $globalStatus = self::DONE;
         }
-        
+
         return $globalStatus;
     }
 
@@ -161,14 +155,14 @@ class Issue
         if (count($this->tasks) == 0) {
             return "0%";
         }
-        
+
         $cptDone = 0;
         foreach ($this->tasks as $task) {
             if ($task->getStatus() == Task::DONE) {
                 $cptDone+=1;
             }
-        }  
-        
+        }
+
         return intval($cptDone / count($this->tasks) * 100.0) . "%";
     }
 

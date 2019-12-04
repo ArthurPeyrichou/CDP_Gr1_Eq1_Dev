@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PlanningPoker
 {
-
     public const TIME = 2;
 
     /**
@@ -41,13 +40,12 @@ class PlanningPoker
      */
     private $issue;
 
-    public function __construct($issue, $member)
+    public function __construct(Issue $issue, Member $member)
     {
-        $this->issue= $issue;
-        $this->member= $member;
-        $this->value= -1;
-        $dt = new \DateTime();
-        $this->creationDate = $dt;
+        $this->issue = $issue;
+        $this->member = $member;
+        $this->value = -1;
+        $this->creationDate = new \DateTime();
     }
 
     public function getId(): ?int
@@ -55,16 +53,9 @@ class PlanningPoker
         return $this->id;
     }
 
-    public function getCreationDate(): ?\DateTimeInterface
+    public function getCreationDate(): \DateTimeInterface
     {
         return $this->creationDate;
-    }
-
-    public function setCreationDate(\DateTimeInterface $creationDate): self
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
     }
 
     public function getValue(): float
@@ -79,7 +70,7 @@ class PlanningPoker
         return $this;
     }
 
-    public function getMember(): ?Member
+    public function getMember(): Member
     {
         return $this->member;
     }
@@ -91,15 +82,8 @@ class PlanningPoker
         return $this;
     }
 
-    public function getIssue(): ?Issue
+    public function getIssue(): Issue
     {
         return $this->issue;
-    }
-
-    public function setIssue(Issue $issue): self
-    {
-        $this->issue = $issue;
-
-        return $this;
     }
 }

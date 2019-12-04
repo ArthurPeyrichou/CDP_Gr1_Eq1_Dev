@@ -47,7 +47,8 @@ class Test
      */
     private $issue;
 
-    public function __construct($project, $name, $description, $state, $issue = null)
+    public function __construct(Project $project, string $name, string $description, string $state,
+                                Issue $issue = null)
     {
         $this->project = $project;
         $this->name = $name;
@@ -61,7 +62,7 @@ class Test
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -73,7 +74,7 @@ class Test
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -85,7 +86,7 @@ class Test
         return $this;
     }
 
-    public function getState(): ?string
+    public function getState(): string
     {
         return $this->state;
     }

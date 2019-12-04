@@ -38,13 +38,12 @@ class Invitation
      */
     private $invitationKey;
 
-    public function __construct($member, $project)
+    public function __construct(Member $member, Project $project)
     {
-        $this->member= $member;
-        $this->project= $project;
-        $this->invitationKey = $this->addRandomPassword();
-        $dt = new \DateTime();
-        $this->date = $dt;
+        $this->member = $member;
+        $this->project = $project;
+        $this->invitationKey = $this->getRandomKey();
+        $this->date = new \DateTime();
     }
 
     public function getId(): ?int
@@ -52,19 +51,12 @@ class Invitation
         $this->id;
     }
 
-    public function getMember(): ?Member
+    public function getMember(): Member
     {
         return $this->member;
     }
 
-    public function setMember(Member $member): self
-    {
-        $this->member = $member;
-
-        return $this;
-    }
-
-    public function getProject(): ?Project
+    public function getProject(): Project
     {
         return $this->project;
     }
@@ -76,40 +68,26 @@ class Invitation
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    public function getInvitationKey(): ?string
+    public function getInvitationKey(): string
     {
         return $this->invitationKey;
     }
 
-    public function setInvitationKey(string $invitationKey): self
-    {
-        $this->invitationKey = $invitationKey;
 
-        return $this;
-    }
-
-
-    private function addRandomPassword(): string
+    private function getRandomKey(): string
     {
         $alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890';
-        $pass = array(); //remember to declare $pass as an array
-        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        $pass = [];
+        $alphaLength = strlen($alphabet) - 1;
         for ($i = 0; $i < 15; ++$i) {
             $n = rand(0, $alphaLength);
             $pass[] = $alphabet[$n];
         }
-        return implode($pass); //turn the array into a string
-    } 
+        return implode($pass);
+    }
 }

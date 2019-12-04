@@ -50,8 +50,8 @@ class Release
      */
     private $project;
 
-
-    public function __construct($number,$description,$date,$link,$sprint,$project)
+    public function __construct(int $number,string $description, \DateTimeInterface $date, string $link,
+                                Sprint $sprint, Project $project)
     {
         $this->number = $number;
         $this->description = $description;
@@ -59,7 +59,6 @@ class Release
         $this->link = $link;
         $this->sprint = $sprint;
         $this->project = $project;
-
     }
 
     public function getId(): ?int
@@ -67,19 +66,12 @@ class Release
         return $this->id;
     }
 
-    public function getNumber(): ?int
+    public function getNumber(): int
     {
         return $this->number;
     }
 
-    public function setNumber(int $number): self
-    {
-        $this->number = $number;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -91,7 +83,7 @@ class Release
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
@@ -103,7 +95,7 @@ class Release
         return $this;
     }
 
-    public function getLink(): ?string
+    public function getLink(): string
     {
         return $this->link;
     }

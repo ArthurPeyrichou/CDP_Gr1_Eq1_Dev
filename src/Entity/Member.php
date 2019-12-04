@@ -54,14 +54,13 @@ class Member implements UserInterface
      */
     private $notifications;
 
-
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $resetToken;
 
 
-    public function __construct($name, $emailAddress, $password)
+    public function __construct(string $name, string $emailAddress, string $password)
     {
         $this->name = $name;
         $this->emailAddress = $emailAddress;
@@ -70,6 +69,7 @@ class Member implements UserInterface
         $this->contributedProjects = new ArrayCollection();
         $this->planningPokers = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->resetToken = '';
     }
 
     public function getId(): ?int

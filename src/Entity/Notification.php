@@ -32,11 +32,10 @@ class Notification
      */
     private $date;
 
-    public function __construct($description)
+    public function __construct(string $description)
     {
         $this->description = $description;
-        $dt = new \DateTime();
-        $this->date = $dt;
+        $this->date = new \DateTime();
     }
 
     public function getId(): ?int
@@ -44,7 +43,7 @@ class Notification
         return $this->id;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -68,15 +67,8 @@ class Notification
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): self
-    {
-        $this->date = $date;
-
-        return $this;
     }
 }

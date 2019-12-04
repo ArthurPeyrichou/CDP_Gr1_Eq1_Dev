@@ -86,13 +86,6 @@ class Task
         return $this->number;
     }
 
-    public function setNumber(int $number): self
-    {
-        $this->number = $number;
-
-        return $this;
-    }
-
     public function getDescription(): string
     {
         return $this->description;

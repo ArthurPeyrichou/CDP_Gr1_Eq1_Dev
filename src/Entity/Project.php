@@ -65,11 +65,11 @@ class Project
     private $tests;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Documentation", mappedBy="project")
+     * @ORM\OneToMany(targetEntity="App\Entity\Documentation", mappedBy="project", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $ressourcesDoc;
 
-    public function __construct($owner, $name, $description, $creationDate)
+    public function __construct(Member $owner, string $name, string $description, \DateTimeInterface $creationDate)
     {
         $this->owner = $owner;
         $this->name = $name;
@@ -77,7 +77,6 @@ class Project
         $this->creationDate = $creationDate;
         $this->members = new ArrayCollection();
         $this->issues = new ArrayCollection();
-
         $this->sprints = new ArrayCollection();
         $this->releases = new ArrayCollection();
         $this->ressourcesDoc = new ArrayCollection();
@@ -89,7 +88,7 @@ class Project
     }
 
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -101,7 +100,7 @@ class Project
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -113,7 +112,7 @@ class Project
         return $this;
     }
 
-    public function getOwner(): ?Member
+    public function getOwner(): Member
     {
         return $this->owner;
     }
@@ -125,17 +124,9 @@ class Project
         return $this;
     }
 
-
-    public function getCreationDate(): ?\DateTimeInterface
+    public function getCreationDate(): \DateTimeInterface
     {
         return $this->creationDate;
-    }
-
-    public function setCreationDate(\DateTimeInterface $creationDate): self
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
     }
 
     /**
