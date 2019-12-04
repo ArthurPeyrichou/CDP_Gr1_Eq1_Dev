@@ -35,16 +35,17 @@ class ReleaseController extends AbstractController
     }
 
     /**
+     * Displays and handles the release creation form.
      * @Route("/project/{id_project}/releases/new_release", name = "createRelease")
      */
-    public function viewCreationIRelease(Request $request, $id_project): Response
+    public function viewCreationRelease(Request $request, $id_project): Response
     {
         $project = $this->projectRepository->find($id_project);
-        
+
         $form = $this->createForm(ReleaseType::class, [], [
             ReleaseType::PROJECT => $project
         ]);
-        
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -72,7 +73,9 @@ class ReleaseController extends AbstractController
             'project' => $project
         ]);
     }
+
     /**
+     * Displays the release list page.
      * @Route("/project/{id_project}/releases", name="releasesList", methods={"GET"})
      */
     public function viewReleases(Request $request, $id_project) {
@@ -86,6 +89,7 @@ class ReleaseController extends AbstractController
     }
 
     /**
+     * Displays and handles the release edit form.
      * @Route("/project/{id_project}/releases/{id_release}/edit", name="editRelease")
      */
     public function editRelease(Request $request, $id_release, $id_project): Response
@@ -116,7 +120,9 @@ class ReleaseController extends AbstractController
             'project' => $project
         ]);
     }
+
     /**
+     * Handles the deletion of a release.
      * @Route("/project/{id_project}/releases/{id_release}/delete", name="deleteRelease")
      */
     public function deleteRelease(Request $request, $id_project, $id_release)

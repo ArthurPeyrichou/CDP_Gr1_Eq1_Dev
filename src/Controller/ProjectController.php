@@ -34,6 +34,7 @@ class ProjectController extends AbstractController {
     }
 
     /**
+     * Displays and handles the project creation form.
      * @Route("/project/new", name="createProject")
      */
     public function createProject(Request $request) : Response
@@ -69,6 +70,7 @@ class ProjectController extends AbstractController {
     }
 
     /**
+     * Displays the details of a specific project.
      * @Route("/project/{id}", name="projectDetails", methods={"GET"})
      */
     public function viewProject(PlanningPokerRepository $planPokerRepository, InvitationRepository $invitationRepository, $id)
@@ -129,10 +131,10 @@ class ProjectController extends AbstractController {
                     $this->entityManager->persist($notif);
                     $this->entityManager->flush();
                 }
-               
+
             }
         }
-        
+
 
 
         return $this->render('project/project_details.html.twig', [
@@ -162,6 +164,7 @@ class ProjectController extends AbstractController {
     }
 
     /**
+     * Displays and handles the project edit form.
      * @Route("/project/{id}/edit", name="editProject")
      */
     public function editProject(Request $request, $id): Response
@@ -192,6 +195,7 @@ class ProjectController extends AbstractController {
     }
 
     /**
+     * Handles the deletion of a project.
      * @Route("/project/{id}/delete", name="deleteProject")
      */
     public function deleteProject(Request $request, $id)
@@ -215,6 +219,7 @@ class ProjectController extends AbstractController {
     }
 
     /**
+     * Handles the deletion of a member from a project.
      * @Route("/project/{projectId}/deleteMember/{memberId}", name="deleteMember")
      */
     public function deleteMember(MemberRepository $memberRepository, $projectId, $memberId): Response

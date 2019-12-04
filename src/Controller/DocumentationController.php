@@ -31,6 +31,7 @@ class DocumentationController extends AbstractController
     }
 
     /**
+     * Displays and handles the documentation creation form.
      * @Route("/project/{id_project}/documentation/new ", name = "createRessourceDoc")
      */
     public function viewCreationDocumentation(Request $request, $id_project): Response
@@ -64,7 +65,9 @@ class DocumentationController extends AbstractController
             'project' => $project
         ]);
     }
+
     /**
+     * Displays the documentation list page.
      * @Route("/project/{id_project}/documentation ", name="ressourcesDocList", methods={"GET"})
      */
     public function viewDocumentations(Request $request, $id_project) {
@@ -77,12 +80,11 @@ class DocumentationController extends AbstractController
         ]);
     }
 
-
-
     /**
+     * Displays and handles the documentation edit form.
      * @Route("/project/{id_project}/documentation/{id_documentation}/edit", name="editRessourceDoc")
      */
-    public function editRelssourceDoc(Request $request, $id_documentation, $id_project): Response
+    public function editDocumentation(Request $request, $id_documentation, $id_project): Response
     {
         $project = $this->projectRepository->find($id_project);
         $documentation = $this->documentationRepository->find($id_documentation);
@@ -111,9 +113,10 @@ class DocumentationController extends AbstractController
 
 
     /**
+     * Handles the deletion of a documentation resource.
      * @Route("/project/{id_project}/documentation/{id_documentation}/delete", name="deleteRessourceDoc")
      */
-    public function deleteRessourceDoc(Request $request, $id_project, $id_documentation)
+    public function deleteDocumentation(Request $request, $id_project, $id_documentation)
     {
         $documentation = $this->documentationRepository->find($id_documentation);
         if (!$documentation) {

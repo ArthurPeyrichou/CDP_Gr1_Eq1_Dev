@@ -15,16 +15,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController {
 
     /**
+     * Displays and handles the member registration form.
      * @Route("/register", name="register")
      */
     public function register(Request $request, RegistrationService $registrationService, NotificationService $notifications) : Response
     {
         $form = $this->createForm(RegistrationType::class);
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-           
+
             $name = $data['name'];
             $emailAddress = $data['emailAddress'];
             $password = $data['password'];

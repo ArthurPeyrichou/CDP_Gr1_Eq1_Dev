@@ -31,6 +31,7 @@ class SprintController extends AbstractController {
     }
 
     /**
+     * Displays and handles the sprint creation form.
      * @Route("/project/{id_project}/sprints/new", name="createSprint")
      */
     public function viewCreationSprint(Request $request, $id_project) : Response
@@ -66,6 +67,7 @@ class SprintController extends AbstractController {
     }
 
     /**
+     * Displays the sprint list page.
      * @Route("/project/{id_project}/sprints", name="sprintsList", methods={"GET"})
      */
     public function viewSprints(Request $request, IssueRepository $issueRepository, $id_project) {
@@ -81,11 +83,13 @@ class SprintController extends AbstractController {
             'user' => $this->getUser()
         ]);
     }
+
     /**
+     * Displays the sprint details page.
      * @Route("/project/{id_project}/sprints/{id_sprint}", name="sprintDetails", methods={"GET"})
      */
     public function viewSprint(Request $request, TaskRepository $taskRepository, $id_project,$id_sprint): Response
-    {   
+    {
         $project = $this->projectRepository->find($id_project);
         $sprint=$this->sprintRepository->find($id_sprint);
         $todos = $taskRepository->getToDo($sprint);
@@ -110,7 +114,9 @@ class SprintController extends AbstractController {
             'dones' => $dones
         ]);
     }
+
     /**
+     * Displays and handles the sprint edit form.
      * @Route("/project/{id_project}/sprints/{id_sprint}/edit", name="editSprint")
      */
     public function editSprint(Request $request, $id_sprint, $id_project): Response
@@ -141,6 +147,7 @@ class SprintController extends AbstractController {
     }
 
     /**
+     * Handles the deletion of a sprint.
      * @Route("/project/{id_project}/sprints/{id_sprint}/delete", name="deleteSprint")
      */
     public function deleteSprint(Request $request, $id_project, $id_sprint)

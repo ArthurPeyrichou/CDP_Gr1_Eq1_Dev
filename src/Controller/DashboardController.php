@@ -14,13 +14,14 @@ use App\Repository\PlanningPokerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DashboardController extends AbstractController {
-    
+
     /**
+     * Displays the dashboard/home page.
      * @Route("/dashboard", name = "dashboard", methods = {"GET"})
      * @Route("/", name = "root", methods = {"GET"})
      */
     public function viewDashboard(Request $request, InvitationRepository $invitationRepository,
-                PlanningPokerRepository $planningPokerRepository, EntityManagerInterface $entityManager, 
+                PlanningPokerRepository $planningPokerRepository, EntityManagerInterface $entityManager,
                 NotificationService $notifications) {
         /**@var $member Member */
         $member = $this->getUser();
@@ -31,7 +32,7 @@ class DashboardController extends AbstractController {
         foreach($planningPokers as $planningPoker){
             if(date_diff($planningPoker->getCreationDate(),$today)->format('%d') > PlanningPoker::TIME) {
                 $issue = $planningPoker->getIssue();
-                
+
                 $entityManager->remove($planningPoker);
                 $entityManager->flush();
 
@@ -52,7 +53,7 @@ class DashboardController extends AbstractController {
                     $entityManager->flush();
                     $notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
                 }
-                
+
                 $notifications->addError("Vous avez dépassé le temps permis pour participer au planning poker de l'issue {$issue->getNumber()}.");
             }
         }
@@ -70,9 +71,9 @@ class DashboardController extends AbstractController {
         $planningPokers = $planningPokerRepository->getPlanningPokerNotDoneByMember($member);
 
         return $this->render('project/dashboard.html.twig', ["myProjects"=> $myProjects,
-                                                            "myLinkedProjects"=> $myLinkedProjects, 
-                                                            "myInvitations"=> $myInvitations, 
-                                                            "myPlanningPokers"=> $planningPokers, 
+                                                            "myLinkedProjects"=> $myLinkedProjects,
+                                                            "myInvitations"=> $myInvitations,
+                                                            "myPlanningPokers"=> $planningPokers,
                                                             'user' => $member]);
     }
 

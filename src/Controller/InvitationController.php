@@ -27,6 +27,7 @@ class InvitationController extends AbstractController
     }
 
     /**
+     * Handles the action of sending an invitation to a user.
      * @Route("/project/{id}/sendInvitation", name="inviteToProject", methods={"POST"})
      */
     public function sendInvitationToProject(Request $request, InvitationService $invitationService,
@@ -70,6 +71,7 @@ class InvitationController extends AbstractController
     }
 
     /**
+     * Handles the action to accept an invitation.
      * @Route("/project/{invitationKey}/acceptInvitation", name="acceptInviteToProject", methods={"GET"})
      */
     public function acceptInvitationToProject(Request $request, InvitationRepository $invitationRepository, $invitationKey) : Response
@@ -107,6 +109,7 @@ class InvitationController extends AbstractController
     }
 
     /**
+     * Handles the action of denying an invitation.
      * @Route("/project/{invitationKey}/denyInvitation", name="denyInviteToProject", methods={"GET"})
      */
     public function denyInvitationToProject(Request $request, InvitationRepository $invitationRepository, $invitationKey) : Response

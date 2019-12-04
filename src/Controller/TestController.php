@@ -30,6 +30,7 @@ class TestController extends AbstractController {
     }
 
     /**
+     * Displays and handles the test creation form.
      * @Route("/project/{id_project}/tests/new", name="createTest")
      */
     public function viewCreationTest(Request $request, $id_project) : Response
@@ -49,11 +50,11 @@ class TestController extends AbstractController {
                 $test = new Test($project, $name, $description, $state);
                 $this->entityManager->persist($test);
                 $this->entityManager->flush();
-                $this->notifications->addSuccess("Test {$test->getName()} créée avec succés.");
+                $this->notifications->addSuccess("Test {$test->getName()} créé avec succès.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }
-            
+
             return $this->redirectToRoute('testsList', [
                 'id_project' => $id_project
             ]);
@@ -68,6 +69,7 @@ class TestController extends AbstractController {
     }
 
     /**
+     * Displays the test list page.
      * @Route("/project/{id_project}/tests", name="testsList", methods={"GET"})
      */
     public function viewTests(Request $request, $id_project) {
@@ -85,6 +87,7 @@ class TestController extends AbstractController {
     }
 
     /**
+     * Displays and handles the test edit form.
      * @Route("/project/{id_project}/tests/{id_test}/edit", name="editTest")
      */
     public function editTest(Request $request, $id_test, $id_project): Response
@@ -96,11 +99,11 @@ class TestController extends AbstractController {
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {     
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->entityManager->persist($test);
                 $this->entityManager->flush();
-                $this->notifications->addSuccess("Test {$test->getName()} éditée avec succés.");
+                $this->notifications->addSuccess("Test {$test->getName()} édité avec succès.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }
@@ -117,18 +120,19 @@ class TestController extends AbstractController {
     }
 
     /**
+     * Handles the deletion of a test.
      * @Route("/project/{id_project}/tests/{id_test}/delete", name="deleteTest")
      */
     public function deleteTest(Request $request, $id_project, $id_test)
     {
         $test = $this->testRepository->find($id_test);
         if (!$test) {
-            $this->notifications->addError("Aucune test n'existe avec l'id {$id_test}");
+            $this->notifications->addError("Aucun test n'existe avec l'id {$id_test}");
         } else {
             try {
                 $this->entityManager->remove($test);
                 $this->entityManager->flush();
-                $this->notifications->addSuccess("Test {$test->getName()} supprimée avec succés.");
+                $this->notifications->addSuccess("Test {$test->getName()} supprimé avec succès.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }

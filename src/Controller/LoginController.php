@@ -30,6 +30,7 @@ class LoginController extends AbstractController
 
 
     /**
+     * Handles the log in action of a member.
      * @Route("/login", name="login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
@@ -50,6 +51,7 @@ class LoginController extends AbstractController
     }
 
     /**
+     * Displays and handles the forgotten password form.
      * @Route("/login/forgottenPassword", name="forgottenPassword")
      */
     public function forgottenPassword(Request $request, Swift_Mailer $mailer,
@@ -89,6 +91,7 @@ class LoginController extends AbstractController
 
 
     /**
+     * Displays and handles the password reset page.
      * @Route("/login/resetPassword/{token}", name="resetPassword")
      */
     public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder)

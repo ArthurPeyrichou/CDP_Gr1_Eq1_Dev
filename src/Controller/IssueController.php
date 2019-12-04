@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\RenderService;
 
 class IssueController extends AbstractController {
 
@@ -34,6 +33,7 @@ class IssueController extends AbstractController {
     }
 
     /**
+     * Displays and handles the issue creation form.
      * @Route("/project/{id_project}/issues/new", name="createIssue")
      */
     public function viewCreationIssue(Request $request, $id_project) : Response
@@ -84,6 +84,7 @@ class IssueController extends AbstractController {
     }
 
     /**
+     * Displays the issue list page.
      * @Route("/project/{id_project}/issues", name="issuesList", methods={"GET"})
      */
     public function viewIssues(Request $request, $id_project) {
@@ -104,6 +105,7 @@ class IssueController extends AbstractController {
     }
 
     /**
+     * Displays and handles the issue edit form.
      * @Route("/project/{id_project}/issues/{id_issue}/edit", name="editIssue")
      */
     public function editIssue(Request $request, $id_issue, $id_project): Response
@@ -138,6 +140,7 @@ class IssueController extends AbstractController {
     }
 
     /**
+     * Handles the deletion of an issue.
      * @Route("/project/{id_project}/issues/{id_issue}/delete", name="deleteIssue")
      */
     public function deleteIssue(Request $request, $id_project, $id_issue)
@@ -168,6 +171,7 @@ class IssueController extends AbstractController {
     }
 
     /**
+     * Displays and handles the planning poker form for an issue.
      * @Route("/project/{id_project}/issues/{id_issue}/plannigPoker", name="planningPoker")
      */
     public function plannigPokerForIssue(Request $request, PlanningPokerRepository $planningPokerRepository,$id_project, $id_issue)

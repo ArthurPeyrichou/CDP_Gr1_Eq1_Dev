@@ -35,6 +35,7 @@ class TaskController extends AbstractController
     }
 
     /**
+     * Displays and handles the task creation form.
      * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/new", name="createTask")
      */
     public function createTask(Request $request, $id_project,$id_sprint)
@@ -83,6 +84,7 @@ class TaskController extends AbstractController
     }
 
     /**
+     * Displays and handles the task edit form.
      * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/{id_task}/edit", name="editTask")
      */
     public function editTask(Request $request, $id_sprint, $id_project, $id_task)
@@ -126,6 +128,7 @@ class TaskController extends AbstractController
     }
 
     /**
+     * Handles the deletion of a task.
      * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/{id_task}/delete", name="deleteTask")
      */
     public function deleteTask($id_sprint,$id_project, $id_task)
@@ -160,6 +163,7 @@ class TaskController extends AbstractController
     }
 
     /**
+     * Handles the edition of a task's status.
      * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/{id_task}/{status}", name="changeTaskStatus", requirements={
      *     "status"="^doing|done$"
      * })
