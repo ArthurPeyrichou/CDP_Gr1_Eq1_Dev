@@ -21,20 +21,23 @@ class TaskController extends AbstractController
     private $notifications;
     private $projectRepository;
     private $sprintRepository;
+    private $entityManager;
 
     public function __construct(TaskRepository $taskRepository, NotificationService $notifications,
-                                ProjectRepository $projectRepository, SprintRepository $sprintRepository)
+                                ProjectRepository $projectRepository, SprintRepository $sprintRepository,
+                                EntityManagerInterface $entityManager)
     {
         $this->taskRepository = $taskRepository;
         $this->notifications = $notifications;
         $this->projectRepository = $projectRepository;
         $this->sprintRepository=$sprintRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
      * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/new", name="createTask")
      */
-    public function createTask(Request $request, EntityManagerInterface $entityManager, $id_project,$id_sprint)
+    public function createTask(Request $request, $id_project,$id_sprint)
     {
         $project = $this->projectRepository->find($id_project);
         $sprint = $this->sprintRepository->find($id_sprint);
@@ -54,12 +57,12 @@ class TaskController extends AbstractController
                 $relatedIssues = $data['relatedIssues']->toArray();
 
                 $task = new Task($number, $description, $requiredManDays, $relatedIssues, $developper,$sprint);
-                $entityManager->persist($task);
-                $entityManager->flush();
+                $this->entityManager->persist($task);
+                $this->entityManager->flush();
 
                 foreach($relatedIssues as $issue) {
-                    $entityManager->persist($issue);
-                    $entityManager->flush();
+                    $this->entityManager->persist($issue);
+                    $this->entityManager->flush();
                 }
                 $this->notifications->addSuccess("Tâche {$task->getNumber()} créée avec succés.");
             } catch(\Exception $e) {
@@ -82,7 +85,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/{id_task}/edit", name="editTask")
      */
-    public function editTask(Request $request, EntityManagerInterface $entityManager,$id_sprint, $id_project, $id_task)
+    public function editTask(Request $request, $id_sprint, $id_project, $id_task)
     {
         $project = $this->projectRepository->find($id_project);
         $sprint= $this->sprintRepository->find($id_sprint);
@@ -97,12 +100,12 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $entityManager->persist($task);
-                $entityManager->flush();
+                $this->entityManager->persist($task);
+                $this->entityManager->flush();
 
                 foreach($task->getRelatedIssues() as $issue) {
-                    $entityManager->persist($issue);
-                    $entityManager->flush();
+                    $this->entityManager->persist($issue);
+                    $this->entityManager->flush();
                 }
                 $this->notifications->addSuccess("Tâche {$task->getNumber()} éditée avec succés.");
             } catch(\Exception $e) {
@@ -125,7 +128,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/project/{id_project}/sprints/{id_sprint}/tasks/{id_task}/delete", name="deleteTask")
      */
-    public function deleteTask(EntityManagerInterface $entityManager, $id_sprint,$id_project, $id_task)
+    public function deleteTask($id_sprint,$id_project, $id_task)
     {
         $sprint= $this->sprintRepository->find($id_sprint);
         $task = $this->taskRepository->findOneBy([
@@ -137,13 +140,13 @@ class TaskController extends AbstractController
             $this->notifications->addError("Aucune tâche n'existe avec l'id {$id_task}");
         } else {
             try {
-                $entityManager->remove($task);
-                $entityManager->flush();
+                $this->entityManager->remove($task);
+                $this->entityManager->flush();
 
                 foreach($task->getRelatedIssues() as $issue) {
                     $issue->removeTask($task);
-                    $entityManager->persist($issue);
-                    $entityManager->flush();
+                    $this->entityManager->persist($issue);
+                    $this->entityManager->flush();
                 }
                 $this->notifications->addSuccess("Tâche {$task->getNumber()} supprimée avec succès.");
             } catch(\Exception $e) {
@@ -161,7 +164,7 @@ class TaskController extends AbstractController
      *     "status"="^doing|done$"
      * })
      */
-    public function changeTaskStatus(EntityManagerInterface $entityManager, $id_project,$id_sprint, $id_task, $status)
+    public function changeTaskStatus($id_project,$id_sprint, $id_task, $status)
     {
         $sprint= $this->sprintRepository->find($id_sprint);
         $task = $this->taskRepository->findOneBy([
@@ -176,7 +179,7 @@ class TaskController extends AbstractController
             if ($status == Task::DONE) {
                 $task->finish();
             }
-            $entityManager->flush();
+            $this->entityManager->flush();
         }
         catch (InvalidStatusTransitionException $e) {
             $this->notifications->addError($e->getMessage());

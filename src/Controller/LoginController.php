@@ -18,17 +18,21 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class LoginController extends AbstractController
 {
     private $notifications;
+    private $entityManager;
+    private $memberRepository;
 
-    public function __construct(NotificationService $notifications)
+    public function __construct(NotificationService $notifications, MemberRepository $memberRepository, EntityManagerInterface $entityManager)
     {
         $this->notifications = $notifications;
+        $this->memberRepository =$memberRepository;
+        $this->entityManager = $entityManager;
     }
 
 
     /**
      * @Route("/login", name="login")
      */
-    public function login(AuthenticationUtils $authenticationUtils, NotificationService $notifications): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('dashboard');
@@ -37,7 +41,7 @@ class LoginController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastEmail = $authenticationUtils->getLastUsername();
         if($error){
-            $notifications->addError($error->getMessageKey());
+            $this->notifications->addError($error->getMessageKey());
         }
 
         return $this->render('member/login.html.twig', [
@@ -48,15 +52,14 @@ class LoginController extends AbstractController
     /**
      * @Route("/login/forgottenPassword", name="forgottenPassword")
      */
-    public function forgottenPassword(Request $request,EntityManagerInterface $entityManager,
-                                       Swift_Mailer $mailer, MemberRepository $memberRepository,
-                                       TokenGeneratorInterface $tokenGenerator): Response
+    public function forgottenPassword(Request $request, Swift_Mailer $mailer,
+            TokenGeneratorInterface $tokenGenerator): Response
     {
         if ($request->isMethod('POST')) {
 
             $email = $request->request->get('emailAddress');
 
-            $member = $memberRepository->findOneBy(['emailAddress'=>$email]);
+            $member = $this->memberRepository->findOneBy(['emailAddress'=>$email]);
 
             if ($member == null) {
                 $this->notifications->addError('Cette adresse email n\'existe pas');
@@ -64,7 +67,7 @@ class LoginController extends AbstractController
             else {
                 $token = $tokenGenerator->generateToken();
                 $member->setResetToken($token);
-                $entityManager->flush();
+                $this->entityManager->flush();
                 $url = $this->generateUrl('resetPassword', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $message = (new \Swift_Message('Mot de passe oublié'))
@@ -88,12 +91,11 @@ class LoginController extends AbstractController
     /**
      * @Route("/login/resetPassword/{token}", name="resetPassword")
      */
-    public function resetPassword(Request $request, string $token, EntityManagerInterface $entityManager,
-                                  MemberRepository $memberRepository, UserPasswordEncoderInterface $passwordEncoder)
+    public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder)
     {
         if ($request->isMethod('POST')) {
 
-            $member = $memberRepository->findOneBy(['resetToken' => $token]);
+            $member = $this->memberRepository->findOneBy(['resetToken' => $token]);
 
             if ($member === null) {
                 $this->notifications->addError('Token inconnu');
@@ -101,7 +103,7 @@ class LoginController extends AbstractController
             else {
                 $member->setPassword($passwordEncoder->encodePassword($member, $request->request->get('password')));
                 $member->setResetToken('');
-                $entityManager->flush();
+                $this->entityManager->flush();
                 $this->notifications->addSuccess('Mot de passe mis à jour');
             }
             return $this->redirectToRoute('login');

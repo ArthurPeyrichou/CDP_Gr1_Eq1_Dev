@@ -22,18 +22,20 @@ class IssueController extends AbstractController {
     private $issueRepository;
     private $notifications;
     private $projectRepository;
+    private $entityManager;
 
-    public function __construct(IssueRepository $issueRepository, NotificationService $notifications, ProjectRepository $projectRepository)
+    public function __construct(IssueRepository $issueRepository, NotificationService $notifications, ProjectRepository $projectRepository, EntityManagerInterface $entityManager)
     {
         $this->issueRepository = $issueRepository;
         $this->notifications = $notifications;
         $this->projectRepository = $projectRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
      * @Route("/project/{id_project}/issues/new", name="createIssue")
      */
-    public function viewCreationIssue(Request $request, EntityManagerInterface $entityManager, $id_project) : Response
+    public function viewCreationIssue(Request $request, $id_project) : Response
     {
         $project = $this->projectRepository->find( $id_project);
         $nextNumber = $this->issueRepository->getNextNumber($project);
@@ -49,18 +51,18 @@ class IssueController extends AbstractController {
             $sprint = $data['sprint'];
             $difficulty = $data['difficulty'];
             $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprint);
-            $entityManager->persist($issue);
+            $this->entityManager->persist($issue);
 
             if (count($project->getMembers()) > 0) {
                 foreach($project->getMembersAndOwner() as $member) {
                     if ($member->getId() != $this->getUser()->getId()){
                         $planningPoker = new PlanningPoker($issue, $member);
-                        $entityManager->persist($planningPoker);
+                        $this->entityManager->persist($planningPoker);
                     }
                 }
             }
 
-            $entityManager->flush();
+            $this->entityManager->flush();
             $this->notifications->addSuccess("Issue {$issue->getNumber()} créée avec succés.");
 
             return $this->redirectToRoute('issuesList', [
@@ -99,7 +101,7 @@ class IssueController extends AbstractController {
     /**
      * @Route("/project/{id_project}/issues/{id_issue}/edit", name="editIssue")
      */
-    public function editIssue(Request $request, EntityManagerInterface $entityManager, $id_issue, $id_project): Response
+    public function editIssue(Request $request, $id_issue, $id_project): Response
     {
         $issue = $this->issueRepository->find($id_issue);
         $project = $this->projectRepository->find( $id_project);
@@ -111,8 +113,8 @@ class IssueController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $entityManager->persist($issue);
-                $entityManager->flush();
+                $this->entityManager->persist($issue);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} éditée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -133,7 +135,7 @@ class IssueController extends AbstractController {
     /**
      * @Route("/project/{id_project}/issues/{id_issue}/delete", name="deleteIssue")
      */
-    public function deleteIssue(Request $request, EntityManagerInterface $entityManager, $id_project, $id_issue)
+    public function deleteIssue(Request $request, $id_project, $id_issue)
     {
         $issue = $this->issueRepository->find($id_issue);
 
@@ -141,13 +143,13 @@ class IssueController extends AbstractController {
             $this->notifications->addError("Aucune issue n'existe avec l'id {$id_issue}");
         } else {
             try {
-                $entityManager->remove($issue);
-                $entityManager->flush();
+                $this->entityManager->remove($issue);
+                $this->entityManager->flush();
 
                 foreach($issue->getTasks() as $task) {
                     $task->removeRelatedIssue($issue);
-                    $entityManager->persist($task);
-                    $entityManager->flush();
+                    $this->entityManager->persist($task);
+                    $this->entityManager->flush();
                 }
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} supprimée avec succés.");
             } catch(\Exception $e) {
@@ -163,8 +165,7 @@ class IssueController extends AbstractController {
     /**
      * @Route("/project/{id_project}/issues/{id_issue}/plannigPoker", name="planningPoker")
      */
-    public function plannigPokerForIssue(Request $request, EntityManagerInterface $entityManager,
-                                         PlanningPokerRepository $planningPokerRepository,$id_project, $id_issue)
+    public function plannigPokerForIssue(Request $request, PlanningPokerRepository $planningPokerRepository,$id_project, $id_issue)
     {
         $project = $this->projectRepository->find($id_project);
         $issue = $this->issueRepository->findOneBy([
@@ -184,8 +185,8 @@ class IssueController extends AbstractController {
                 $data = $form->getData();
                 $value = $data['value'];
                 $planningPoker->setValue($value);
-                $entityManager->persist($planningPoker);
-                $entityManager->flush();
+                $this->entityManager->persist($planningPoker);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} évaluée avec succés.");
 
                 if($planningPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
@@ -194,12 +195,12 @@ class IssueController extends AbstractController {
                     foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPoker) {
                         ++$cpt;
                         $amount += $planningPoker->getValue();
-                        $entityManager->remove($planningPoker);
-                        $entityManager->flush();
+                        $this->entityManager->remove($planningPoker);
+                        $this->entityManager->flush();
                     }
                     $issue->setDifficulty($amount / $cpt);
-                    $entityManager->persist($issue);
-                    $entityManager->flush();
+                    $this->entityManager->persist($issue);
+                    $this->entityManager->flush();
                     $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
                 }
 

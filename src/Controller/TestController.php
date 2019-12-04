@@ -19,18 +19,20 @@ class TestController extends AbstractController {
     private $testRepository;
     private $notifications;
     private $projectRepository;
+    private $entityManager;
 
-    public function __construct( TestRepository $testRepository, NotificationService $notifications, ProjectRepository $projectRepository)
+    public function __construct( TestRepository $testRepository, NotificationService $notifications, ProjectRepository $projectRepository, EntityManagerInterface $entityManager)
     {
         $this->testRepository = $testRepository;
         $this->notifications = $notifications;
         $this->projectRepository = $projectRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
      * @Route("/project/{id_project}/tests/new", name="createTest")
      */
-    public function viewCreationTest(Request $request, EntityManagerInterface $entityManager, $id_project) : Response
+    public function viewCreationTest(Request $request, $id_project) : Response
     {
         $project = $this->projectRepository->find( $id_project);
         $form = $this->createForm(TestType::class, [], [
@@ -45,8 +47,8 @@ class TestController extends AbstractController {
                 $description= $data['description'];
                 $state=$data['state'];
                 $test = new Test($project, $name, $description, $state);
-                $entityManager->persist($test);
-                $entityManager->flush();
+                $this->entityManager->persist($test);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Test {$test->getName()} créée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -85,7 +87,7 @@ class TestController extends AbstractController {
     /**
      * @Route("/project/{id_project}/tests/{id_test}/edit", name="editTest")
      */
-    public function editTest(Request $request, EntityManagerInterface $entityManager, $id_test, $id_project): Response
+    public function editTest(Request $request, $id_test, $id_project): Response
     {
         $test = $this->testRepository->find($id_test);
         $project = $this->projectRepository->find( $id_project);
@@ -96,8 +98,8 @@ class TestController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {     
             try {
-                $entityManager->persist($test);
-                $entityManager->flush();
+                $this->entityManager->persist($test);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Test {$test->getName()} éditée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -117,15 +119,15 @@ class TestController extends AbstractController {
     /**
      * @Route("/project/{id_project}/tests/{id_test}/delete", name="deleteTest")
      */
-    public function deleteTest(Request $request, EntityManagerInterface $entityManager, $id_project, $id_test)
+    public function deleteTest(Request $request, $id_project, $id_test)
     {
         $test = $this->testRepository->find($id_test);
         if (!$test) {
             $this->notifications->addError("Aucune test n'existe avec l'id {$id_test}");
         } else {
             try {
-                $entityManager->remove($test);
-                $entityManager->flush();
+                $this->entityManager->remove($test);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Test {$test->getName()} supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());

@@ -24,18 +24,20 @@ class ReleaseController extends AbstractController
     private $releaseRepository;
     private $notifications;
     private $projectRepository;
+    private $entityManager;
 
-    public function __construct(ReleaseRepository $releaseRepository, NotificationService $notifications, ProjectRepository $projectRepository)
+    public function __construct(ReleaseRepository $releaseRepository, NotificationService $notifications, ProjectRepository $projectRepository, EntityManagerInterface $entityManager)
     {
         $this->releaseRepository = $releaseRepository;
         $this->notifications = $notifications;
         $this->projectRepository = $projectRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
      * @Route("/project/{id_project}/releases/new_release", name = "createRelease")
      */
-    public function viewCreationIRelease(Request $request, EntityManagerInterface $entityManager, $id_project): Response
+    public function viewCreationIRelease(Request $request, $id_project): Response
     {
         $project = $this->projectRepository->find($id_project);
         
@@ -54,8 +56,8 @@ class ReleaseController extends AbstractController
                 $sprint=$data['sprint'];
                 $link=$data['link'];
                 $release=new Release($number,$description,$date,$link,$sprint,$project);
-                $entityManager->persist($release);
-                $entityManager->flush();
+                $this->entityManager->persist($release);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("La release a été créer avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -86,7 +88,7 @@ class ReleaseController extends AbstractController
     /**
      * @Route("/project/{id_project}/releases/{id_release}/edit", name="editRelease")
      */
-    public function editRelease(Request $request, EntityManagerInterface $entityManager, $id_release, $id_project): Response
+    public function editRelease(Request $request, $id_release, $id_project): Response
     {
         $project = $this->projectRepository->find($id_project);
         $release = $this->releaseRepository->find($id_release);
@@ -97,8 +99,8 @@ class ReleaseController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $entityManager->persist($release);
-                $entityManager->flush();
+                $this->entityManager->persist($release);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Release {$release->getNumber()} éditée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -117,7 +119,7 @@ class ReleaseController extends AbstractController
     /**
      * @Route("/project/{id_project}/releases/{id_release}/delete", name="deleteRelease")
      */
-    public function deleteRelease(Request $request, EntityManagerInterface $entityManager, $id_project, $id_release)
+    public function deleteRelease(Request $request, $id_project, $id_release)
     {
         $release = $this->releaseRepository->find($id_release);
         if (!$release) {

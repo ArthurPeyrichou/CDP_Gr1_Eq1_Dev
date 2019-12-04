@@ -22,16 +22,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProjectController extends AbstractController {
 
     private $notifications;
+    private $entityManager;
+    private $projectRepository;
 
-    public function __construct(NotificationService $notifications)
+    public function __construct(NotificationService $notifications, EntityManagerInterface $entityManager, ProjectRepository $projectRepository)
     {
         $this->notifications = $notifications;
+        $this->entityManager = $entityManager;
+        $this->projectRepository = $projectRepository;
     }
 
     /**
      * @Route("/project/new", name="createProject")
      */
-    public function createProject(Request $request, EntityManagerInterface $entityManager) : Response
+    public function createProject(Request $request) : Response
     {
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
@@ -46,8 +50,8 @@ class ProjectController extends AbstractController {
             $project = new Project($owner, $name, $description, $date);
 
             try {
-                $entityManager->persist($project);
-                $entityManager->flush();
+                $this->entityManager->persist($project);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Création du projet {$project->getName()} réussie");
                 return $this->redirectToRoute('projectDetails', [
                     'id' => $project->getId()
@@ -66,11 +70,10 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}", name="projectDetails", methods={"GET"})
      */
-    public function viewProject(ProjectRepository $projectRepository, PlanningPokerRepository $planPokerRepository,
-                                InvitationRepository $invitationRepository, EntityManagerInterface $entityManager, $id)
+    public function viewProject(PlanningPokerRepository $planPokerRepository, InvitationRepository $invitationRepository, $id)
     : Response
     {
-        $project = $projectRepository->findOneBy([
+        $project = $this->projectRepository->findOneBy([
             'id' => intval($id)
         ]);
         /**@var $user Member*/
@@ -87,7 +90,7 @@ class ProjectController extends AbstractController {
         foreach($project->getIssues() as $issue){
             foreach($planPokerRepository->getPlanningPokerNotDoneByIssue($issue) as $planningPoker){
                 if(date_diff($planningPoker->getCreationDate(), $today)->format('%d') > PlanningPoker::TIME) {
-                    $entityManager->remove($planningPoker);
+                    $this->entityManager->remove($planningPoker);
                 }
             }
             if($planPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
@@ -96,13 +99,13 @@ class ProjectController extends AbstractController {
                 foreach($planPokerRepository->getPlanningPokerByIssue($issue) as $planningPokerDone) {
                     ++$cpt;
                     $amount += $planningPokerDone->getValue();
-                    $entityManager->remove($planningPokerDone);
+                    $this->entityManager->remove($planningPokerDone);
                 }
                 $issue->setDifficulty($amount / $cpt);
                 $this->notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
             }
         }
-        $entityManager->flush();
+        $this->entityManager->flush();
 
 
         return $this->render('project/project_details.html.twig', [
@@ -134,17 +137,17 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}/edit", name="editProject")
      */
-    public function editProject(Request $request, EntityManagerInterface $entityManager,ProjectRepository $projectRepository, $id): Response
+    public function editProject(Request $request, $id): Response
     {
-        $project =  $projectRepository->find($id);
+        $project =  $this->projectRepository->find($id);
 
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $entityManager->persist($project);
-                $entityManager->flush();
+                $this->entityManager->persist($project);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Edition du projet {$project->getName()} réussie");
                 return $this->redirectToRoute('projectDetails', [
                     'id' => $id
@@ -164,15 +167,15 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{id}/delete", name="deleteProject")
      */
-    public function deleteProject(Request $request, ProjectRepository $projectRepository, EntityManagerInterface $entityManager, $id)
+    public function deleteProject(Request $request, $id)
     {
-        $project = $projectRepository->find($id);
+        $project = $this->projectRepository->find($id);
         if (!$project) {
             $this->notifications->addError("Aucun projet n'existe avec l'id {$id}");
         }
         try {
-            $entityManager->remove($project);
-            $entityManager->flush();
+            $this->entityManager->remove($project);
+            $this->entityManager->flush();
             $this->notifications->addSuccess("Suppression du projet {$project->getName()} réussie");
             return $this->redirectToRoute('dashboard');
         } catch (\Exception $e) {
@@ -187,11 +190,11 @@ class ProjectController extends AbstractController {
     /**
      * @Route("/project/{projectId}/deleteMember/{memberId}", name="deleteMember")
      */
-    public function deleteMember(ProjectRepository $projectRepository, MemberRepository $memberRepository, EntityManagerInterface $entityManager, $projectId, $memberId): Response
+    public function deleteMember(MemberRepository $memberRepository, $projectId, $memberId): Response
     {
         $user = $this->getUser();
         $member = $memberRepository->find($memberId);
-        $project = $projectRepository->find($projectId);
+        $project = $this->projectRepository->find($projectId);
 
         if (!$member) {
             $this->notifications->addError("Aucun membre n'existe avec l'id {$memberId}");
@@ -205,7 +208,7 @@ class ProjectController extends AbstractController {
         else {
             try {
                 $project->removeMember($member);
-                $entityManager->flush();
+                $this->entityManager->flush();
                 if($project->getOwner() != $user) {
                     $this->notifications->addSuccess("Vous venez de quitter le projet {$project->getName()}");
                     return $this->redirectToRoute('dashboard');

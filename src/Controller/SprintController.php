@@ -20,18 +20,20 @@ class SprintController extends AbstractController {
     private $sprintRepository;
     private $notifications;
     private $projectRepository;
+    private $entityManager;
 
-    public function __construct(SprintRepository $sprintRepository, NotificationService $notifications, ProjectRepository $projectRepository)
+    public function __construct(SprintRepository $sprintRepository, NotificationService $notifications, ProjectRepository $projectRepository, EntityManagerInterface $entityManager)
     {
         $this->sprintRepository = $sprintRepository;
         $this->notifications = $notifications;
         $this->projectRepository = $projectRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
      * @Route("/project/{id_project}/sprints/new", name="createSprint")
      */
-    public function viewCreationSprint(Request $request, EntityManagerInterface $entityManager, $id_project) : Response
+    public function viewCreationSprint(Request $request, $id_project) : Response
     {
         $project = $this->projectRepository->find($id_project);
         $nextNumber = $this->sprintRepository->getNextNumber($project);
@@ -45,8 +47,8 @@ class SprintController extends AbstractController {
                 $startDate=$data['startDate'];
                 $estimated_duration=$data['durationInDays'];
                 $sprint = new Sprint($project, $nextNumber, $description, $startDate, $estimated_duration);
-                $entityManager->persist($sprint);
-                $entityManager->flush();
+                $this->entityManager->persist($sprint);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} créée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -111,7 +113,7 @@ class SprintController extends AbstractController {
     /**
      * @Route("/project/{id_project}/sprints/{id_sprint}/edit", name="editSprint")
      */
-    public function editSprint(Request $request, EntityManagerInterface $entityManager, $id_sprint, $id_project): Response
+    public function editSprint(Request $request, $id_sprint, $id_project): Response
     {
         $sprint = $this->sprintRepository->find($id_sprint);
         $form = $this->createForm(SprintType::class, $sprint);
@@ -120,8 +122,8 @@ class SprintController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $entityManager->persist($sprint);
-                $entityManager->flush();
+                $this->entityManager->persist($sprint);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} éditée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -141,15 +143,15 @@ class SprintController extends AbstractController {
     /**
      * @Route("/project/{id_project}/sprints/{id_sprint}/delete", name="deleteSprint")
      */
-    public function deleteSprint(Request $request, EntityManagerInterface $entityManager, $id_project, $id_sprint)
+    public function deleteSprint(Request $request, $id_project, $id_sprint)
     {
         $sprint = $this->sprintRepository->find($id_sprint);
         if (!$sprint) {
             $this->notifications->addError("Aucune sprint n'existe avec l'id {$id_sprint}");
         } else {
             try {
-                $entityManager->remove($sprint);
-                $entityManager->flush();
+                $this->entityManager->remove($sprint);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());

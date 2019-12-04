@@ -19,19 +19,21 @@ class DocumentationController extends AbstractController
     private $notifications;
     private $projectRepository;
     private $documentationRepository;
+    private $entityManager;
 
     public function __construct(NotificationService $notifications, ProjectRepository $projectRepository,
-                                DocumentationRepository $documentationRepository)
+                                DocumentationRepository $documentationRepository, EntityManagerInterface $entityManager)
     {
         $this->notifications = $notifications;
         $this->projectRepository = $projectRepository;
         $this->documentationRepository=$documentationRepository;
+        $this->entityManager = $entityManager;
     }
 
     /**
      * @Route("/project/{id_project}/documentation/new ", name = "createRessourceDoc")
      */
-    public function viewCreationDocumentation(Request $request, EntityManagerInterface $entityManager, $id_project): Response
+    public function viewCreationDocumentation(Request $request, $id_project): Response
     {
         $project = $this->projectRepository->find($id_project);
 
@@ -46,8 +48,8 @@ class DocumentationController extends AbstractController
                 $description= $data['description'];
                 $link=$data['link'];
                 $documentation=new Documentation($name,$description,$link,$project);
-                $entityManager->persist($documentation);
-                $entityManager->flush();
+                $this->entityManager->persist($documentation);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("La documentation a été créer avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -80,7 +82,7 @@ class DocumentationController extends AbstractController
     /**
      * @Route("/project/{id_project}/documentation/{id_documentation}/edit", name="editRessourceDoc")
      */
-    public function editRelssourceDoc(Request $request, EntityManagerInterface $entityManager,$id_documentation, $id_project): Response
+    public function editRelssourceDoc(Request $request, $id_documentation, $id_project): Response
     {
         $project = $this->projectRepository->find($id_project);
         $documentation = $this->documentationRepository->find($id_documentation);
@@ -89,8 +91,8 @@ class DocumentationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $entityManager->persist($documentation);
-                $entityManager->flush();
+                $this->entityManager->persist($documentation);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Ressource de documentation  {$documentation->getName()} éditée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -111,15 +113,15 @@ class DocumentationController extends AbstractController
     /**
      * @Route("/project/{id_project}/documentation/{id_documentation}/delete", name="deleteRessourceDoc")
      */
-    public function deleteRessourceDoc(Request $request, EntityManagerInterface $entityManager, $id_project, $id_documentation)
+    public function deleteRessourceDoc(Request $request, $id_project, $id_documentation)
     {
         $documentation = $this->documentationRepository->find($id_documentation);
         if (!$documentation) {
             $this->notifications->addError("Aucune ressource de documentation n'existe avec l'id {$id_documentation}");
         } else {
             try {
-                $entityManager->remove($documentation);
-                $entityManager->flush();
+                $this->entityManager->remove($documentation);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("ressource de documentation {$documentation->getName()} est supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
