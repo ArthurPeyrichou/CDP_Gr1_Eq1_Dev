@@ -18,10 +18,12 @@ class InvitationController extends AbstractController
 {
 
     private $notifications;
+    private $entityManager;
 
-    public function __construct(NotificationService $notifications)
+    public function __construct(NotificationService $notifications, EntityManagerInterface $entityManager)
     {
         $this->notifications = $notifications;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -86,15 +88,15 @@ class InvitationController extends AbstractController
             try {
                 $project = $invitation->getProject();
                 $member->addContributedProject($project);
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($member);
-                $entityManager->remove($invitation);
+                $this->entityManager = $this->getDoctrine()->getManager();
+                $this->entityManager->persist($member);
+                $this->entityManager->remove($invitation);
 
                 $notif = new Notification("Bonne nouvelle! {$member->getName()} a accepté votre invitation.");
                 $project->getOwner()->addNotification($notif);
-                $entityManager->persist($notif);
+                $this->entityManager->persist($notif);
 
-                $entityManager->flush();
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre son projet");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -107,8 +109,7 @@ class InvitationController extends AbstractController
     /**
      * @Route("/project/{invitationKey}/denyInvitation", name="denyInviteToProject", methods={"GET"})
      */
-    public function denyInvitationToProject(Request $request, InvitationRepository $invitationRepository,
-                                            EntityManagerInterface $entityManager, $invitationKey) : Response
+    public function denyInvitationToProject(Request $request, InvitationRepository $invitationRepository, $invitationKey) : Response
     {
 
         $member = $this->getUser();
@@ -121,14 +122,14 @@ class InvitationController extends AbstractController
             $this->notifications->addError('L\'invitation ne vous est pas adressée ou n\'existe pas');
         }  else {
             try {
-                $entityManager->remove($invitation);
+                $this->entityManager->remove($invitation);
 
                 $project = $invitation->getProject();
                 $notif = new Notification("Aie.. {$member->getName()} a refusé votre invitation.");
                 $project->getOwner()->addNotification($notif);
-                $entityManager->persist($notif);
+                $this->entityManager->persist($notif);
 
-                $entityManager->flush();
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Vous venez de refuser l'invitation de {$invitation->getProject()->getOwner()->getName()} à rejoindre son projet");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
