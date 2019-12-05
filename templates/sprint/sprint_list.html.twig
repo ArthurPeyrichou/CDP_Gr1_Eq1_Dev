@@ -15,14 +15,16 @@
                                 <div class="row">
                                         <div class="col-md-6 col-lg-8">
                                             <div class="font-weight-bold">
-                                                <a class="hoverable list-group-item-action" href="{{ path('sprintDetails', {'id_project': project.id,'id_sprint':sprint.id}) }}" title="Voir les tâches associées" >
-                                                    <b>{{ sprint.number }}</b> : {{ sprint.description }}
-                                                </a>
+                                                <b>{{ sprint.number }}</b> : {{ sprint.description }}
                                             </div>
                                             <div class="text-muted small">
-                                        </div>
+                                                {% set addDay = '+' ~ sprint.durationInDays ~ ' day' %}
+                                                <span>Période ({{sprint.durationInDays}}j):</span>
+                                                <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ sprint.startDate|date_modify(addDay)|date("d/m/Y") }}</span>
+                                            </div>
                                         </div>
                                         <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                            <a class="btn btn-success my-auto mr-1" href="{{ path('sprintDetails', {'id_project': project.id,'id_sprint':sprint.id}) }}">Taches</a>
                                             <a class="btn btn-primary my-auto mr-1" href="{{ path('editSprint', {'id_project': project.id, 'id_sprint' : sprint.id}) }}">Editer</a>
                                             <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#sprint-delete-confirm">Supprimer</button>
                                         </div>
@@ -33,7 +35,7 @@
                                     <h3>Veuillez confirmer la suppression</h3>
                                 {% endblock %}
                                 {% block body %}
-                                    <p>Êtes-vous sûr(e) de vouloir supprimer le sprint {{ sprint.number }}</p>
+                                    <p>Êtes-vous sûr(e) de vouloir supprimer le sprint {{ sprint.number }}?<br/>Les issue associé seront déliées et les tâches associées seront supprimée.</p>
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>

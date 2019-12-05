@@ -13,12 +13,11 @@
                     <span class="font-weight-bold">Description :</span>
                     {{ sprint.description }}
                 </p>
-              <div class="text-muted small">
-                  <span>Date de début :</span>
-                  <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }}</span>
-                  <span>| Durée estimé pour la réalisation :</span>
-                  <span class="font-weight-bold">{{ sprint.durationInDays }}</span>
-              </div>
+                <div class="text-muted small">
+                    {% set addDay = '+' ~ sprint.durationInDays ~ ' day' %}
+                    <span>Période ({{sprint.durationInDays}}j):</span>
+                    <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ sprint.startDate|date_modify(addDay)|date("d/m/Y") }}</span>
+                </div>
 
             </div>
         </div>
