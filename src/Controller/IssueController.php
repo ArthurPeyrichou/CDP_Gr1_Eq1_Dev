@@ -143,7 +143,7 @@ class IssueController extends AbstractController {
      * Handles the deletion of an issue.
      * @Route("/project/{id_project}/issues/{id_issue}/delete", name="deleteIssue")
      */
-    public function deleteIssue(Request $request, $id_project, $id_issue)
+    public function deleteIssue(Request $request, PlanningPokerRepository $planningPokerRepository, $id_project, $id_issue)
     {
         $issue = $this->issueRepository->find($id_issue);
 
@@ -151,14 +151,20 @@ class IssueController extends AbstractController {
             $this->notifications->addError("Aucune issue n'existe avec l'id {$id_issue}");
         } else {
             try {
-                $this->entityManager->remove($issue);
-                $this->entityManager->flush();
 
                 foreach($issue->getTasks() as $task) {
                     $task->removeRelatedIssue($issue);
                     $this->entityManager->persist($task);
+                    $this->entityManager->flush();  
+                }
+                foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPoker) {
+                    $this->entityManager->remove($planningPoker);
                     $this->entityManager->flush();
                 }
+
+                $this->entityManager->remove($issue);
+                $this->entityManager->flush();
+                
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -174,7 +180,7 @@ class IssueController extends AbstractController {
      * Displays and handles the planning poker form for an issue.
      * @Route("/project/{id_project}/issues/{id_issue}/plannigPoker", name="planningPoker")
      */
-    public function plannigPokerForIssue(Request $request, PlanningPokerRepository $planningPokerRepository,$id_project, $id_issue)
+    public function plannigPokerForIssue(Request $request, PlanningPokerRepository $planningPokerRepository, $id_project, $id_issue)
     {
         $project = $this->projectRepository->find($id_project);
         $issue = $this->issueRepository->findOneBy([
@@ -227,8 +233,8 @@ class IssueController extends AbstractController {
                     } else {
                         $notif = new Notification($message);
                         $project->getOwner()->addNotification($notif);
-                        $entityManager->persist($notif);
-                        $entityManager->flush();
+                        $this->entityManager->persist($notif);
+                        $this->entityManager->flush();
                     }
                 }
 

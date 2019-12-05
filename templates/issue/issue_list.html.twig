@@ -11,7 +11,7 @@
                 {% if issues is not empty %}
                     <ul class="list-group">
                         {% for index, issue in issues %}
-                            <li class="list-group-item">
+                            <li id="item-{{ issue.id }}" class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-6 col-lg-8">
                                         <div class="font-weight-bold">{{ issue.number }} - {{ issue.description }}</div>
@@ -45,7 +45,8 @@
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                    <a href="{{ path('deleteIssue', {'id_project' : project.id,'id_issue' : issue.id }) }}" class="btn btn-primary">Oui</a>
+                                    <button type="button" data-dismiss="modal" data-link="{{ path('deleteIssue', {'id_project' : project.id,'id_issue' : issue.id }) }}" data-id="{{ issue.id }}" 
+                                            class="btn btn-primary delete-item">Oui</button>
                                 {% endblock %}
                             {% endembed %}
                         {% endfor %}
@@ -90,4 +91,5 @@
 
 {% block javascripts %}
     {{ encore_entry_script_tags('issueList') }}
+    {{ encore_entry_script_tags('global') }}
 {% endblock %}

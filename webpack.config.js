@@ -26,7 +26,8 @@ Encore
     .addEntry('issueList', './assets/js/issueList')
     .addEntry('testList', './assets/js/testList')
     .addEntry('taskList', './assets/js/taskList')
-
+    .addEntry('global', './assets/js/global')
+    
     .addStyleEntry('main', './assets/css/main.css')
     .addStyleEntry('sidebar', './assets/css/sidebar.css')
     .addStyleEntry('task', './assets/css/task.css')
