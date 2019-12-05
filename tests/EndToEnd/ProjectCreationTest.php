@@ -19,14 +19,15 @@ class ProjectCreationTest extends PantherTestCase
 
     public static function setUpBeforeClass(): void
     {
-        $kernel = self::bootKernel();
+        $kernel = static::bootKernel();
 
-        self::setUpBeforeClassTrait($kernel);
+        static::setUpBeforeClassTrait($kernel);
     }
 
     protected function setUp(): void
     {
-        $this->client = self::createPantherClient();
+        static::startWebServer();
+        $this->client = static::createPantherClient();
         $this->logIn($this->client, 'member1@domain.com', 'someReallySecurePassword');
     }
 
@@ -73,10 +74,11 @@ class ProjectCreationTest extends PantherTestCase
     protected function tearDown(): void
     {
         $this->logOut($this->client);
+        static::stopWebServer();
     }
 
     public static function tearDownAfterClass(): void
     {
-        self::tearDownAfterClassTrait();
+        static::tearDownAfterClassTrait();
     }
 }

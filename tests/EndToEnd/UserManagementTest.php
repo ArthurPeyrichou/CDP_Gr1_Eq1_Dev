@@ -19,9 +19,14 @@ class UserManagementTest extends PantherTestCase
 
     public static function setUpBeforeClass(): void
     {
-        $kernel = self::bootKernel();
+        $kernel = static::bootKernel();
 
-        self::setUpBeforeClassTrait($kernel);
+        static::setUpBeforeClassTrait($kernel);
+    }
+
+    protected function setUp(): void
+    {
+        static::startWebServer();
     }
 
     public function testRegister(): void
@@ -57,9 +62,14 @@ class UserManagementTest extends PantherTestCase
         $this->assertStringContainsString(self::LOGIN, $loginTitle->getText());
     }
 
+    protected function tearDown(): void
+    {
+        static::stopWebServer();
+    }
+
     public static function tearDownAfterClass(): void
     {
-        self::tearDownAfterClassTrait();
+        static::tearDownAfterClassTrait();
     }
 
 }
