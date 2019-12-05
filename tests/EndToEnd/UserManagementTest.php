@@ -49,11 +49,9 @@ class UserManagementTest extends PantherTestCase
     {
 
         $client = static::createPantherClient();
-
         $this->logIn($client, self::EMAIL, self::PW);
 
         $client->wait()->until(WebDriverExpectedCondition::urlContains('/dashboard'));
-
         $loginTitle = $client->findElement(WebDriverBy::cssSelector('#navbarContent > div.dropdown.px-lg-3 > a'));
 
         $this->assertStringContainsString(self::LOGIN, $loginTitle->getText());

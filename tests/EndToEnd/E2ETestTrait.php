@@ -6,6 +6,7 @@ namespace App\Tests\EndToEnd;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverElement;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Panther\Client;
@@ -53,10 +54,13 @@ trait E2ETestTrait
     {
         $entity = $this->getOneFromDb($className, $criteria);
         if ($entity) {
-            self::$deletables[] = [
+            $deletable = [
                 'id' => $entity->getId(),
                 'className' => $className
             ];
+            if (!in_array($deletable, self::$deletables)) {
+                self::$deletables[] = $deletable;
+            }
         }
         return $entity;
     }
@@ -84,17 +88,21 @@ trait E2ETestTrait
     {
         $client->request('GET', '/login');
 
-        $client->wait()->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::cssSelector('body > div > div > div > form')
-            )
-        );
-        $loginField = $client->findElement(WebDriverBy::id('email'));
-        $loginField->sendKeys($email);
-        $emailField = $client->findElement(WebDriverBy::id('password'));
-        $emailField->sendKeys($password);
-        $button = $client->findElement(WebDriverBy::cssSelector('body > div > div > div > form > button'));
-        $button->click();
+        $this->waitForElement($client, 'body > div > div > div > form');
+
+        $this->typeInto($client, '#email', $email);
+        $this->typeInto($client, '#password', $password);
+        $this->clickOn($client, 'body > div > div > div > form > button');
+    }
+
+    /**
+     * Performs the actions a user needs to perform to log out of the application.
+     * @param Client $client An initialized web client.
+     */
+    private function logOut(Client $client)
+    {
+        $this->waitForElement($client, '#navbarContent > div.dropdown.px-lg-3 > a')->click();
+        $this->waitForElement($client, '#navbarContent > div.dropdown.px-lg-3.show > div > a')->click();
     }
 
     /**
@@ -103,10 +111,11 @@ trait E2ETestTrait
      * @param string $cssSelector The CSS selector to wait for.
      * @throws \Facebook\WebDriver\Exception\NoSuchElementException If the element is not found.
      * @throws \Facebook\WebDriver\Exception\TimeOutException If the 30 seconds timeout is reached.
+     * @return WebDriverElement The expected element.
      */
-    private function waitForElement(Client $client, string $cssSelector)
+    private function waitForElement(Client $client, string $cssSelector): WebDriverElement
     {
-        $client->wait()->until(
+        return $client->wait()->until(
             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector($cssSelector))
         );
     }
@@ -117,7 +126,7 @@ trait E2ETestTrait
      * @param string $cssSelector The CSS selector of the form input.
      * @param string $toType The text to type into the element.
      */
-    private function typeInto(Client $client, string $cssSelector, string $toType)
+    private function typeInto(Client $client, string $cssSelector, string $toType): void
     {
         $client->findElement(WebDriverBy::cssSelector($cssSelector))->sendKeys($toType);
     }
@@ -127,7 +136,7 @@ trait E2ETestTrait
      * @param Client $client An initialized web client.
      * @param string $cssSelector The CSS selector of the element to click on.
      */
-    private function clickOn(Client $client, string $cssSelector)
+    private function clickOn(Client $client, string $cssSelector): void
     {
         $client->findElement(WebDriverBy::cssSelector($cssSelector))->click();
     }
