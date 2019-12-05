@@ -44,7 +44,8 @@ class TaskController extends AbstractController
         $sprint = $this->sprintRepository->find($id_sprint);
         $nextNumber = $this->taskRepository->getNextNumber($sprint);
         $form = $this->createForm(TaskType::class, ['number' => $nextNumber], [
-            TaskType::PROJECT => $project
+            TaskType::PROJECT => $project,
+            TaskType::SPRINT => $sprint
         ]);
 
         $form->handleRequest($request);
@@ -96,7 +97,8 @@ class TaskController extends AbstractController
             'sprint' => $sprint
         ]);
         $form = $this->createForm(TaskType::class, $task, [
-            TaskType::PROJECT => $project
+            TaskType::PROJECT => $project,
+            TaskType::SPRINT => $sprint
         ]);
 
         $form->handleRequest($request);

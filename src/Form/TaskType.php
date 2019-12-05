@@ -16,11 +16,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TaskType extends AbstractType
 {
     public const PROJECT = 'project';
+    public const SPRINT = 'sprint';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /**@var $project Project*/
         $project = $options[self::PROJECT];
+
+        /**@var $sprint Project*/
+        $sprint = $options[self::SPRINT];
 
         $builder
             ->add('number', IntegerType::class, [
@@ -54,7 +58,7 @@ class TaskType extends AbstractType
             ->add('relatedIssues', EntityType::class, [
                 'label' => 'Issues associées',
                 'class' => Issue::class,
-                'choices' => $project->getIssues(),
+                'choices' => $sprint->getIssues(),
                 'multiple' => true,
                 'choice_label' => function (Issue $issue) {
                     return "{$issue->getNumber()} - {$issue->getDescription()}";
@@ -70,5 +74,6 @@ class TaskType extends AbstractType
         ]);
 
         $resolver->setRequired([self::PROJECT]);
+        $resolver->setRequired([self::SPRINT]);
     }
 }
