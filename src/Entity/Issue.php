@@ -166,6 +166,22 @@ class Issue
         return intval($cptDone / count($this->tasks) * 100.0) . "%";
     }
 
+    public function getProportionOfDoing(): string
+    {
+        if (count($this->tasks) == 0) {
+            return "0%";
+        }
+
+        $cptDone = 0;
+        foreach ($this->tasks as $task) {
+            if ($task->getStatus() == Task::DOING) {
+                $cptDone+=1;
+            }
+        }
+
+        return intval($cptDone / count($this->tasks) * 100.0) . "%";
+    }
+
     public function getSprint(): ?Sprint
     {
         return $this->sprint;

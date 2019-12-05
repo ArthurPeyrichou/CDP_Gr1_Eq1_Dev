@@ -13,6 +13,7 @@ class StatusExtension extends AbstractExtension
     {
         return [
             new TwigFunction('getClassForStatus', [StatusRuntime::class, 'getClassForStatus']),
+            new TwigFunction('getClassForTestStatus', [StatusRuntime::class, 'getClassForTestStatus'])
         ];
     }
 }

@@ -30,4 +30,27 @@ class StatusRuntime implements RuntimeExtensionInterface
         }
         return $statusClass;
     }
+    
+    /**
+     * @return string
+     */
+    public function getClassForTestStatus($status): string
+    {
+        $statusClass = '';
+        switch($status){
+            case 'failed':
+                $statusClass = 'red';
+                break;
+            case 'todo':
+                $statusClass = 'yellow';
+                break;
+            case 'succeeded':
+                $statusClass = 'green';
+                break;
+            default :
+                $statusClass = '';
+                break;
+        }
+        return $statusClass;
+    }
 }
