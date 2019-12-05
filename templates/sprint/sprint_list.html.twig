@@ -11,7 +11,7 @@
                 {% if sprints is not empty %}
                     <ul class="list-group">
                         {% for index, sprint in sprints %}
-                            <li class="list-group-item">
+                            <li id="item-{{ sprint.id }}" class="list-group-item">
                                 <div class="row">
                                         <div class="col-md-6 col-lg-8">
                                             <div class="font-weight-bold">
@@ -37,7 +37,8 @@
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                    <a href="{{ path('deleteSprint', {'id_project' : project.id,'id_sprint' : sprint.id }) }}" class="btn btn-primary">Oui</a>
+                                    <button type="button" data-dismiss="modal" data-link="{{ path('deleteSprint', {'id_project' : project.id,'id_sprint' : sprint.id }) }}" data-id="{{ project.id }}" 
+                                            class="btn btn-primary delete-item">Oui</button>
                                 {% endblock %}
                             {% endembed %}
                         {% endfor %}

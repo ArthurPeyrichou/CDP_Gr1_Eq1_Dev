@@ -11,7 +11,7 @@
                 {% if releases is not empty %}
                     <ul class="list-group">
                         {% for index, release in releases %}
-                            <li class="list-group-item">
+                            <li id="item-{{ release.id }}" class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-6 col-lg-8">
                                         <div class="font-weight-bold">{{ release.number}} - {{ release.description }}</div>
@@ -36,7 +36,8 @@
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                    <a href="{{ path('deleteRelease', {'id_project' : project.id,'id_release' : release.id }) }}" class="btn btn-primary">Oui</a>
+                                    <button type="button" data-dismiss="modal" data-link="{{ path('deleteRelease', {'id_project' : project.id,'id_release' : release.id }) }}" data-id="{{ release.id }}" 
+                                            class="btn btn-primary delete-item">Oui</button>
                                 {% endblock %}
                             {% endembed %}
                         {% endfor %}

@@ -157,8 +157,21 @@ class SprintController extends AbstractController {
             $this->notifications->addError("Aucune sprint n'existe avec l'id {$id_sprint}");
         } else {
             try {
+                //les issues on les des lis
+                foreach($sprint->getIssues() as $issue) {
+                    $issue->setSprint(null);
+                    $this->entityManager->persist($issue);
+                    $this->entityManager->flush();  
+                }
+                //les tahces on les supprime
+                foreach($sprint->getTasks() as $task) {
+                    $this->entityManager->remove($task);
+                    $this->entityManager->flush();  
+                }
+
                 $this->entityManager->remove($sprint);
                 $this->entityManager->flush();
+                
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());

@@ -132,8 +132,8 @@ class ReleaseController extends AbstractController
             $this->notifications->addError("Aucune release n'existe avec l'id {$id_release}");
         } else {
             try {
-                $entityManager->remove($release);
-                $entityManager->flush();
+                $this->entityManager->remove($release);
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Release {$release->getNumber()} supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
