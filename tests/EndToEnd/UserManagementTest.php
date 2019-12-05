@@ -29,19 +29,13 @@ class UserManagementTest extends PantherTestCase
         $client = static::createPantherClient();
         $client->request('GET', '/register');
 
-        $client->wait()->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector('body > div > div > div > form'))
-        );
-        $loginField = $client->findElement(WebDriverBy::id('registration_name'));
-        $loginField->sendKeys(self::LOGIN);
-        $emailField = $client->findElement(WebDriverBy::id('registration_emailAddress'));
-        $emailField->sendKeys(self::EMAIL);
-        $passField = $client->findElement(WebDriverBy::id('registration_password_first'));
-        $passField->sendKeys(self::PW);
-        $passFieldSec = $client->findElement(WebDriverBy::id('registration_password_second'));
-        $passFieldSec->sendKeys(self::PW);
-        $button = $client->findElement(WebDriverBy::cssSelector('body > div > div > div > form > button'));
-        $button->click();
+        $this->waitForElement($client, 'body > div > div > div > form');
+
+        $this->typeInto($client, '#registration_name', self::LOGIN);
+        $this->typeInto($client, '#registration_emailAddress', self::EMAIL);
+        $this->typeInto($client, '#registration_password_first', self::PW);
+        $this->typeInto($client, '#registration_password_second', self::PW);
+        $this->clickOn($client, 'body > div > div > div > form > button');
 
         $client->wait()->until(WebDriverExpectedCondition::urlContains('/login'));
 
@@ -55,19 +49,8 @@ class UserManagementTest extends PantherTestCase
     {
 
         $client = static::createPantherClient();
-        $client->request('GET', '/login');
 
-        $client->wait()->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::cssSelector('body > div > div > div > form')
-            )
-        );
-        $loginField = $client->findElement(WebDriverBy::id('email'));
-        $loginField->sendKeys(self::EMAIL);
-        $emailField = $client->findElement(WebDriverBy::id('password'));
-        $emailField->sendKeys(self::PW);
-        $button = $client->findElement(WebDriverBy::cssSelector('body > div > div > div > form > button'));
-        $button->click();
+        $this->logIn($client, self::EMAIL, self::PW);
 
         $client->wait()->until(WebDriverExpectedCondition::urlContains('/dashboard'));
 
