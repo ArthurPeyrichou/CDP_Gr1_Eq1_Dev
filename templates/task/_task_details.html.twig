@@ -1,9 +1,9 @@
-<li id="item-{{ task.id }}"class="mt-2 {{ task.status }}"
+<li id="item-{{ task.id }}" class="mt-2 {{ task.status }}"
 {% if task.status != 'done' %}
- draggable="true" data-link="{{ path('changeTaskStatus', {'id_project': project.id, 'id_task' : task.id, 'status' : "done", 'id_sprint':task.sprint.id}) }}"
+ draggable="true" data-link="{{ path('changeTaskStatus', {'id_project': project.id, 'id_task' : task.id, 'status' : 'done', 'id_sprint':task.sprint.id}) }}"
 {% endif %}
 >
-    <div class="link collapsed" data-toggle="collapse" href="#taskDetail{{ task.id }}" aria-expanded="false" style="cursor:pointer;">
+    <a class="link collapsed" data-toggle="collapse" href="#taskDetail{{ task.id }}" aria-expanded="false">
         <h4 class="h6 mb-0">
             {{ task.number }}
             <span class="pl-1 font-italic">
@@ -23,7 +23,7 @@
             {% for issueL in task.relatedIssues %}
                 <li>
                     {% if issue is not defined %}
-                    <a title="Voir les détails de l'issue" href="{{ path('issueDetails', {'id_project': project.id,'id_issue': issueL.id}) }}">                         
+                    <a title="Voir les détails de l'issue" href="{{ path('issueDetailsTask', {'id_project': project.id,'id_issue': issueL.id}) }}">
                         <div class="ellipsis"><span class="font-weight-bold">{{ issueL.number }}</span>: {{ issueL.description }}</div>
                     </a>
                     {% else %}
