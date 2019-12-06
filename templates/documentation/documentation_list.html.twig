@@ -8,41 +8,48 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title mb-4">Documentation</h3>
-                {% if ressourcesDoc  is not empty %}
+                {% if ressourcesDoc is not empty %}
                     <ul class="list-group">
                         {% for index, ressourceDoc in ressourcesDoc  %}
-                            <li class="list-group-item">
+                            <li id="item-{{ ressourceDoc.id }}" class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-6 col-lg-8">
                                         <div class="font-weight-bold">{{ ressourceDoc.name}} - {{ ressourceDoc.description }}</div>
-                                        <a class="font-weight-bold" href="{{(ressourceDoc.link)}}">Lien vers la ressource de documentation</a>
-                                        <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
-                                            <a class="btn btn-primary my-auto mr-1" href="{{ path('editRessourceDoc', {'id_project': project.id , 'id_documentation': ressourceDoc.id}) }}">Editer</a>
-                                            <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#ressource-delete-confirm{{ index }}">Supprimer</button>
+                                        <div class="text-muted small">
+                                            <a title="Accéder au lien de la doc" href="{{(ressourceDoc.link)}}" target="_blank">
+                                                <span class="green font-weight-bold badge badge-light" style="font-size: 110%;">Lien de la documentation</span>
+                                            </a>
                                         </div>
+                                    </div>    
+                                    <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                        <a class="btn btn-primary my-auto mr-1" href="{{ path('editRessourceDoc', {'id_project': project.id, 'id_documentation' : ressourceDoc.id}) }}">Editer</a>
+                                        <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#ressourceDoc-delete-confirm{{ index }}">Supprimer</button>
                                     </div>
                                 </div>
                             </li>
-                            {% embed 'components/_modal.html.twig' with {'modalId': "ressource-delete-confirm#{index}"} %}
+                            {% embed 'components/_modal.html.twig' with {'modalId': "ressourceDoc-delete-confirm#{index}"} %}
                                 {% block header %}
                                     <h3>Veuillez confirmer la suppression</h3>
                                 {% endblock %}
                                 {% block body %}
-                                    <p>Êtes-vous sûr(e) de vouloir supprimer la ressource de documentation {{ ressourceDoc.name}}</p>
+                                    <p>Êtes-vous sûr(e) de vouloir supprimer la documentation {{ ressourceDoc.name }}?</p>
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                    <a href="{{ path('deleteRessourceDoc', {'id_project' : project.id,  'id_documentation': ressourceDoc.id}) }}" class="btn btn-primary">Oui</a>
+                                    <button type="button" data-dismiss="modal" data-link="{{ path('deleteRessourceDoc', {'id_project' : project.id,'id_documentation' : ressourceDoc.id }) }}" data-id="{{ ressourceDoc.id }}" 
+                                            class="btn btn-primary delete-item">Oui</button>
                                 {% endblock %}
                             {% endembed %}
                         {% endfor %}
                     </ul>
                 {% else %}
-                    <p> Vous n'avez pour l'instant créé aucun ressource de documentation.</p>
+                    <p> Vous n'avez pour l'instant créé aucune ressource de documentation.</p>
                 {% endif %}
-                <a class="btn btn-primary mt-3" href="{{ path('createRessourceDoc', {'id_project' : project.id}) }}">Créer un ressource Doc</a>
+                <a class="btn btn-primary mt-3" href="{{ path('createRessourceDoc', {'id_project' : project.id}) }}">Créer une ressource de documentation</a>
             </div>
         </div>
     </div>
 {% endblock %}
+
+
 
