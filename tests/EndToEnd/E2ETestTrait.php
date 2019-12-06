@@ -115,7 +115,7 @@ trait E2ETestTrait
      */
     private function waitForElement(Client $client, string $cssSelector): WebDriverElement
     {
-        return $client->wait()->until(
+        return $client->wait(10)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector($cssSelector))
         );
     }
