@@ -21,8 +21,12 @@
                             <a class="btn btn-primary" href="{{ path('acceptInviteToProject', {'invitationKey': myInvitation.invitationKey}) }}">Rejoindre</a>
                             <button class="btn btn-danger" data-toggle="modal" data-target="#project-refuse-confirm">Refuser</button>
                         {% elseif status is defined and status == "owner" %}
-                            <a class="btn btn-primary" href="{{ path('editProject', {'id': project.id}) }}">Editer</a>
-                            <button class="btn btn-danger" data-toggle="modal" data-target="#project-delete-confirm">Supprimer</button>
+                            <a class="btn btn-light" title="Editer" href="{{ path('editProject', {'id': project.id}) }}">
+                                <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
+                            </a>
+                            <button class="btn btn-light" title="Supprimer" data-toggle="modal" data-target="#project-delete-confirm">
+                                <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
+                            </button>
                         {% elseif status is defined and status == "member" %}
                             <button class="btn btn-danger" data-toggle="modal" data-target="#leave-project-confirm">Quitter le projet</button>
                         {% endif %}

@@ -26,8 +26,12 @@
                                                 </a>
                                             </div>
                                             <div class="text-center row justify-content-around" style="margin-top:5px;">
-                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">Editer</a>
-                                                <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
+                                                <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">
+                                                    <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
+                                                </a>
+                                                <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#task-delete-confirm">
+                                                    <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
+                                                </button>
                                             </div>
                                         {% endblock %}
                                     {% endembed %}
@@ -66,8 +70,12 @@
                                                 </a>
                                             </div>
                                             <div class="text-center row justify-content-around" style="margin-top:5px;">
-                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">Editer</a>
-                                                <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
+                                                <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">
+                                                    <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
+                                                </a>
+                                                <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#task-delete-confirm">
+                                                    <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
+                                                </button>
                                             </div>
                                         {% endblock %}
                                     {% endembed %}
@@ -100,8 +108,12 @@
                                     {% embed 'task/_task_details.html.twig' %}
                                         {% block buttons %}
                                             <div class="text-center row justify-content-around">
-                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">Editer</a>
-                                                <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
+                                                <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">
+                                                    <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
+                                                </a>
+                                                <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#task-delete-confirm">
+                                                    <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
+                                                </button>
                                             </div>
                                         {% endblock %}
                                     {% endembed %}

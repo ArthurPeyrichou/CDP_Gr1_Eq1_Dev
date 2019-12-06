@@ -24,8 +24,12 @@
                                         </div>
                                     </div>    
                                     <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
-                                        <a class="btn btn-primary my-auto mr-1" href="{{ path('editRelease', {'id_project': project.id, 'id_release' : release.id}) }}">Editer</a>
-                                        <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#release-delete-confirm{{ index }}">Supprimer</button>
+                                        <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editRelease', {'id_project': project.id, 'id_release' : release.id}) }}">
+                                            <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
+                                        </a>
+                                        <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#release-delete-confirm{{ index }}">
+                                            <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
+                                        </button>
                                     </div>
                                 </div>
                             </li>

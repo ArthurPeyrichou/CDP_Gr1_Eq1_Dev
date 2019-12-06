@@ -45,8 +45,12 @@
                                         {% if issue.getTasks() is not empty %}
                                         <a class="btn btn-success my-auto mr-1" href="{{ path('issueDetails', {'id_project': project.id,'id_issue':issue.id}) }}">Tâches associées</a>
                                         {% endif %}
-                                        <a class="btn btn-primary my-auto mr-1" href="{{ path('editIssue', {'id_project': project.id, 'id_issue' : issue.id}) }}">Editer</a>
-                                        <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#issue-delete-confirm{{ index }}">Supprimer</button>
+                                        <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editIssue', {'id_project': project.id, 'id_issue' : issue.id}) }}">
+                                            <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
+                                        </a>
+                                        <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#issue-delete-confirm{{ index }}">
+                                            <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
+                                        </button>
                                     </div>
                                 </div>
                             </li>
