@@ -174,6 +174,16 @@ class Sprint
         return $this;
     }
 
+    public function containsNotDoneTask(): bool
+    {
+        foreach($this->tasks as $task){
+            if($task->getStatus() != Task::DONE){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @return Collection|Issue[]
      */
@@ -186,7 +196,7 @@ class Sprint
     {
         if (!$this->issues->contains($issue)) {
             $this->issues[] = $issue;
-            $issue->setSprint($this);
+            $issue->addSprint($this);
         }
 
         return $this;
@@ -196,10 +206,7 @@ class Sprint
     {
         if ($this->issues->contains($issue)) {
             $this->issues->removeElement($issue);
-            // set the owning side to null (unless already changed)
-            if ($issue->getSprint() === $this) {
-                $issue->setSprint(null);
-            }
+            $issue->removeSprint($this);
         }
 
         return $this;

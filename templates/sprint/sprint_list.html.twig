@@ -25,8 +25,11 @@
                                                 <span> | Issues : {{ sprint.getIssues()|length }}</span>
                                                 <span> | Tâches : {{ sprint.getTasks()|length }}</span>
                                                 {% if "now"|date('Y-m-d') > endDate|date('Y-m-d') %}
-                                                <span> | </span>
-                                                <span class="font-weight-bold green badge" style="font-size: 110%;">Fini</span>
+                                                    <span> | </span>
+                                                    <span class="font-weight-bold green badge" style="font-size: 110%;">Fini</span>
+                                                    {% if  sprint.containsNotDoneTask() %}
+                                                       <button class="btn btn-warning my-auto ml-1" data-toggle="modal" data-target="#sprint-migrate-confirm">Migrer</button> 
+                                                    {% endif %}
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -48,6 +51,25 @@
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
                                     <button type="button" data-dismiss="modal" data-link="{{ path('deleteSprint', {'id_project' : project.id,'id_sprint' : sprint.id }) }}" data-id="{{ project.id }}" 
                                             class="btn btn-primary delete-item">Oui</button>
+                                {% endblock %}
+                            {% endembed %}
+                            {% embed 'components/_modal.html.twig' with {'modalId': "sprint-migrate-confirm"} %}
+                                {% block header %}
+                                    <h3>Veuillez confirmer la migration</h3>
+                                {% endblock %}
+                                {% block body %}
+                                    <p>Sélectionnez un sprint afin de lui léguer les tâches et issues qui ne sérais pas Done.</p>
+                                {% endblock %}
+                                {% block footer %}
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                    {% for sprintT in sprints %}
+                                        {% set addDayT = '+' ~ sprintT.durationInDays ~ ' day' %}
+                                        {% set endDateT = sprintT.startDate|date_modify(addDayT) %}
+                                        {% if "now"|date('Y-m-d') < endDateT|date('Y-m-d') %}
+                                             <a class="btn btn-primary my-auto mr-1" href="{{ path('migrateSprint', {'id_project' : project.id,'id_source' : sprint.id,'id_target' : sprintT.id }) }}">
+                                             Oui</a>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endblock %}
                             {% endembed %}
                         {% endfor %}

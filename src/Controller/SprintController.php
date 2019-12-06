@@ -202,11 +202,9 @@ class SprintController extends AbstractController {
                 //les issues on les migre
                 foreach($sprint_source->getIssues() as $issue) {
                     if(!$issue->getSprints()->contains($sprint_target)){
-                        $issue->addSprint($sprint_target);
                         $sprint_target->addIssue($issue);
                         $this->entityManager->persist($sprint_target);
                         if($issue->getProportionOfDoing() == "0%") {
-                            $issue->removeSprint($sprint_source);
                             $sprint_source->removeIssue($issue);
                             $this->entityManager->persist($sprint_source);
                         }
@@ -216,9 +214,8 @@ class SprintController extends AbstractController {
                     }
                 }
                 //les taches on les migre
-                foreach($sprint_target->getTasks() as $task) {
+                foreach($sprint_source->getTasks() as $task) {
                     if($task->getStatus() != Task::DONE) {
-                        $task->setSprint($sprint_target);
                         $sprint_source->removeTask($task);
                         $sprint_target->addTask($task);
                         $this->entityManager->persist($task);
@@ -228,7 +225,7 @@ class SprintController extends AbstractController {
                     }
                 }
                 
-                $this->notifications->addSuccess("Contenu du sprint {$sprint->getNumber()} migré avec succés.");
+                $this->notifications->addSuccess("Contenu du sprint {$sprint_source->getNumber()} migré avec succés vers {$sprint_target->getNumber()}.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }

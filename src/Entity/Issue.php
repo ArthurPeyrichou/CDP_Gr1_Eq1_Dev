@@ -245,7 +245,6 @@ class Issue
     {
         if (!$this->sprints->contains($sprint)) {
             $this->sprints[] = $sprint;
-            $sprint->addRelatedIssue($this);
         }
 
         return $this;
@@ -255,7 +254,6 @@ class Issue
     {
         if ($this->sprints->contains($sprint)) {
             $this->sprints->removeElement($sprint);
-            $sprint->removeRelatedIssue($this);
         }
 
         return $this;
