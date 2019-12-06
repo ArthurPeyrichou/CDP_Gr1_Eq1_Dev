@@ -6,12 +6,14 @@ namespace App\Tests\EndToEnd;
 
 use App\Entity\Project;
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 use Symfony\Component\Panther\PantherTestCase;
 
 class ProjectCreationTest extends PantherTestCase
 {
     private const PROJECT_NAME = 'Some random project';
     private const PROJECT_DESC = 'As the title says, this is some random project';
+    private const EDITED_DESC = 'This is now some random edited project';
 
     use E2ETestTrait;
 
@@ -34,6 +36,8 @@ class ProjectCreationTest extends PantherTestCase
 
     public function testAddProject(): void
     {
+        $this->client->request('GET', '/dashboard');
+
         $this->waitForElement($this->client, '#navbarContent > div.navbar-nav.mr-auto > a:nth-child(2)')->click();
 
         $this->waitForElement($this->client, 'body > div > div > div > form');
@@ -42,16 +46,16 @@ class ProjectCreationTest extends PantherTestCase
         $this->typeInto($this->client, '#project_description', self::PROJECT_DESC);
         $this->clickOn($this->client, 'body > div > div > div > form > button');
 
-        $projectTitle = $this->waitForElement($this->client, '#content > h1')->getText();
-
-        $this->assertEquals(self::PROJECT_NAME, $projectTitle);
         $this->assertNotNull($this->getOneFromDb(Project::class, [
-            'name' => self::PROJECT_NAME
+            'name' => self::PROJECT_NAME,
+            'description' => self::PROJECT_DESC
         ]));
     }
 
     public function testDisplayProjects(): void
     {
+        $this->client->request('GET', '/dashboard');
+
         $projectElements = $this->waitForElement($this->client, '#project')
             ->findElements(WebDriverBy::cssSelector('#project > a'));
 
@@ -69,6 +73,50 @@ class ProjectCreationTest extends PantherTestCase
 
         $this->assertEquals(self::PROJECT_NAME, $projectTitle);
         $this->assertStringContainsString(self::PROJECT_DESC, $projectDescription);
+    }
+
+    public function testEditProject(): void
+    {
+        $this->client->request('GET', '/dashboard');
+
+        $projectElements = $this->waitForElement($this->client, '#project')
+            ->findElements(WebDriverBy::cssSelector('#project > a'));
+        $projectElements[count($projectElements) - 1]->click();
+
+        $this->waitForElement($this->client, '#editProject')->click();
+
+        $this->waitForElement($this->client, '#project_description')->clear()->sendKeys(self::EDITED_DESC);
+        $this->clickOn($this->client, '#content > div > div > div > form > button');
+
+        $this->waitForElement($this->client, '#content > h1');
+
+        $this->assertNotNull($this->getOneFromDb(Project::class, [
+            'name' => self::PROJECT_NAME,
+            'description' => self::EDITED_DESC
+        ]));
+
+    }
+
+    public function testDeleteProject(): void
+    {
+        $this->client->request('GET', '/dashboard');
+
+        $projectElements = $this->waitForElement($this->client, '#project')
+            ->findElements(WebDriverBy::cssSelector('#project > a'));
+        $projectElements[count($projectElements) - 1]->click();
+
+        $this->waitForElement($this->client, '#deleteProject')->click();
+        $this->client->wait()->until(
+            WebDriverExpectedCondition::elementToBeClickable(
+                WebDriverBy::cssSelector('#project-delete-confirm > div > div > div.modal-footer > a')
+            )
+        )->click();
+
+        $this->waitForElement($this->client, '#project');
+
+        $this->assertNull($this->getOneFromDb(Project::class, [
+            'name' => self::PROJECT_NAME
+        ]));
     }
 
     protected function tearDown(): void
