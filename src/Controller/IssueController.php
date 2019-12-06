@@ -142,9 +142,9 @@ class IssueController extends AbstractController {
 
      /**
      * Displays the issue details page.
-     * @Route("/project/{id_project}/issues/{id_issue}", name="issueDetails", methods={"GET"})
+     * @Route("/project/{id_project}/issues/{id_issue}/task", name="issueDetailsTask", methods={"GET"})
      */
-    public function viewIssue(Request $request, TaskRepository $taskRepository, $id_project,$id_issue): Response
+    public function viewIssueTask(Request $request, TaskRepository $taskRepository, $id_project,$id_issue): Response
     {
         $project = $this->projectRepository->find($id_project);
         $issue=$this->issueRepository->find($id_issue);
@@ -170,7 +170,7 @@ class IssueController extends AbstractController {
         $memberStat = $taskRepository->getProportionMembersAssociatedByIssue($issue);
         $memberMansDayStat = $taskRepository->getProportionMansDPerMembersAssociatedByIssue($issue);
 
-        return $this->render('issue/issue_details.html.twig', [
+        return $this->render('issue/issue_task_details.html.twig', [
             'project' => $project,
             'issue' => $issue,
             'user' => $this->getUser(),

@@ -97,6 +97,11 @@ class IssueRepository extends ServiceEntityRepository
             ->getResult();
 
         $res = array();
+        foreach($project->getSprints() as $sprint) {
+            $line = $sprint->getNumber()-1;
+            $res[$line]["value"] = $line + 1;
+            $res[$line]["count"] = 0;
+        }
         foreach($this->findBy(['project' => $project]) as $issue){
 
             if($issue->getStatus() == Issue::DONE
@@ -134,6 +139,11 @@ class IssueRepository extends ServiceEntityRepository
             ->getResult();
 
         $res = array();
+        foreach($project->getSprints() as $sprint) {
+            $line = $sprint->getNumber()-1;
+            $res[$line]["value"] = $line + 1;
+            $res[$line]["count"] = 0;
+        }
         foreach($this->findBy(['project' => $project]) as $issue){
 
             if($issue->getSprints() != null) {
