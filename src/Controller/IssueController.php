@@ -83,6 +83,39 @@ class IssueController extends AbstractController {
         ]);
 
     }
+    /**
+     * @Route("/project/{id_project}/issues/{id_issue}", name="issueDetailsTest", methods={"GET"})
+     */
+    public function viewIssueTest(Request $request, $id_project,$id_issue): Response
+    {   $todos=[];
+        $faileds=[];
+        $succeededs=[];
+        $issue = $this->issueRepository->find($id_issue);
+        $project = $this->projectRepository->find( $id_project);
+        $tests=$issue->getTests();
+        foreach ($tests as $test) {
+            switch($test->getState()) {
+                case 'todo':
+                    $todos[]=$test;
+                    break;
+                case 'failed':
+                    $faileds[]=$test;
+                    break;
+                case 'succeeded':
+                    $succeededs[]=$test;
+                    break;
+            }
+        }
+        return $this->render('issue/issue_test_details.html.twig', [
+            'project' => $project,
+            'issue' => $issue,
+            'todos' => $todos,
+            'faileds'=> $faileds,
+            'succeededs'=>$succeededs,
+            'user' => $this->getUser(),
+
+        ]);
+    }
 
     /**
      * Displays the issue list page.

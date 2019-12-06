@@ -43,12 +43,14 @@ class Test
     private $project;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Issue")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Issue", inversedBy="tests")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $issue;
 
+
     public function __construct(Project $project, string $name, string $description, string $state,
-                                Issue $issue = null)
+                                Issue $issue)
     {
         $this->project = $project;
         $this->name = $name;
@@ -98,17 +100,7 @@ class Test
         return $this;
     }
 
-    public function getIssue(): ?Issue
-    {
-        return $this->issue;
-    }
 
-    public function setIssue(?Issue $issue): self
-    {
-        $this->issue = $issue;
-
-        return $this;
-    }
 
     public function getProject(): Project
     {
@@ -118,6 +110,18 @@ class Test
     public function setProject(Project $project): self
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getIssue(): ?Issue
+    {
+        return $this->issue;
+    }
+
+    public function setIssue(?Issue $issue): self
+    {
+        $this->issue = $issue;
 
         return $this;
     }

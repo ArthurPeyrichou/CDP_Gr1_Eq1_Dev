@@ -47,7 +47,8 @@ class TestController extends AbstractController {
                 $name = $data['name'];
                 $description= $data['description'];
                 $state=$data['state'];
-                $test = new Test($project, $name, $description, $state);
+                $issue=$data['issue'];
+                $test = new Test($project, $name, $description, $state,$issue);
                 $this->entityManager->persist($test);
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("Test {$test->getName()} créé avec succès.");

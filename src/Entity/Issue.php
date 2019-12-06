@@ -62,6 +62,13 @@ class Issue
      */
     private $project;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Test", mappedBy="issue")
+     */
+    private $tests;
+
+
+
     public function __construct(int $number, string $description, int $difficulty, string $priority, Project $project, ?array $sprints = null)
     {
         $this->number = $number;
@@ -71,6 +78,7 @@ class Issue
         $this->project = $project;
         $this->sprints = $sprints;
         $this->tasks = new ArrayCollection();
+        $this->tests = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -254,6 +262,37 @@ class Issue
     {
         if ($this->sprints->contains($sprint)) {
             $this->sprints->removeElement($sprint);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Test[]
+     */
+    public function getTests(): Collection
+    {
+        return $this->tests;
+    }
+
+    public function addTest(Test $test): self
+    {
+        if (!$this->tests->contains($test)) {
+            $this->tests[] = $test;
+            $test->setIssue($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTest(Test $test): self
+    {
+        if ($this->tests->contains($test)) {
+            $this->tests->removeElement($test);
+            // set the owning side to null (unless already changed)
+            if ($test->getIssue() === $this) {
+                $test->setIssue(null);
+            }
         }
 
         return $this;

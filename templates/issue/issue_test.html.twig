@@ -1,0 +1,62 @@
+<div class="container">
+    {% if todos is not empty or faileds is not empty or succeededs is not empty %}
+        <div class="row">
+            <div class="col-12 px-0 px-lg-1 text-center mb-2">
+                <h3>Les tests liées à cet issue</h3>
+            </div>
+            <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                <div class="card card-height" style="overflow-y: scroll; height: 450px;">
+                    <div class="card-body">
+                        <h3 class= "{{ getClassForTestStatus("todo")}} badge" style="display: block; font-size: 110%;">A faire</h3>
+                        <div class="container-fluid">
+                            <ul class="list-unstyled">
+                                {% for test in todos %}
+                                    {% embed 'test/_test_details.html.twig' %}
+                                    {% endembed %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                <div class="card card-height dropping-card" style="overflow-y: scroll; height: 450px;">
+                    <div class="card-body succeeded">
+                        <h3 class= "{{ getClassForTestStatus("succeeded")}} badge" style="display: block; font-size: 110%;">Réussi</h3>
+                        <div class="container-fluid">
+                            <ul class="list-unstyled">
+                                {% for test in succeededs %}
+                                    {% embed 'test/_test_details.html.twig' %}
+                                    {% endembed %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
+                <div class="card card-height dropping-card" style="overflow-y: scroll; height: 450px;">
+                    <div class="card-body failed">
+                        <h3 class= "{{ getClassForTestStatus("failed")}} badge" style="display: block; font-size: 110%;">Echoué</h3>
+                        <div class="container-fluid">
+                            <ul class="list-unstyled">
+                                {% for test in faileds %}
+                                    {% embed 'test/_test_details.html.twig' %}
+                                    {% endembed %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <h3 class="mb-4">Tests</h3>
+                <p>Vous n'avez pour l'instant créé aucun test.</p>
+                <a class="btn btn-primary mt-3" href="{{ path('createTest', {'id_project' : project.id}) }}">Créer un test</a>
+            </div>
+        </div>
+    {% endif %}
+</div>

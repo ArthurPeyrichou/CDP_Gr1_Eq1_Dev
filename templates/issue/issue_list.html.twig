@@ -48,6 +48,9 @@
                                         {% if issue.getTasks() is not empty %}
                                         <a class="btn btn-success my-auto mr-1" href="{{ path('issueDetailsTask', {'id_project': project.id,'id_issue':issue.id}) }}">Tâches associées</a>
                                         {% endif %}
+                                        {% if issue.getTests() is not empty %}
+                                            <a class="btn btn-success my-auto mr-1" href="{{ path('issueDetailsTest', {'id_project': project.id,'id_issue':issue.id}) }}">Tests associées</a>
+                                        {% endif %}
                                         <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editIssue', {'id_project': project.id, 'id_issue' : issue.id}) }}">
                                             <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
                                         </a>
