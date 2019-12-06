@@ -2,7 +2,7 @@
     {% if todos is not empty or doings is not empty or dones is not empty %}
         <div class="row">
             <div class="col-12 px-0 px-lg-1 text-center mb-2">
-                {% if sprint is defined %}
+                {% if sprint is defined and sprint.isFinish() == false %}
                     <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
                 {% endif %}
             </div>
@@ -130,7 +130,7 @@
             <div class="card-body">
                 <h3 class="mb-4">Tâches</h3>
                 <p>Vous n'avez pour l'instant créé aucune tâche.</p>
-                {% if sprint is defined %}
+                {% if sprint is defined and sprint.isFinish() == false %}
                     <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
                 {% endif %}
             </div>

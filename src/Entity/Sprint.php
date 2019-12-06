@@ -106,6 +106,16 @@ class Sprint
         return $this;
     }
 
+    public function isFinish(): bool
+    {
+        $endDate = date('Y-m-d', strtotime($this->startDate->format('Y-m-d') . ' +' . $this->durationInDays. ' day'));
+        return date('Y-m-d') > $endDate;
+    }
+
+    public function getEndDate($format): string
+    {
+        return date($format, strtotime($this->startDate->format('Y-m-d') . ' +' . $this->durationInDays. ' day'));
+    }
 
     public function getProject(): ?Project
     {

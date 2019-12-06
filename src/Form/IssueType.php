@@ -21,6 +21,12 @@ class IssueType extends AbstractType
     {
         /**@var $project Project*/
         $project = $options[self::PROJECT];
+        $valideSprints = array();
+        foreach($project->getSprints() as $sprint){
+            if(!$sprint->isFinish()) { 
+                $valideSprints [] = $sprint;
+            }
+        }
 
         $builder
             ->add('number', IntegerType::class, [
@@ -54,8 +60,7 @@ class IssueType extends AbstractType
             ->add('sprints', EntityType::class, [
                 'label' => 'Sprints associées',
                 'class' => Sprint::class,
-                'choices' => $project->getSprints(),
-                'multiple' => true,
+                'choices' => $valideSprints,
                 'choice_label' => function (Sprint $sprint) {
                     return "{$sprint->getNumber()} - {$sprint->getDescription()}";
                 }

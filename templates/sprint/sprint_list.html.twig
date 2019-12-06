@@ -18,13 +18,11 @@
                                                 <b>{{ sprint.number }}</b> : {{ sprint.description }}
                                             </div>
                                             <div class="text-muted small">
-                                                {% set addDay = '+' ~ sprint.durationInDays ~ ' day' %}
-                                                {% set endDate = sprint.startDate|date_modify(addDay) %}
                                                 <span>Période ({{sprint.durationInDays}}j) :</span>
-                                                <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ endDate|date("d/m/Y") }}</span>
+                                                <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ sprint.getEndDate("d/m/Y") }}</span>
                                                 <span> | Issues : {{ sprint.getIssues()|length }}</span>
                                                 <span> | Tâches : {{ sprint.getTasks()|length }}</span>
-                                                {% if "now"|date('Y-m-d') > endDate|date('Y-m-d') %}
+                                                {% if sprint.isFinish() %}
                                                     <span> | </span>
                                                     <span class="font-weight-bold green badge" style="font-size: 110%;">Fini</span>
                                                     {% if  sprint.containsNotDoneTask() %}
@@ -58,14 +56,13 @@
                                     <h3>Veuillez confirmer la migration</h3>
                                 {% endblock %}
                                 {% block body %}
-                                    <p>Sélectionnez un sprint afin de lui léguer les tâches et issues qui ne sérais pas Done.</p>
+                                    <p>Sélectionnez un sprint afin de lui léguer les tâches et issues qui ne sérais pas Done.<br/>
+                                    Attention: Sauvegardez votre burn down chart avant la migration car il risque de changer.</p>
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
                                     {% for sprintT in sprints %}
-                                        {% set addDayT = '+' ~ sprintT.durationInDays ~ ' day' %}
-                                        {% set endDateT = sprintT.startDate|date_modify(addDayT) %}
-                                        {% if "now"|date('Y-m-d') < endDateT|date('Y-m-d') %}
+                                        {% if sprintT.isFinish() == false %}
                                              <a class="btn btn-primary my-auto mr-1" href="{{ path('migrateSprint', {'id_project' : project.id,'id_source' : sprint.id,'id_target' : sprintT.id }) }}">
                                              Oui</a>
                                         {% endif %}

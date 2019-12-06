@@ -14,11 +14,15 @@
                     {{ sprint.description }}
                 </p>
                 <div class="text-muted small">
-                    {% set addDay = '+' ~ sprint.durationInDays ~ ' day' %}
-                    <span>Période ({{sprint.durationInDays}}j):</span>
-                    <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ sprint.startDate|date_modify(addDay)|date("d/m/Y") }}</span>
+                    <span>Période ({{sprint.durationInDays}}j) :</span>
+                    <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ sprint.getEndDate("d/m/Y") }}</span>
+                    <span> | Issues : {{ sprint.getIssues()|length }}</span>
+                    <span> | Tâches : {{ sprint.getTasks()|length }}</span>
+                    {% if sprint.isFinish() %}
+                        <span> | </span>
+                        <span class="font-weight-bold green badge" style="font-size: 110%;">Fini</span>
+                    {% endif %}
                 </div>
-
             </div>
         </div>
     </div>

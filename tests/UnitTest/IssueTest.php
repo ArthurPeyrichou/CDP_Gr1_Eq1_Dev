@@ -30,7 +30,8 @@ class IssueTest extends TestCase
 
     public function getTestIssue(): Issue
     {
-        return new Issue(0, "Une desc", 10, Issue::PRIORITY_MEDIUM, $this->getTestProject(), $this->getTestSprint());
+        $sprints = array($this->getTestSprint());
+        return new Issue(0, "Une desc", 10, Issue::PRIORITY_MEDIUM, $this->getTestProject(), $sprints);
     }
 
     public function getTestSprint(): Sprint
