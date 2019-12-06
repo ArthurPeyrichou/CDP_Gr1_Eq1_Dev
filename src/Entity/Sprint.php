@@ -33,7 +33,6 @@ class Sprint
      */
     private $doneDiff;
 
-
     /**
      * @ORM\Column(type="string", length=256)
      */
@@ -81,8 +80,8 @@ class Sprint
         $this->durationInDays = $durationInDays;
         $this->tasks = new ArrayCollection();
         $this->issues = new ArrayCollection();
-        $this->$theoricDoneDiff = -1;
-        $this->$theoricDone = -1;
+        $this->theoricDoneDiff = -1;
+        $this->doneDiff = -1;
     }
 
     public function getId(): ?int
@@ -130,7 +129,7 @@ class Sprint
         return date($format, strtotime($this->startDate->format('Y-m-d') . ' +' . $this->durationInDays. ' day'));
     }
 
-    public function setBurnDownChart(): self 
+    public function setBurnDownChart(): self
     {
         if($this->isFinish()){
             if( $this->doneDiff < 0 ) {
