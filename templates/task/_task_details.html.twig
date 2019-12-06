@@ -20,10 +20,15 @@
         <span>Jour/H : {{ task.requiredManDays }}</span>
         <h6 class="mt-1 mb-0">Issues associées</h6>
         <ul class="mb-4">
-            {% for issue in task.relatedIssues %}
+            {% for issueL in task.relatedIssues %}
                 <li>
-
-                    <div class="ellipsis"><span class="font-weight-bold">{{ issue.number }}</span>: {{ issue.description }}</div>
+                    {% if issue is not defined %}
+                    <a title="Voir les détails de l'issue" href="{{ path('issueDetails', {'id_project': project.id,'id_issue': issueL.id}) }}">                         
+                        <div class="ellipsis"><span class="font-weight-bold">{{ issueL.number }}</span>: {{ issueL.description }}</div>
+                    </a>
+                    {% else %}
+                        <div class="ellipsis"><span class="font-weight-bold">{{ issueL.number }}</span>: {{ issueL.description }}</div>
+                    {% endif%}
                 </li>
             {% endfor %}
         </ul>

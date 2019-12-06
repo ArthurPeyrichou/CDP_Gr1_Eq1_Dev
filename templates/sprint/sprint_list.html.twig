@@ -28,6 +28,11 @@
                                                     {% if  sprint.containsNotDoneTask() %}
                                                        <button class="btn btn-warning my-auto ml-1" data-toggle="modal" data-target="#sprint-migrate-confirm">Migrer</button> 
                                                     {% endif %}
+                                                {% else %}
+                                                    {% if "now"|date('Y-m-d') >= sprint.startDate|date('Y-m-d') %}
+                                                        <span> | </span>
+                                                        <span class="font-weight-bold yellow badge" style="font-size: 110%;">En cours</span>
+                                                    {% endif %}
                                                 {% endif %}
                                             </div>
                                         </div>
