@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Sprint;
 use App\Entity\Task;
+use App\Entity\Issue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -98,6 +99,52 @@ class TaskRepository extends ServiceEntityRepository
             ->setParameter('sprint', $sprint)
             ->groupBy('t.developper')
             ->join('t.developper', 'dev')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getProportionStatusByIssue(Issue $issue): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('Count(t.status) as count, t.status as value')
+            ->groupBy('t.status');
+        return $qb->join('t.relatedIssues', 'i')
+            ->where($qb->expr()->eq('i.id', $issue->getId()))
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getProportionEstimationManDaysByIssue(Issue $issue): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('Count(t.requiredManDays) as count, t.requiredManDays as value')
+            ->groupBy('t.requiredManDays');
+            return $qb->join('t.relatedIssues', 'i')
+                ->where($qb->expr()->eq('i.id', $issue->getId()))
+                ->getQuery()
+                ->getResult();
+    }
+
+    public function getProportionMembersAssociatedByIssue(Issue $issue): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('Count(dev.name) as count, dev.name as value')
+            ->groupBy('t.developper')
+            ->join('t.developper', 'dev');
+        return $qb->join('t.relatedIssues', 'i')
+            ->where($qb->expr()->eq('i.id', $issue->getId()))
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getProportionMansDPerMembersAssociatedByIssue(Issue $issue): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('SUM(t.requiredManDays) as count, dev.name as value')
+            ->groupBy('t.developper')
+            ->join('t.developper', 'dev');
+        return $qb->join('t.relatedIssues', 'i')
+            ->where($qb->expr()->eq('i.id', $issue->getId()))
             ->getQuery()
             ->getResult();
     }

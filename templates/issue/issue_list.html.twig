@@ -42,6 +42,9 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                                        {% if issue.getTasks() is not empty %}
+                                        <a class="btn btn-success my-auto mr-1" href="{{ path('issueDetails', {'id_project': project.id,'id_issue':issue.id}) }}">Tâches associées</a>
+                                        {% endif %}
                                         <a class="btn btn-primary my-auto mr-1" href="{{ path('editIssue', {'id_project': project.id, 'id_issue' : issue.id}) }}">Editer</a>
                                         <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#issue-delete-confirm{{ index }}">Supprimer</button>
                                     </div>

@@ -9,6 +9,7 @@ use App\Form\IssueType;
 use App\Form\PlanningPokerType;
 use App\Repository\IssueRepository;
 use App\Repository\PlanningPokerRepository;
+use App\Repository\TaskRepository;
 use App\Service\NotificationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -136,6 +137,50 @@ class IssueController extends AbstractController {
             'form' => $form->createView(),
             'user' => $this->getUser(),
             'project' => $project
+        ]);
+    }
+
+     /**
+     * Displays the issue details page.
+     * @Route("/project/{id_project}/issues/{id_issue}", name="issueDetails", methods={"GET"})
+     */
+    public function viewIssue(Request $request, TaskRepository $taskRepository, $id_project,$id_issue): Response
+    {
+        $project = $this->projectRepository->find($id_project);
+        $issue=$this->issueRepository->find($id_issue);
+        $todos = [];
+        $doings = [];
+        $dones = [];
+        foreach($issue->getTasks() as $task){
+            switch($task->getStatus()){
+                case "todo":
+                    $todos [] = $task;
+                break;
+                case "doing":
+                    $doings [] = $task;
+                break;
+                case "done":
+                    $dones [] = $task;
+                break;
+            }
+        }
+
+        $manDaysStat = $taskRepository->getProportionEstimationManDaysByIssue($issue);
+        $statusStat = $taskRepository->getProportionStatusByIssue($issue);
+        $memberStat = $taskRepository->getProportionMembersAssociatedByIssue($issue);
+        $memberMansDayStat = $taskRepository->getProportionMansDPerMembersAssociatedByIssue($issue);
+
+        return $this->render('issue/issue_details.html.twig', [
+            'project' => $project,
+            'issue' => $issue,
+            'user' => $this->getUser(),
+            'manDaysStat' => $manDaysStat,
+            'statusStat' => $statusStat,
+            'memberStat' => $memberStat,
+            'memberMansDayStat' => $memberMansDayStat,
+            'todos' => $todos,
+            'doings' => $doings,
+            'dones' => $dones
         ]);
     }
 

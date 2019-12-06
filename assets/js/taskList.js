@@ -53,7 +53,7 @@ function taskDrop(event) {
     event.preventDefault();
     const data = event.dataTransfer.getData('text/plain');
     const toMove = document.getElementById(data);
-    let ref = toMove.getAttribute('value');
+    let ref = toMove.getAttribute('data-link');
     if(event.target.classList.contains('doing')){
         ref = ref.replace('done','doing');
     }

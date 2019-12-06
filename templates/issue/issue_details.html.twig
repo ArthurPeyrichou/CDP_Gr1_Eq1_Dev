@@ -1,0 +1,53 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}Informations de l'issue - {{ issue.number }}{% endblock %}
+
+{% block content %}
+
+    <div class="container" style="margin-bottom:10%;">
+        <div class="card">
+            <div class="card-body">
+                <p class="text-justify" class="card-text">Sprint: {{ issue.number }}</p>
+
+                <p class="text-justify" class="card-text">
+                    <span class="font-weight-bold">Description :</span>
+                    {{ issue.description }}
+                </p>
+                <div class="text-muted small">
+                    {% if issue.difficulty > 0 %}
+                        <span>Difficulté :</span>
+                        <span class="font-weight-bold badge badge-light" style="font-size: 110%;">{{ issue.difficulty }}</span>
+                    {% endif %}
+                    <span>| Priorité :</span>
+                    <span class="font-weight-bold badge badge-light" style="font-size: 110%;">{{ issue.priority |capitalize }}</span>
+                    <span>| Statut :</span>
+                    <span class="font-weight-bold {{ getClassForStatus(issue.status)}} badge" style="font-size: 110%;">
+                    {% if issue.status  == "doing" %}
+                        {{ issue.getProportionOfDoing() }}
+                    {% endif %}
+                    {{ issue.status |capitalize }}
+                    </span>
+                    {% if issue.status  == "doing" %}
+                    <span class="font-weight-bold {{ getClassForStatus("done")}} badge" style="font-size: 110%;">{{ issue.getProportionOfDone() }} Done
+                    </span>
+                    {% endif %}
+                    {% if issue.getSprint() is not null %}
+                    <span>| </span>
+                    <a title="Voir les détails du sprint" href="{{ path('sprintDetails', {'id_project': project.id,'id_sprint': issue.getSprint().getId()}) }}">
+                        <span class="font-weight-bold badge badge-light" style="font-size: 110%;">Sprint :{{ issue.getSprint().getNumber() |capitalize }}</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'task/task_list_frag.html.twig' %}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('taskList') }}
+    
+    {{ encore_entry_script_tags('taskList') }}
+{% endblock %}

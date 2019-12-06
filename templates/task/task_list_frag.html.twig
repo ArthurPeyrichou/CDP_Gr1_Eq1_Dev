@@ -1,8 +1,10 @@
-<div class="container">
+<div class="container" style="margin-bottom:5%">
     {% if todos is not empty or doings is not empty or dones is not empty %}
         <div class="row">
             <div class="col-12 px-0 px-lg-1 text-center mb-2">
-                <a class="btn btn-primary" href="{{ path('createTask', {'id_project' : project.id,'id_sprint':sprint.id}) }}">Créer une tâche</a>
+                {% if sprint is defined %}
+                    <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
+                {% endif %}
             </div>
             <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
                 <div class="card card-height" style="overflow-y: scroll; height: 450px;">
@@ -15,16 +17,16 @@
                                         {% block buttons %}
                                             <div class="text-center row justify-content-around">
                                                 <a class="col-5 btn px-2 border {{ getClassForStatus("doing")}}"
-                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing', 'id_sprint':sprint.id}) }}">
+                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'doing', 'id_sprint':task.sprint.id}) }}">
                                                     En cours
                                                 </a>
                                                 <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
-                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done', 'id_sprint':sprint.id}) }}">
+                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done', 'id_sprint':task.sprint.id}) }}">
                                                     Fait
                                                 </a>
                                             </div>
                                             <div class="text-center row justify-content-around" style="margin-top:5px;">
-                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : sprint.id, 'id_task' : task.id}) }}">Editer</a>
+                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">Editer</a>
                                                 <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
                                             </div>
                                         {% endblock %}
@@ -38,7 +40,8 @@
                                         {% endblock %}
                                         {% block footer %}
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                            <a href="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : sprint.id, 'id_task' : task.id}) }}" class="btn btn-primary">Oui</a>
+                                            <button type="button" data-dismiss="modal" data-link="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}" data-id="{{ task.id }}" 
+                                            class="btn btn-primary delete-item">Oui</button>
                                         {% endblock %}
                                     {% endembed %}
                                 {% endfor %}
@@ -58,12 +61,12 @@
                                         {% block buttons %}
                                             <div class="text-center row justify-content-around">
                                                 <a class="col-5 btn px-2 border {{ getClassForStatus("done")}}"
-                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done','id_sprint':sprint.id}) }}">
+                                                   href="{{ path('changeTaskStatus', {'id_project' : project.id, 'id_task' : task.id, 'status' : 'done','id_sprint':task.sprint.id}) }}">
                                                     Fait
                                                 </a>
                                             </div>
                                             <div class="text-center row justify-content-around" style="margin-top:5px;">
-                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : sprint.id, 'id_task' : task.id}) }}">Editer</a>
+                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">Editer</a>
                                                 <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
                                             </div>
                                         {% endblock %}
@@ -77,7 +80,8 @@
                                         {% endblock %}
                                         {% block footer %}
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                            <a href="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : sprint.id, 'id_task' : task.id}) }}" class="btn btn-primary">Oui</a>
+                                            <button type="button" data-dismiss="modal" data-link="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}" data-id="{{ task.id }}" 
+                                            class="btn btn-primary delete-item">Oui</button>
                                         {% endblock %}
                                     {% endembed %}
                                 {% endfor %}
@@ -96,7 +100,7 @@
                                     {% embed 'task/_task_details.html.twig' %}
                                         {% block buttons %}
                                             <div class="text-center row justify-content-around">
-                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : sprint.id, 'id_task' : task.id}) }}">Editer</a>
+                                                <a class="btn btn-primary my-auto mr-1" href="{{ path('editTask', {'id_project': project.id, 'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}">Editer</a>
                                                 <button class="btn btn-danger my-auto ml-1" data-toggle="modal" data-target="#task-delete-confirm">Supprimer</button>
                                             </div>
                                         {% endblock %}
@@ -110,7 +114,8 @@
                                         {% endblock %}
                                         {% block footer %}
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                            <a href="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : sprint.id, 'id_task' : task.id}) }}" class="btn btn-primary">Oui</a>
+                                            <button type="button" data-dismiss="modal" data-link="{{ path('deleteTask', {'id_project' : project.id,'id_sprint' : task.sprint.id, 'id_task' : task.id}) }}" data-id="{{ task.id }}" 
+                                            class="btn btn-primary delete-item">Oui</button>
                                         {% endblock %}
                                     {% endembed %}
                                 {% endfor %}
@@ -125,45 +130,48 @@
             <div class="card-body">
                 <h3 class="mb-4">Tâches</h3>
                 <p>Vous n'avez pour l'instant créé aucune tâche.</p>
-                <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
             </div>
         </div>
     {% endif %}
 </div>
 
-<select id="select-chart" class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
-    <option value="Status">Statut</option>
-    <option value="JH">Tâches par jour/homme</option>
-    <option value="Membre">Tâches par membre</option>
-    <option value="JHParMembre">Jour/Homme par Membre</option>
-</select>
+{% if statusStat is defined and manDaysStat is defined and memberStat is defined and memberMansDayStat is defined %}
+    <select id="select-chart" class="card browser-default custom-select" style="margin: auto; margin-top:5%; max-width:50%; justify-content:center;">
+        <option value="Status">Statut</option>
+        <option value="JH">Tâches par jour/homme</option>
+        <option value="Membre">Tâches par membre</option>
+        <option value="JHParMembre">Jour/Homme par Membre</option>
+    </select>
 
-<div id="chart" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
+    <div id="chart" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
 
-{% set dataStatus = {
-    title: 'Statut',
-    datasetTitle: 'Nombre pour ce statut',
-    dataset: statusStat,
-} %}
-{% set dataManDays = {
-    title: 'Tâches par Jour/Homme',
-    datasetTitle: 'Tâches pour cette estimation en J/H',
-    dataset: manDaysStat,
-} %}
-{% set dataMember = {
-    title: 'Tâches par membre',
-    datasetTitle: 'Nombre de tâches pour ce membre',
-    dataset: memberStat,
-} %}
-{% set dataManDaysMember = {
-    title: 'Jour/Homme par Membre',
-    datasetTitle: 'J/H pour ce member',
-    dataset: memberMansDayStat,
-} %}
 
-<div id="data"
-     data-status="{{ dataStatus | json_encode }}"
-     data-manDays="{{ dataManDays | json_encode }}"
-     data-member="{{ dataMember | json_encode }}"
-     data-manDaysMember="{{ dataManDaysMember | json_encode }}"
-     class="d-none"></div>
+    {% set dataStatus = {
+        title: 'Statut',
+        datasetTitle: 'Nombre pour ce statut',
+        dataset: statusStat,
+    } %}
+    {% set dataManDays = {
+        title: 'Tâches par Jour/Homme',
+        datasetTitle: 'Tâches pour cette estimation en J/H',
+        dataset: manDaysStat,
+    } %}
+    {% set dataMember = {
+        title: 'Tâches par membre',
+        datasetTitle: 'Nombre de tâches pour ce membre',
+        dataset: memberStat,
+    } %}
+    {% set dataManDaysMember = {
+        title: 'Jour/Homme par Membre',
+        datasetTitle: 'J/H pour ce member',
+        dataset: memberMansDayStat,
+    } %}
+
+    <div id="data"
+        data-status="{{ dataStatus | json_encode }}"
+        data-manDays="{{ dataManDays | json_encode }}"
+        data-member="{{ dataMember | json_encode }}"
+        data-manDaysMember="{{ dataManDaysMember | json_encode }}"
+        class="d-none"></div>
+
+{% endif %}

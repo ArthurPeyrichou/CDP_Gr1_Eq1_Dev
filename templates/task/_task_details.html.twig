@@ -1,9 +1,9 @@
-<li id="drag{{ task.id }}"class="mt-2 {{ task.status }}"
+<li id="item-{{ task.id }}"class="mt-2 {{ task.status }}"
 {% if task.status != 'done' %}
- draggable="true" value="{{ path('changeTaskStatus', {'id_project': project.id, 'id_task' : task.id, 'status' : "done", 'id_sprint':sprint.id}) }}"
+ draggable="true" data-link="{{ path('changeTaskStatus', {'id_project': project.id, 'id_task' : task.id, 'status' : "done", 'id_sprint':task.sprint.id}) }}"
 {% endif %}
 >
-    <a class="link collapsed" data-toggle="collapse" href="#taskDetail{{ task.id }}" aria-expanded="false">
+    <div class="link collapsed" data-toggle="collapse" href="#taskDetail{{ task.id }}" aria-expanded="false" style="cursor:pointer;">
         <h4 class="h6 mb-0">
             {{ task.number }}
             <span class="pl-1 font-italic">

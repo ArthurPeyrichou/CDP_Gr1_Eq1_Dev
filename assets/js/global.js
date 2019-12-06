@@ -10,9 +10,6 @@ function deleteItem(element){
     itemToRemove.parentNode.removeChild(itemToRemove);
 }
 
-let classname = document.getElementsByClassName('delete-item');
-for (var i = 0; i < classname.length; i++) {
-    classname[i].addEventListener('click',
-        event => deleteItem(event.target)
-    );
-}
+document.querySelectorAll('button.delete-item').forEach(
+    element => element.addEventListener('click', event => deleteItem(event.target))
+);
