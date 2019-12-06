@@ -55,7 +55,7 @@ class Sprint
     private $tasks;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Issue", mappedBy="sprint")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Issue", mappedBy="sprints")
      */
     private $issues;
 

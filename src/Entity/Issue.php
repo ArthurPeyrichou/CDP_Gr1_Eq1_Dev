@@ -47,9 +47,9 @@ class Issue
     private $priority;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Sprint", inversedBy="issues")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Sprint", inversedBy="issues")
      */
-    private $sprint;
+    private $sprints;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Task", mappedBy="relatedIssues")
@@ -62,15 +62,14 @@ class Issue
      */
     private $project;
 
-    public function __construct(int $number, string $description, int $difficulty, string $priority, Project $project,
-                                ?Sprint $sprint = null)
+    public function __construct(int $number, string $description, int $difficulty, string $priority, Project $project, ?array $sprints = null)
     {
         $this->number = $number;
         $this->description = $description;
         $this->difficulty = $difficulty;
         $this->priority = $priority;
         $this->project = $project;
-        $this->sprint = $sprint;
+        $this->sprints = $sprints;
         $this->tasks = new ArrayCollection();
     }
     public function getId(): ?int
@@ -229,6 +228,34 @@ class Issue
         if ($this->tasks->contains($task)) {
             $this->tasks->removeElement($task);
             $task->removeRelatedIssue($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Sprint[]
+     */
+    public function getSprints(): Collection
+    {
+        return $this->sprints;
+    }
+
+    public function addSprint(Sprint $sprint): self
+    {
+        if (!$this->sprints->contains($sprint)) {
+            $this->sprints[] = $sprint;
+            $sprint->addRelatedIssue($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSprint(Sprint $sprint): self
+    {
+        if ($this->sprints->contains($sprint)) {
+            $this->sprints->removeElement($sprint);
+            $sprint->removeRelatedIssue($this);
         }
 
         return $this;

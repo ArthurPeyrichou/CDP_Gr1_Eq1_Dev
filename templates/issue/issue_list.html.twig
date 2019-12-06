@@ -33,12 +33,12 @@
                                             <span class="font-weight-bold {{ getClassForStatus("done")}} badge" style="font-size: 110%;">{{ issue.getProportionOfDone() }} Done
                                             </span>
                                             {% endif %}
-                                            {% if issue.getSprint() is not null %}
-                                            <span>| </span>
-                                            <a title="Voir les détails du sprint" href="{{ path('sprintDetails', {'id_project': project.id,'id_sprint': issue.getSprint().getId()}) }}">
-                                                <span class="font-weight-bold badge badge-light" style="font-size: 110%;">Sprint :{{ issue.getSprint().getNumber() |capitalize }}</span>
-                                            </a>
-                                            {% endif %}
+                                            {% for sprint in issue.getSprints() %}
+                                                <span>| </span>
+                                                <a title="Voir les détails du sprint" href="{{ path('sprintDetails', {'id_project': project.id,'id_sprint': sprint.getId()}) }}">
+                                                    <span class="font-weight-bold badge badge-light" style="font-size: 110%;">Sprint :{{ sprint.getNumber() |capitalize }}</span>
+                                                </a>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">

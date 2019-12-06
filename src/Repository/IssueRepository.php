@@ -100,13 +100,15 @@ class IssueRepository extends ServiceEntityRepository
         foreach($this->findBy(['project' => $project]) as $issue){
 
             if($issue->getStatus() == Issue::DONE
-                && $issue->getSprint() != null) {
-                $line = $issue->getSprint()->getNumber() - 1;
-                if( empty($res[$line] ) ){
-                    $res[$line]["value"] = $line + 1;
-                    $res[$line]["count"] = $issue->getDifficulty();
-                } else {
-                    $res[$line]["count"]+= $issue->getDifficulty();
+                && $issue->getSprints() != null) {
+                foreach($issue->getSprints() as $sprint){
+                    $line = $sprint->getNumber() - 1;
+                    if( empty($res[$line] ) ){
+                        $res[$line]["value"] = $line + 1;
+                        $res[$line]["count"] = $issue->getDifficulty();
+                    } else {
+                        $res[$line]["count"]+= $issue->getDifficulty();
+                    }
                 }
             }
         }
@@ -130,15 +132,21 @@ class IssueRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        $res = $this->createQueryBuilder('i')
-            ->select('SUM(i.difficulty) as count, s.number as value')
-            ->where('i.difficulty > 0')
-            ->andWhere('i.project = :project')
-            ->setParameter('project', $project)
-            ->groupBy('i.sprint')
-            ->join('i.sprint', 's')
-            ->getQuery()
-            ->getResult();
+        $res = array();
+        foreach($this->findBy(['project' => $project]) as $issue){
+
+            if($issue->getSprints() != null) {
+                foreach($issue->getSprints() as $sprint){
+                    $line = $sprint->getNumber() - 1;
+                    if( empty($res[$line] ) ){
+                        $res[$line]["value"] = $line + 1;
+                        $res[$line]["count"] = $issue->getDifficulty();
+                    } else {
+                        $res[$line]["count"]+= $issue->getDifficulty();
+                    }
+                }
+            }
+        }
 
         $cpt = 0;
         foreach($res as $point) {

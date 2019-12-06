@@ -130,6 +130,9 @@
             <div class="card-body">
                 <h3 class="mb-4">Tâches</h3>
                 <p>Vous n'avez pour l'instant créé aucune tâche.</p>
+                {% if sprint is defined %}
+                    <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
+                {% endif %}
             </div>
         </div>
     {% endif %}

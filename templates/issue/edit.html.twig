@@ -14,7 +14,7 @@
                 {{ form_row(form.description) }}
                 {{ form_row(form.difficulty) }}
                 {{ form_row(form.priority) }}
-                {{ form_row(form.sprint) }}
+                {{ form_row(form.sprints) }}
                 <button type="submit" class="btn btn-primary">Modifier l'issue</button>
                 <a class="btn btn-outline-danger" href="{{ path('issuesList', {'id_project' : project.id}) }}">Annuler</a>
                 {{ form_end(form) }}

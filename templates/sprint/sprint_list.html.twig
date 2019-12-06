@@ -19,8 +19,15 @@
                                             </div>
                                             <div class="text-muted small">
                                                 {% set addDay = '+' ~ sprint.durationInDays ~ ' day' %}
-                                                <span>Période ({{sprint.durationInDays}}j):</span>
-                                                <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ sprint.startDate|date_modify(addDay)|date("d/m/Y") }}</span>
+                                                {% set endDate = sprint.startDate|date_modify(addDay) %}
+                                                <span>Période ({{sprint.durationInDays}}j) :</span>
+                                                <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ endDate|date("d/m/Y") }}</span>
+                                                <span> | Issues : {{ sprint.getIssues()|length }}</span>
+                                                <span> | Tâches : {{ sprint.getTasks()|length }}</span>
+                                                {% if "now"|date('Y-m-d') > endDate|date('Y-m-d') %}
+                                                <span> | </span>
+                                                <span class="font-weight-bold green badge" style="font-size: 110%;">Fini</span>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">

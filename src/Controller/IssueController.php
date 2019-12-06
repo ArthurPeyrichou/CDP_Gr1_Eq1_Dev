@@ -50,13 +50,13 @@ class IssueController extends AbstractController {
             $data = $form->getData();
             $description= $data['description'];
             $priority=$data['priority'];
-            $sprint = $data['sprint'];
+            $sprints = $data['sprints']->toArray();;
             $difficulty = $data['difficulty'];
             if (count($project->getMembers()) > 0) {
                 $difficulty = 0;
             }
 
-            $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprint);
+            $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprints);
             $this->entityManager->persist($issue);
 
             if (count($project->getMembers()) > 0) {

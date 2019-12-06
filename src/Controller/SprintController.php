@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Form\SprintType;
 use App\Entity\Sprint;
+use App\Entity\Task;
+use App\Entity\Issue;
 use App\Repository\SprintRepository;
 use App\Repository\IssueRepository;
 use App\Repository\TaskRepository;
@@ -173,6 +175,60 @@ class SprintController extends AbstractController {
                 $this->entityManager->flush();
                 
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} supprimée avec succés.");
+            } catch(\Exception $e) {
+                $this->notifications->addError($e->getMessage());
+            }
+        }
+        return $this->redirectToRoute('sprintsList', [
+            'id_project' => $id_project
+        ]);
+    }
+
+    /**
+     * Handles the migration of a sprint finished to another.
+     * @Route("/project/{id_project}/sprints/{id_source}/migrate/{id_target}", name="migrateSprint")
+     */
+    public function migrateSprintNotDoneContain(Request $request, $id_project, $id_source, $id_target)
+    {
+        $sprint_source = $this->sprintRepository->find($id_source);
+        $sprint_target = $this->sprintRepository->find($id_target);
+
+        if (!$sprint_source) {
+            $this->notifications->addError("Aucune sprint n'existe avec l'id {$id_source}");
+        } else if (!$sprint_target) {
+            $this->notifications->addError("Aucune sprint n'existe avec l'id {$id_target}");
+        } else {
+            try {
+                //les issues on les migre
+                foreach($sprint_source->getIssues() as $issue) {
+                    if(!$issue->getSprints()->contains($sprint_target)){
+                        $issue->addSprint($sprint_target);
+                        $sprint_target->addIssue($issue);
+                        $this->entityManager->persist($sprint_target);
+                        if($issue->getProportionOfDoing() == "0%") {
+                            $issue->removeSprint($sprint_source);
+                            $sprint_source->removeIssue($issue);
+                            $this->entityManager->persist($sprint_source);
+                        }
+                        $this->entityManager->persist($issue);
+
+                        $this->entityManager->flush();  
+                    }
+                }
+                //les taches on les migre
+                foreach($sprint_target->getTasks() as $task) {
+                    if($task->getStatus() != Task::DONE) {
+                        $task->setSprint($sprint_target);
+                        $sprint_source->removeTask($task);
+                        $sprint_target->addTask($task);
+                        $this->entityManager->persist($task);
+                        $this->entityManager->persist($sprint_source);
+                        $this->entityManager->persist($sprint_target);
+                        $this->entityManager->flush();  
+                    }
+                }
+                
+                $this->notifications->addSuccess("Contenu du sprint {$sprint->getNumber()} migré avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }

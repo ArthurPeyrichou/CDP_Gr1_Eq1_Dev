@@ -51,12 +51,13 @@ class IssueType extends AbstractType
                 ]
 
             ])
-            ->add('sprint', EntityType::class, [
+            ->add('sprints', EntityType::class, [
                 'label' => 'Sprints associées',
                 'class' => Sprint::class,
                 'choices' => $project->getSprints(),
-                'choice_label' => function (Sprint $issue) {
-                    return "{$issue->getNumber()} - {$issue->getDescription()}";
+                'multiple' => true,
+                'choice_label' => function (Sprint $sprint) {
+                    return "{$sprint->getNumber()} - {$sprint->getDescription()}";
                 }
             ])
             ;
