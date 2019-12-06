@@ -83,7 +83,9 @@ class ProjectCreationTest extends PantherTestCase
             ->findElements(WebDriverBy::cssSelector('#project > a'));
         $projectElements[count($projectElements) - 1]->click();
 
-        $this->waitForElement($this->client, '#editProject')->click();
+        $this->waitForElement($this->client,
+            '#content > div.container > div > div.col-sm-6.col-lg-8 > div > div > a'
+        )->click();
 
         $this->waitForElement($this->client, '#project_description')->clear()->sendKeys(self::EDITED_DESC);
         $this->clickOn($this->client, '#content > div > div > div > form > button');
@@ -105,7 +107,9 @@ class ProjectCreationTest extends PantherTestCase
             ->findElements(WebDriverBy::cssSelector('#project > a'));
         $projectElements[count($projectElements) - 1]->click();
 
-        $this->waitForElement($this->client, '#deleteProject')->click();
+        $this->waitForElement($this->client,
+            '#content > div.container > div > div.col-sm-6.col-lg-8 > div > div > button'
+        )->click();
         $this->client->wait()->until(
             WebDriverExpectedCondition::elementToBeClickable(
                 WebDriverBy::cssSelector('#project-delete-confirm > div > div > div.modal-footer > a')
