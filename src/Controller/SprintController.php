@@ -75,8 +75,8 @@ class SprintController extends AbstractController {
     public function viewSprints(Request $request, IssueRepository $issueRepository, $id_project) {
         $project = $this->projectRepository->find($id_project);
         $sprints = $project->getSprints();
-        $burnDownStat = $issueRepository->getBurnDownStat($project);
-        $burnDownTheoricStat = $issueRepository->getBurnDownTheoricStat($project);
+        $burnDownStat = $this->sprintRepository->getBurnDownStat($project);
+        $burnDownTheoricStat = $this->sprintRepository->getBurnDownTheoricStat($project);
         return $this->render('sprint/sprint_list.html.twig', [
             'project'=> $project,
             'sprints' => $sprints,
@@ -131,6 +131,7 @@ class SprintController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->entityManager->persist($sprint);
+                $sprint->setBurnDownChart();
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} éditée avec succés.");
             } catch(\Exception $e) {

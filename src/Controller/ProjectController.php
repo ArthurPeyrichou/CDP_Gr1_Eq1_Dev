@@ -134,7 +134,10 @@ class ProjectController extends AbstractController {
 
             }
         }
-
+        foreach($project->getSprints() as $sprint) {
+            $sprint->setBurnDownChart();
+        }
+        $this->entityManager->flush();
 
 
         return $this->render('project/project_details.html.twig', [

@@ -24,6 +24,17 @@ class Sprint
     private $number;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $theoricDoneDiff;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $doneDiff;
+
+
+    /**
      * @ORM\Column(type="string", length=256)
      */
     private $description;
@@ -70,6 +81,8 @@ class Sprint
         $this->durationInDays = $durationInDays;
         $this->tasks = new ArrayCollection();
         $this->issues = new ArrayCollection();
+        $this->$theoricDoneDiff = -1;
+        $this->$theoricDone = -1;
     }
 
     public function getId(): ?int
@@ -115,6 +128,31 @@ class Sprint
     public function getEndDate($format): string
     {
         return date($format, strtotime($this->startDate->format('Y-m-d') . ' +' . $this->durationInDays. ' day'));
+    }
+
+    public function setBurnDownChart(): self 
+    {
+        if($this->isFinish()){
+            if( $this->doneDiff < 0 ) {
+                $doneDiff = 0;
+                $theoricDoneDiff = 0;
+                foreach($this->issues as $issue) {
+                    $theoricDoneDiff += $issue->getDifficulty();
+                    if($issue->getStatus() == Issue::DONE) {
+                        $doneDiff += $issue->getDifficulty();
+                    }
+                }
+                $this->doneDiff = $doneDiff;
+                $this->theoricDoneDiff = $theoricDoneDiff;
+            }
+        } else {
+            if( $this->doneDiff >= 0 ) {
+                $this->doneDiff = -1;
+                $this->theoricDoneDiff = -1;
+            }
+        }
+
+        return $this;
     }
 
     public function getProject(): ?Project
