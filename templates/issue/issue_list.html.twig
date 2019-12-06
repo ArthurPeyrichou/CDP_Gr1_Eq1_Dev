@@ -7,9 +7,12 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title mb-4">Issues </h3>
+                <h3 class="card-title mb-4">Issues : </h3>
+                <a class="btn btn-primary mt-3" title="Ajouter une issue" href="{{ path('createIssue', {'id_project' : project.id}) }}" style="margin-bottom:10px;">
+                    <img src="{{ asset('build/images/add.svg') }}" style="max-width: 30px; filter: invert(1);">
+                </a>
                 {% if issues is not empty %}
-                    <ul class="list-group">
+                    <ul class="list-group card to-scroll">
                         {% for index, issue in issues %}
                             <li id="item-{{ issue.id }}" class="list-group-item">
                                 <div class="row">
@@ -72,7 +75,6 @@
                 {% else %}
                     <p> Vous n'avez pour l'instant créé aucune issue.</p>
                 {% endif %}
-                <a class="btn btn-primary mt-3" href="{{ path('createIssue', {'id_project' : project.id}) }}">Créer une issue</a>
             </div>
         </div>
     </div>

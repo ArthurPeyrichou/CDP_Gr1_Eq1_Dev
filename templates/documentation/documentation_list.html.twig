@@ -7,9 +7,12 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title mb-4">Documentation</h3>
+                <h3 class="card-title mb-4">Documentation : </h3>
+                <a class="btn btn-primary mt-3" title="Ajouter une documentation" href="{{ path('createRessourceDoc', {'id_project' : project.id}) }}" style="margin-bottom:10px;">
+                    <img src="{{ asset('build/images/add.svg') }}" style="max-width: 30px; filter: invert(1);">
+                </a>
                 {% if ressourcesDoc is not empty %}
-                    <ul class="list-group">
+                    <ul class="list-group card to-scroll">
                         {% for index, ressourceDoc in ressourcesDoc  %}
                             <li id="item-{{ ressourceDoc.id }}" class="list-group-item">
                                 <div class="row">
@@ -49,7 +52,6 @@
                 {% else %}
                     <p> Vous n'avez pour l'instant créé aucune ressource de documentation.</p>
                 {% endif %}
-                <a class="btn btn-primary mt-3" href="{{ path('createRessourceDoc', {'id_project' : project.id}) }}">Créer une ressource de documentation</a>
             </div>
         </div>
     </div>

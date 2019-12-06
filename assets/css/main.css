@@ -11,6 +11,11 @@ body, html{
     margin-top: 25px !important;
 }
 
+.to-scroll {
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
 .red {
 	background-color:rgba(255, 17, 45, 0.5) !important;
 }

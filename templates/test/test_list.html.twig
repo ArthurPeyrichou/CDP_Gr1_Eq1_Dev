@@ -7,9 +7,12 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title mb-4">Tests </h3>
+                <h3 class="card-title mb-4">Tests : </h3>
+                <a class="btn btn-primary mt-3" title="Ajouter un test" href="{{ path('createTest', {'id_project' : project.id}) }}" style="margin-bottom:10px;">
+                    <img src="{{ asset('build/images/add.svg') }}" style="max-width: 30px; filter: invert(1);">
+                </a>
                 {% if tests is not empty %}
-                    <ul class="list-group">
+                    <ul class="list-group card to-scroll">
                         {% for index, test in tests %}
                             <li class="list-group-item">
                                 <div class="row">
@@ -49,7 +52,6 @@
                 {% else %}
                     <p> Vous n'avez pour l'instant créé aucun test.</p>
                 {% endif %}
-                <a class="btn btn-primary mt-3" href="{{ path('createTest', {'id_project' : project.id}) }}">Créer un test</a>
             </div>
         </div>
     </div>

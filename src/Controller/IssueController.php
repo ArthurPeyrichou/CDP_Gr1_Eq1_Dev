@@ -50,7 +50,7 @@ class IssueController extends AbstractController {
             $data = $form->getData();
             $description= $data['description'];
             $priority=$data['priority'];
-            $sprints = $data['sprints']->toArray();;
+            $sprints = array($data['sprints']);
             $difficulty = $data['difficulty'];
             if (count($project->getMembers()) > 0) {
                 $difficulty = 0;
