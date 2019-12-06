@@ -45,28 +45,23 @@ class ReleaseController extends AbstractController
         $form = $this->createForm(ReleaseType::class, [], [
             ReleaseType::PROJECT => $project
         ]);
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $data = $form->getData();
-                $number = $data['number'];
-                $description= $data['description'];
-                $date=$data['date'];
-                $sprint=$data['sprint'];
-                $link=$data['link'];
-                $release=new Release($number,$description,$date,$link,$sprint,$project);
+                $release=new Release($data['number'], $data['description'], $data['date'], $data['link'], $data['sprint'],$project);
                 $this->entityManager->persist($release);
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("La release a été créer avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }
+            
             return $this->redirectToRoute('releasesList', [
                 'id_project' => $id_project
             ]);
         }
+
         return $this->render('release/release_form.html.twig', [
             'form'=> $form->createView(),
             'user' => $this->getUser(),
@@ -80,10 +75,10 @@ class ReleaseController extends AbstractController
      */
     public function viewReleases(Request $request, $id_project) {
         $project = $this->projectRepository->find($id_project);
-        $releases = $project->getReleases();
+
         return $this->render('release/release_list.html.twig', [
             'project'=> $project,
-            'releases' => $releases,
+            'releases' => $project->getReleases(),
             'user' => $this->getUser()
         ]);
     }
@@ -96,11 +91,11 @@ class ReleaseController extends AbstractController
     {
         $project = $this->projectRepository->find($id_project);
         $release = $this->releaseRepository->find($id_release);
+       
         $form = $this->createForm(ReleaseType::class, $release, [
             ReleaseType::PROJECT => $project
         ]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->entityManager->persist($release);

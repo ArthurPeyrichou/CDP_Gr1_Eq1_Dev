@@ -39,17 +39,14 @@ class SprintController extends AbstractController {
     public function viewCreationSprint(Request $request, $id_project) : Response
     {
         $project = $this->projectRepository->find($id_project);
+        
         $nextNumber = $this->sprintRepository->getNextNumber($project);
         $form = $this->createForm(SprintType::class, ['number' => $nextNumber]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $data = $form->getData();
-                $description= $data['description'];
-                $startDate=$data['startDate'];
-                $estimated_duration=$data['durationInDays'];
-                $sprint = new Sprint($project, $nextNumber, $description, $startDate, $estimated_duration);
+                $sprint = new Sprint($project, $nextNumber, $data['description'], $data['startDate'], $data['durationInDays']);
                 $this->entityManager->persist($sprint);
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} créée avec succés.");
@@ -74,12 +71,13 @@ class SprintController extends AbstractController {
      */
     public function viewSprints(Request $request, IssueRepository $issueRepository, $id_project) {
         $project = $this->projectRepository->find($id_project);
-        $sprints = $project->getSprints();
+        
         $burnDownStat = $this->sprintRepository->getBurnDownStat($project);
         $burnDownTheoricStat = $this->sprintRepository->getBurnDownTheoricStat($project);
+        
         return $this->render('sprint/sprint_list.html.twig', [
             'project'=> $project,
-            'sprints' => $sprints,
+            'sprints' => $project->getSprints(),
             'burnDownStat' => $burnDownStat,
             'burnDownTheoricStat' => $burnDownTheoricStat,
             'user' => $this->getUser()
@@ -94,9 +92,10 @@ class SprintController extends AbstractController {
     {
         $project = $this->projectRepository->find($id_project);
         $sprint=$this->sprintRepository->find($id_sprint);
-        $todos = $taskRepository->getToDo($sprint);
-        $doings = $taskRepository->getDoing($sprint);
-        $dones = $taskRepository->getDone($sprint);
+        
+        $taskTodos = $taskRepository->getToDo($sprint);
+        $taskDoings = $taskRepository->getDoing($sprint);
+        $taskDones = $taskRepository->getDone($sprint);
 
         $manDaysStat = $taskRepository->getProportionEstimationManDays( $sprint);
         $statusStat = $taskRepository->getProportionStatus($sprint);
@@ -111,9 +110,9 @@ class SprintController extends AbstractController {
             'statusStat' => $statusStat,
             'memberStat' => $memberStat,
             'memberMansDayStat' => $memberMansDayStat,
-            'todos' => $todos,
-            'doings' => $doings,
-            'dones' => $dones
+            'todos' => $taskTodos,
+            'doings' => $taskDoings,
+            'dones' => $taskDones
         ]);
     }
 
@@ -124,10 +123,9 @@ class SprintController extends AbstractController {
     public function editSprint(Request $request, $id_sprint, $id_project): Response
     {
         $sprint = $this->sprintRepository->find($id_sprint);
+        
         $form = $this->createForm(SprintType::class, $sprint);
         $form->handleRequest($request);
-        $project = $this->projectRepository->find($id_project);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->entityManager->persist($sprint);
@@ -145,7 +143,7 @@ class SprintController extends AbstractController {
         return $this->render('sprint/edit.html.twig', [
             'form' => $form->createView(),
             'user' => $this->getUser(),
-            'project' => $project
+            'project' => $this->projectRepository->find($id_project)
         ]);
     }
 
@@ -163,18 +161,14 @@ class SprintController extends AbstractController {
                 //les issues on les des lis
                 foreach($sprint->getIssues() as $issue) {
                     $issue->setSprint(null);
-                    $this->entityManager->persist($issue);
-                    $this->entityManager->flush();  
                 }
                 //les tahces on les supprime
                 foreach($sprint->getTasks() as $task) {
                     $this->entityManager->remove($task);
-                    $this->entityManager->flush();  
                 }
 
                 $this->entityManager->remove($sprint);
                 $this->entityManager->flush();
-                
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
@@ -204,14 +198,9 @@ class SprintController extends AbstractController {
                 foreach($sprint_source->getIssues() as $issue) {
                     if(!$issue->getSprints()->contains($sprint_target)){
                         $sprint_target->addIssue($issue);
-                        $this->entityManager->persist($sprint_target);
                         if($issue->getProportionOfDoing() == "0%") {
                             $sprint_source->removeIssue($issue);
-                            $this->entityManager->persist($sprint_source);
                         }
-                        $this->entityManager->persist($issue);
-
-                        $this->entityManager->flush();  
                     }
                 }
                 //les taches on les migre
@@ -219,13 +208,9 @@ class SprintController extends AbstractController {
                     if($task->getStatus() != Task::DONE) {
                         $sprint_source->removeTask($task);
                         $sprint_target->addTask($task);
-                        $this->entityManager->persist($task);
-                        $this->entityManager->persist($sprint_source);
-                        $this->entityManager->persist($sprint_target);
-                        $this->entityManager->flush();  
                     }
                 }
-                
+                $this->entityManager->flush();  
                 $this->notifications->addSuccess("Contenu du sprint {$sprint_source->getNumber()} migré avec succés vers {$sprint_target->getNumber()}.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());

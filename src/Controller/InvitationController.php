@@ -34,19 +34,13 @@ class InvitationController extends AbstractController
                                             MemberRepository $memberRepository, ProjectRepository $projectRepository,
                                             $id) : Response
     {
-
         $member = $memberRepository->findOneBy([
             'emailAddress' =>  $request->get('memberEmail')
         ]);
 
-        $project = $projectRepository->findOneBy([
-            'id' => $id
-        ]);
-        $owner = $project->getOwner();
+        $project = $projectRepository->find($id);
 
-        $user = $this->getUser();
-
-        if($owner == $user){
+        if($project->getOwner() == $this->getUser()){
             if($member && $project) {
                 try {
                     $invitationService->inviteUser($member, $project);
@@ -76,7 +70,6 @@ class InvitationController extends AbstractController
      */
     public function acceptInvitationToProject(Request $request, InvitationRepository $invitationRepository, $invitationKey) : Response
     {
-
         $member = $this->getUser();
 
         $invitation = $invitationRepository->findOneBy([

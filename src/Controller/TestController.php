@@ -36,19 +36,15 @@ class TestController extends AbstractController {
     public function viewCreationTest(Request $request, $id_project) : Response
     {
         $project = $this->projectRepository->find( $id_project);
+        
         $form = $this->createForm(TestType::class, [], [
             TestType::PROJECT => $project
         ]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $data = $form->getData();
-                $name = $data['name'];
-                $description= $data['description'];
-                $state=$data['state'];
-                $issue=$data['issue'];
-                $test = new Test($project, $name, $description, $state,$issue);
+                $test = new Test($project, $data['name'], $data['description'], $data['state'], $data['issue']);
                 $this->entityManager->persist($test);
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("Test {$test->getName()} créé avec succès.");
@@ -75,14 +71,13 @@ class TestController extends AbstractController {
      */
     public function viewTests(Request $request, $id_project) {
         $project = $this->projectRepository->find($id_project);
-        $tests = $project->getTests();
-
+        
         $statusStat = $this->testRepository->getProportionStatus($project);
 
         return $this->render('test/test_list.html.twig', [
             'project'=> $project,
             'statusStat' => $statusStat,
-            'tests' => $tests,
+            'tests' => $project->getTests(),
             'user' => $this->getUser()
         ]);
     }
@@ -95,14 +90,13 @@ class TestController extends AbstractController {
     {
         $test = $this->testRepository->find($id_test);
         $project = $this->projectRepository->find( $id_project);
+        
         $form = $this->createForm(TestType::class, $test, [
             TestType::PROJECT => $project
         ]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->entityManager->persist($test);
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("Test {$test->getName()} édité avec succès.");
             } catch(\Exception $e) {

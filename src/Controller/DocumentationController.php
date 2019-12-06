@@ -39,16 +39,11 @@ class DocumentationController extends AbstractController
         $project = $this->projectRepository->find($id_project);
 
         $form = $this->createForm(DocumentationType::class);
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $data = $form->getData();
-                $name = $data['name'];
-                $description= $data['description'];
-                $link=$data['link'];
-                $documentation=new Documentation($name,$description,$link,$project);
+                $documentation=new Documentation($data['name'], $data['description'], $data['link'], $project);
                 $this->entityManager->persist($documentation);
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("La documentation a été créer avec succés.");
@@ -72,10 +67,10 @@ class DocumentationController extends AbstractController
      */
     public function viewDocumentations(Request $request, $id_project) {
         $project = $this->projectRepository->find($id_project);
-        $ressourcesDoc = $project->getRessourcesDoc();
+        
         return $this->render('documentation/documentation_list.html.twig', [
             'project'=> $project,
-            'ressourcesDoc' => $ressourcesDoc,
+            'ressourcesDoc' => $project->getRessourcesDoc(),
             'user' => $this->getUser()
         ]);
     }

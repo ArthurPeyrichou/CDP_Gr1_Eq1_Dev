@@ -34,7 +34,6 @@ class DashboardController extends AbstractController {
                 $issue = $planningPoker->getIssue();
 
                 $entityManager->remove($planningPoker);
-                $entityManager->flush();
 
                 if($planningPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
                     $cpt = 0;
@@ -43,17 +42,14 @@ class DashboardController extends AbstractController {
                         ++$cpt;
                         $amount += $planningPokerDone->getValue();
                         $entityManager->remove($planningPokerDone);
-                        $entityManager->flush();
                     }
                     if($cpt==0) {
                         $cpt = 1;
                     }
                     $issue->setDifficulty($amount / $cpt);
-                    $entityManager->persist($issue);
-                    $entityManager->flush();
                     $notifications->addSuccess("Fin du planning poker pour l'issue {$issue->getNumber()}.");
                 }
-
+                $entityManager->flush();
                 $notifications->addError("Vous avez dépassé le temps permis pour participer au planning poker de l'issue {$issue->getNumber()}.");
             }
         }

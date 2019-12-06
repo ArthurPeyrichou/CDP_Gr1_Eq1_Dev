@@ -41,22 +41,18 @@ class IssueController extends AbstractController {
     {
         $project = $this->projectRepository->find( $id_project);
         $nextNumber = $this->issueRepository->getNextNumber($project);
+        
         $form = $this->createForm(IssueType::class, ['number' => $nextNumber], [
             IssueType::PROJECT => $project
         ]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $description= $data['description'];
-            $priority=$data['priority'];
-            $sprints = array($data['sprints']);
             $difficulty = $data['difficulty'];
             if (count($project->getMembers()) > 0) {
                 $difficulty = 0;
             }
-
-            $issue = new Issue($nextNumber, $description, $difficulty, $priority, $project, $sprints);
+            $issue = new Issue($nextNumber, $data['description'], $difficulty, $data['priority'], $project, $data['sprints']->toArray());
             $this->entityManager->persist($issue);
 
             if (count($project->getMembers()) > 0) {
@@ -87,11 +83,11 @@ class IssueController extends AbstractController {
      * @Route("/project/{id_project}/issues/{id_issue}", name="issueDetailsTest", methods={"GET"})
      */
     public function viewIssueTest(Request $request, $id_project,$id_issue): Response
-    {   $todos=[];
-        $faileds=[];
-        $succeededs=[];
+    {   
+        $todos= array();
+        $faileds= array();
+        $succeededs= array();
         $issue = $this->issueRepository->find($id_issue);
-        $project = $this->projectRepository->find( $id_project);
         $tests=$issue->getTests();
         foreach ($tests as $test) {
             switch($test->getState()) {
@@ -107,7 +103,7 @@ class IssueController extends AbstractController {
             }
         }
         return $this->render('issue/issue_test_details.html.twig', [
-            'project' => $project,
+            'project' => $this->projectRepository->find( $id_project),
             'issue' => $issue,
             'todos' => $todos,
             'faileds'=> $faileds,
@@ -123,14 +119,14 @@ class IssueController extends AbstractController {
      */
     public function viewIssues(Request $request, $id_project) {
         $project = $this->projectRepository->find($id_project);
-        $issues = $project->getIssues();
+
         $statusStat = $this->issueRepository->getProportionStatus( $project);
         $diffStat = $this->issueRepository->getProportionDifficulty( $project);
         $prioStat = $this->issueRepository->getProportionPriority( $project);
 
         return $this->render('issue/issue_list.html.twig', [
             'project'=> $project,
-            'issues' => $issues,
+            'issues' => $project->getIssues(),
             'statusStat' => $statusStat,
             'diffStat' => $diffStat,
             'prioStat' => $prioStat,
@@ -179,21 +175,20 @@ class IssueController extends AbstractController {
      */
     public function viewIssueTask(Request $request, TaskRepository $taskRepository, $id_project,$id_issue): Response
     {
-        $project = $this->projectRepository->find($id_project);
         $issue=$this->issueRepository->find($id_issue);
-        $todos = [];
-        $doings = [];
-        $dones = [];
+        $todos = array();
+        $doings = array();
+        $dones = array();
         foreach($issue->getTasks() as $task){
             switch($task->getStatus()){
                 case "todo":
-                    $todos [] = $task;
+                    $todos[]=$task;
                 break;
                 case "doing":
-                    $doings [] = $task;
+                    $doings[]=$task;
                 break;
                 case "done":
-                    $dones [] = $task;
+                    $dones[]=$task;
                 break;
             }
         }
@@ -204,7 +199,7 @@ class IssueController extends AbstractController {
         $memberMansDayStat = $taskRepository->getProportionMansDPerMembersAssociatedByIssue($issue);
 
         return $this->render('issue/issue_task_details.html.twig', [
-            'project' => $project,
+            'project' => $this->projectRepository->find($id_project),
             'issue' => $issue,
             'user' => $this->getUser(),
             'manDaysStat' => $manDaysStat,

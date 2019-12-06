@@ -24,14 +24,9 @@ class RegistrationController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $name = $data['name'];
-            $emailAddress = $data['emailAddress'];
-            $password = $data['password'];
-
             try {
-                $registrationService->registerUser($name, $emailAddress, $password);
+                $data = $form->getData();
+                $registrationService->registerUser($data['name'], $data['emailAddress'], $data['password']);
                 $notifications->addSuccess('Votre compte a été créé, vous pouvez vous connecter!');
                 return $this->redirectToRoute('login');
             }

@@ -41,17 +41,10 @@ class ProjectController extends AbstractController {
     {
         $form = $this->createForm(ProjectType::class);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
-            $owner = $this->getUser();
-            $name = $data['name'];
-            $description= $data['description'];
-            $date= new \DateTime('now');
-            $project = new Project($owner, $name, $description, $date);
-
             try {
+                $data = $form->getData();
+                $project = new Project($this->getUser(), $data['name'], $data['description'], new \DateTime('now'));
                 $this->entityManager->persist($project);
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("Création du projet {$project->getName()} réussie");

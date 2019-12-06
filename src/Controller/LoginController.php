@@ -60,7 +60,6 @@ class LoginController extends AbstractController
         if ($request->isMethod('POST')) {
 
             $email = $request->request->get('emailAddress');
-
             $member = $this->memberRepository->findOneBy(['emailAddress'=>$email]);
 
             if ($member == null) {
