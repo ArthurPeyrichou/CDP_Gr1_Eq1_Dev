@@ -55,15 +55,16 @@ class IssueController extends AbstractController {
             if (count($project->getMembers()) > 0) {
                 $difficulty = 0;
             }
-            $issue = new Issue($nextNumber, $data['description'], $difficulty, $data['priority'], $project, $data['sprints']->toArray());
+            $issue = new Issue($nextNumber, $data['description'], $difficulty, $data['priority'], $project, array($data['sprints']) );
             $this->entityManager->persist($issue);
 
             if (count($project->getMembers()) > 0) {
                 foreach($project->getMembersAndOwner() as $member) {
-                    if ($member->getId() != $this->getUser()->getId()){
-                        $planningPoker = new PlanningPoker($issue, $member);
-                        $this->entityManager->persist($planningPoker);
+                    $planningPoker = new PlanningPoker($issue, $member);  
+                    if ($member->getId() == $this->getUser()->getId()){
+                        $planningPoker->setValue($data['difficulty']);
                     }
+                    $this->entityManager->persist($planningPoker);
                 }
             }
 
@@ -267,12 +268,13 @@ class IssueController extends AbstractController {
     public function plannigPokerForIssue(Request $request, PlanningPokerRepository $planningPokerRepository, $id_project, $id_issue)
     {
         $project = $this->projectRepository->find($id_project);
+        $member = $this->getUser();
         $issue = $this->issueRepository->findOneBy([
             'id' => $id_issue,
             'project' => $project
         ]);
         $planningPoker = $planningPokerRepository->findOneBy([
-            'member' => $this->getUser(),
+            'member' => $member,
             'issue' => $issue,
         ]);
 
@@ -289,37 +291,8 @@ class IssueController extends AbstractController {
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} évaluée avec succés.");
 
                 if($planningPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
-                    $cpt = 1;
-                    $amount = $issue->getDifficulty();
-                    foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPoker) {
-                        ++$cpt;
-                        $amount += $planningPoker->getValue();
-                        $this->entityManager->remove($planningPoker);
-                        $this->entityManager->flush();
-                    }
-                    $issue->setDifficulty($amount / $cpt);
-                    $this->entityManager->persist($issue);
-                    $this->entityManager->flush();
-                    $message = "Fin du planning poker pour l'issue {$issue->getNumber()}.";
-                    foreach($project->getMembers() as $member) {
-                        if($member->getId() == $this->getUser()->getId() ){
-                            $this->notifications->addInfo($message);
-                        } else {
-                            $notif = new Notification($message);
-                            $member->addNotification($notif);
-                            $this->entityManager->persist($notif);
-                            $this->entityManager->flush();
-                        }
-                    }
-
-                    if($project->getOwner()->getId() == $this->getUser()->getId() ){
-                        $this->notifications->addInfo($message);
-                    } else {
-                        $notif = new Notification($message);
-                        $project->getOwner()->addNotification($notif);
-                        $this->entityManager->persist($notif);
-                        $this->entityManager->flush();
-                    }
+                    $this->calculateIssueDifficultyFromPP($planningPokerRepository, $issue);
+                    $this->notifications->notifAllmemberFromProject($this->entityManager, $member, $project, "Fin du planning poker pour l'issue {$issue->getNumber()}.");
                 }
 
                 return $this->redirectToRoute('issuesList', [
@@ -333,8 +306,26 @@ class IssueController extends AbstractController {
         return $this->render('issue/planning_poker_form.html.twig', [
             'project' => $project,
             'issue' => $issue,
-            'user' => $this->getUser(),
+            'user' => $member,
             'form' => $form->createView()
         ]);
+    }
+
+    public function calculateIssueDifficultyFromPP(PlanningPokerRepository $planningPokerRepository, Issue $issue){
+        $cpt = 0;
+        $amount = 0;
+        foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPoker) {
+            ++$cpt;
+            $amount += $planningPoker->getValue();
+            $this->entityManager->remove($planningPoker);
+            $this->entityManager->flush();
+        }
+        if($cpt <= 0) {
+            $issue->setDifficulty(0);
+        } else {
+            $issue->setDifficulty($amount / $cpt);
+        }
+        $this->entityManager->persist($issue);
+        $this->entityManager->flush();
     }
 }

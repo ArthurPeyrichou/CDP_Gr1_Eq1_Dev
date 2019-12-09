@@ -3,7 +3,10 @@
 
 namespace App\Service;
 
-
+use App\Entity\Member;
+use App\Entity\Project;
+use App\Entity\Notification;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -60,6 +63,28 @@ class NotificationService
     public function addInfo(string $message): void
     {
         $this->addMessage($message, self::INFO);
+    }
+
+    public function notifAllmemberFromProject(EntityManagerInterface $entityManager, Member $sourceMember, Project $project, string $message) {
+
+        foreach($project->getMembers() as $member) {
+            if($member->getId() == $sourceMember->getId()){
+                $this->addInfo($message);
+            } else {
+                $notif = new Notification($message);
+                $member->addNotification($notif);
+                $entityManager->persist($notif);
+            }
+        }
+
+        if($project->getOwner()->getId() == $sourceMember->getId() ){
+            $this->addInfo($message);
+        } else {
+            $notif = new Notification($message);
+            $project->getOwner()->addNotification($notif);
+            $entityManager->persist($notif);
+        }
+        $entityManager->flush();
     }
 
     private function addMessage(string $message, string $type): void
