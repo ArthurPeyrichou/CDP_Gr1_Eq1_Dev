@@ -15,7 +15,19 @@ async function logout(page) {
     await page.click('#navbarContent > div.dropdown.px-lg-3.show > div > a');
 }
 
+async function databaseQuery(db, query) {
+    return await new Promise(function(resolve, reject) {
+        db.query(query, function(error, results) {
+            if (error) {
+                reject(error);
+            }
+            resolve(results);
+        });
+    });
+}
+
 module.exports = {
     login,
-    logout
+    logout,
+    databaseQuery
 };

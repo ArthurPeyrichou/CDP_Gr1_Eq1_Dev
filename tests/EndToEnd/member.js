@@ -1,7 +1,7 @@
 const assert = require('assert');
 const puppeteer = require('puppeteer');
 const dbConnection = require('./databaseConnection');
-const loginHelper = require('./loginHelper');
+const helpers = require('./helpers');
 
 const LOGIN = 'A random user';
 const EMAIL = 'randomuser@random.com';
@@ -48,14 +48,7 @@ describe('Member management tests', function() {
 
             await page.waitForSelector('header > nav');
 
-            const queryResult = await new Promise(function(resolve, reject) {
-                db.query(`SELECT * FROM member WHERE \`name\` = '${LOGIN}'`, function(error, results) {
-                    if (error) {
-                        reject(error);
-                    }
-                    resolve(results);
-                });
-            });
+            const queryResult = await helpers.databaseQuery(db, `SELECT * FROM member WHERE \`name\` = '${LOGIN}'`);
 
             assert(queryResult.length !== 0);
         });
@@ -63,7 +56,7 @@ describe('Member management tests', function() {
 
     describe('Tests user connection', function() {
         it('Should connect user to dashboard', async function() {
-            await loginHelper.login(page, EMAIL, PW);
+            await helpers.login(page, EMAIL, PW);
 
             const userName = await page.evaluate(
                 () => document.querySelector('#navbarContent > div.dropdown.px-lg-3 > a').textContent

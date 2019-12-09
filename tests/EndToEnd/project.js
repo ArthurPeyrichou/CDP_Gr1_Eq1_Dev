@@ -1,7 +1,7 @@
 const assert = require('assert');
 const puppeteer = require('puppeteer');
 const dbConnection = require('./databaseConnection');
-const loginHelper = require('./loginHelper');
+const helpers = require('./helpers');
 
 const EMAIL = 'member1@domain.com';
 const PW = 'someReallySecurePassword';
@@ -26,11 +26,11 @@ describe('Project management tests', function() {
             width: 1280,
             height: 720
         });
-        await loginHelper.login(page, EMAIL, PW);
+        await helpers.login(page, EMAIL, PW);
     });
 
     afterEach(async function() {
-        await loginHelper.logout(page);
+        await helpers.logout(page);
         await page.close();
     });
 
@@ -48,15 +48,8 @@ describe('Project management tests', function() {
             await page.type('#project_description', DESC);
             await page.click('body > div > div > div > form > button');
 
-            const queryResult = await new Promise(function(resolve, reject) {
-                db.query(`SELECT * FROM project WHERE \`name\` = '${NAME}' AND  \`description\` = '${DESC}'`,
-                    function(error, results) {
-                        if (error) {
-                            reject(error);
-                        }
-                        resolve(results);
-                    });
-            });
+            const queryResult = await helpers.databaseQuery(db,
+                `SELECT * FROM project WHERE \`name\` = '${NAME}' AND  \`description\` = '${DESC}'`);
 
             assert(queryResult.length !== 0);
         });
@@ -101,15 +94,8 @@ describe('Project management tests', function() {
 
             await page.waitForSelector('header > nav');
 
-            const queryResult = await new Promise(function(resolve, reject) {
-                db.query(`SELECT * FROM project WHERE \`name\` = '${NAME}' AND  \`description\` = '${EDITED_DESC}'`,
-                    function(error, results) {
-                        if (error) {
-                            reject(error);
-                        }
-                        resolve(results);
-                    });
-            });
+            const queryResult = await helpers.databaseQuery(db,
+                `SELECT * FROM project WHERE \`name\` = '${NAME}' AND  \`description\` = '${EDITED_DESC}'`);
 
             assert(queryResult.length !== 0);
         });
@@ -129,15 +115,7 @@ describe('Project management tests', function() {
 
             await page.waitForSelector('header > nav');
 
-            const queryResult = await new Promise(function(resolve, reject) {
-                db.query(`SELECT * FROM project WHERE \`name\` = '${NAME}'`,
-                    function(error, results) {
-                        if (error) {
-                            reject(error);
-                        }
-                        resolve(results);
-                    });
-            });
+            const queryResult = helpers.databaseQuery(db, `SELECT * FROM project WHERE \`name\` = '${NAME}'`);
 
             assert(queryResult.length === 0);
         });
