@@ -11,60 +11,14 @@
                 <a class="btn btn-primary mt-3" title="Ajouter un test" href="{{ path('createTest', {'id_project' : project.id}) }}" style="margin-bottom:10px;">
                     <img src="{{ asset('build/images/add.svg') }}" style="max-width: 30px; filter: invert(1);">
                 </a>
-                {% if tests is not empty %}
-                    <ul class="list-group card to-scroll">
-                        {% for index, test in tests %}
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-md-6 col-lg-8">
-                                        <div class="font-weight-bold">{{ test.name }} - {{ test.description }}</div>
-                                        <div class="text-muted small">
-                                            <span>Statut :</span>
-                                            <span class="font-weight-bold {{ getClassForTestStatus(test.state)}} badge" style="font-size: 110%;">
-                                            {{ test.state | capitalize }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
-                                        <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editTest', {'id_project': project.id, 'id_test' : test.id}) }}">
-                                            <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
-                                        </a>
-                                        <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#test-delete-confirm{{ index }}">
-                                            <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
-                                        </button>
-                                    </div>
-                                </div>
-                            </li>
-                            {% embed 'components/_modal.html.twig' with {'modalId': "test-delete-confirm#{index}"} %}
-                                {% block header %}
-                                    <h3>Veuillez confirmer la suppression</h3>
-                                {% endblock %}
-                                {% block body %}
-                                    <p>Êtes-vous sûr(e) de vouloir supprimer le test {{ test.name }}</p>
-                                {% endblock %}
-                                {% block footer %}
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                    <a href="{{ path('deleteTest', {'id_project' : project.id,'id_test' : test.id }) }}" class="btn btn-primary">Oui</a>
-                                {% endblock %}
-                            {% endembed %}
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p> Vous n'avez pour l'instant créé aucun test.</p>
-                {% endif %}
+                
+                {% include 'test/test_list_frag.html.twig' %}
+               
             </div>
         </div>
     </div>
 
-    <div id="chart" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
-
-    {% set data = {
-        title: 'Statut',
-        datasetTitle: 'Nombre pour ce statut',
-        dataset: statusStat,
-    } %}
-
-    <div id="data" data-status="{{ data | json_encode }}" class="d-none"></div>
+    {% include 'test/test_stat.html.twig' %}
 
 {% endblock %}
 

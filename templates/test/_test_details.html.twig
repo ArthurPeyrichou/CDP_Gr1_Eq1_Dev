@@ -1,32 +1,46 @@
+<li id="item-{{ test.id }}" class="mt-2 {{ test.state }}" draggable="true" 
+        data-link="{{ path('changeTestState', {'id_project': project.id, 'id_test' : test.id, 'state' : 'todo'}) }}">
 
-<a class="link collapsed" data-toggle="collapse" href="#testDetail{{ test.id }}" aria-expanded="false">
-    <h4 class="h6 mb-0">{{ test.name }}</h4>
-</a>
+    <a class="link collapsed" data-toggle="collapse" href="#testDetail{{ test.id }}" aria-expanded="false">
+        <h4 class="h6 mb-0">{{ test.name }}</h4>
+    </a>
 
-<div class="collapse mw-100" id="testDetail{{ test.id }}">
-    <h6 class="mt-1 mb-0">Description:</h6>
-    <div class="ellipsis">{{ test.description }}</div>
-    {% block buttons %}
-        <div class="text-center row justify-content-around">
-            <a class="btn btn-light my-auto mr-1" title="Editer"  href="{{ path('editTest', {'id_project': project.id, 'id_test' : test.id}) }}">
-                <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
-            </a>
-            <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#test-delete-confirm">
-                <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
-            </button>
-        </div>
-    {% endblock %}
-    {% embed 'components/_modal.html.twig' with {'modalId': "test-delete-confirm"} %}
-        {% block header %}
-            <h3>Veuillez confirmer la suppression</h3>
+    <div class="collapse mw-100" id="testDetail{{ test.id }}">
+        <h6 class="mt-1 mb-0">Description:</h6>
+        <div class="ellipsis">{{ test.description }}</div>
+        {% if issue is not defined %}
+        <h6 class="mt-1 mb-0">Issue associée</h6>
+        <ul class="mb-4">
+                <li>
+                    <a title="Voir les détails de l'issue" href="{{ path('issueDetailsTest', {'id_project': project.id,'id_issue': test.issue.id}) }}">
+                        <div class="ellipsis"><span class="font-weight-bold">{{ test.issue.number }}</span>: {{ test.issue.description }}</div>
+                    </a>
+                </li>
+        </ul>
+        {% endif%}
+        {% block buttons %}
+            <div class="text-center row justify-content-around">
+                <a class="btn btn-light my-auto mr-1" title="Editer"  href="{{ path('editTest', {'id_project': project.id, 'id_test' : test.id}) }}">
+                    <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
+                </a>
+                <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#test-delete-confirm">
+                    <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
+                </button>
+            </div>
         {% endblock %}
-        {% block body %}
-            <p>Êtes-vous sûr(e) de vouloir supprimer le test {{ test.name }}</p>
-        {% endblock %}
-        {% block footer %}
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-            <a href="{{ path('deleteTest', {'id_project' : project.id,'id_test' : test.id}) }}" class="btn btn-primary">Oui</a>
-        {% endblock %}
-    {% endembed %}
-</div>
+        {% embed 'components/_modal.html.twig' with {'modalId': "test-delete-confirm"} %}
+            {% block header %}
+                <h3>Veuillez confirmer la suppression</h3>
+            {% endblock %}
+            {% block body %}
+                <p>Êtes-vous sûr(e) de vouloir supprimer le test {{ test.name }}</p>
+            {% endblock %}
+            {% block footer %}
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                <a href="{{ path('deleteTest', {'id_project' : project.id,'id_test' : test.id}) }}" class="btn btn-primary">Oui</a>
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+</li>
 

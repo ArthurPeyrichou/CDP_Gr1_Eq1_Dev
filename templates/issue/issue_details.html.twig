@@ -1,0 +1,94 @@
+{% extends 'project_frame.html.twig' %}
+
+{% block title %}
+{% if faileds is defined and succeededs is defined %}
+    Tests
+{% endif %}
+{% if doings is defined and dones is defined %}
+    Tâches
+{% endif %}
+de l'issue - {{ issue.number }}{% endblock %}
+
+{% block content %}
+
+    <div class="container" style="margin-bottom:10%;">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 col-lg-8">
+                        <div class="font-weight-bold">{{ issue.number }} - {{ issue.description }}</div>
+                        <div class="text-muted small">
+                            {% if issue.difficulty > 0 %}
+                                <span>Difficulté :</span>
+                                <span class="font-weight-bold badge badge-light" style="font-size: 110%;">{{ issue.difficulty }}</span>
+                            {% endif %}
+                            <span>| Priorité :</span>
+                            <span class="font-weight-bold badge badge-light" style="font-size: 110%;">{{ issue.priority |capitalize }}</span>
+                            <span>| Statut :</span>
+                            <span class="font-weight-bold {{ getClassForStatus(issue.status)}} badge" style="font-size: 110%;">
+                            {% if issue.status  == "doing" %}
+                                {{ issue.getProportionOfDoing() }}
+                            {% endif %}
+                            {{ issue.status |capitalize }}
+                            </span>
+                            {% if issue.status  == "doing" %}
+                            <span class="font-weight-bold {{ getClassForStatus("done")}} badge" style="font-size: 110%;">{{ issue.getProportionOfDone() }} Done
+                            </span>
+                            {% endif %}
+                            {% for sprint in issue.getSprints() %}
+                                <span>| </span>
+                                <a title="Voir les détails du sprint" href="{{ path('sprintDetails', {'id_project': project.id,'id_sprint': sprint.getId()}) }}">
+                                    <span class="font-weight-bold badge badge-light" style="font-size: 110%;">Sprint :{{ sprint.getNumber() |capitalize }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 d-flex justify-content-md-end mt-2 mt-md-0">
+                        {% if issue.getTests() is not empty and doings is defined and dones is defined %}
+                            <a class="btn btn-info my-auto mr-1" href="{{ path('issueDetailsTest', {'id_project': project.id,'id_issue':issue.id}) }}">Tests</a>
+                        {% endif %}
+                        {% if issue.getTasks() is not empty and faileds is defined and succeededs is defined %}
+                            <a class="btn btn-success my-auto mr-1" href="{{ path('issueDetailsTask', {'id_project': project.id,'id_issue':issue.id}) }}">Tâches</a>
+                        {% endif %}
+                        <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editIssue', {'id_project': project.id, 'id_issue' : issue.id}) }}">
+                            <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
+                        </a>
+                        <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#issue-delete-confirm">
+                            <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
+                        </button>
+                    </div>
+                </div>
+                {% embed 'components/_modal.html.twig' with {'modalId': "issue-delete-confirm"} %}
+                    {% block header %}
+                        <h3>Veuillez confirmer la suppression</h3>
+                    {% endblock %}
+                    {% block body %}
+                        <p>Êtes-vous sûr(e) de vouloir supprimer l'issue {{ issue.number }}?<br/>Les tâches et sprints associées seront déliées.</p>
+                    {% endblock %}
+                    {% block footer %}
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                        <button type="button" data-dismiss="modal" data-link="{{ path('deleteIssue', {'id_project' : project.id,'id_issue' : issue.id }) }}" data-id="{{ issue.id }}" 
+                                class="btn btn-primary delete-item">Oui</button>
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        </div>
+    </div>
+    {% if faileds is defined and succeededs is defined %}
+        {% include 'test/test_list_frag.html.twig' %}
+    {% endif %}
+    {% if doings is defined and dones is defined %}
+        {% include 'task/task_list_frag.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    
+    {% if faileds is defined and succeededs is defined %}
+        {{ encore_entry_script_tags('testList') }}
+    {% endif %}
+    {% if doings is defined and dones is defined %}
+        {{ encore_entry_script_tags('taskList') }}
+    {% endif %}
+    {{ encore_entry_script_tags('global') }}
+{% endblock %}

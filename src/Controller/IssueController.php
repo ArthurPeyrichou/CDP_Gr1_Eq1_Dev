@@ -10,6 +10,7 @@ use App\Form\PlanningPokerType;
 use App\Repository\IssueRepository;
 use App\Repository\PlanningPokerRepository;
 use App\Repository\TaskRepository;
+use App\Repository\TestRepository;
 use App\Service\NotificationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,9 +81,9 @@ class IssueController extends AbstractController {
 
     }
     /**
-     * @Route("/project/{id_project}/issues/{id_issue}", name="issueDetailsTest", methods={"GET"})
+     * @Route("/project/{id_project}/issues/{id_issue}/tests", name="issueDetailsTest", methods={"GET"})
      */
-    public function viewIssueTest(Request $request, $id_project,$id_issue): Response
+    public function viewIssueTest(Request $request, $id_project,$id_issue, TestRepository $testRepository): Response
     {   
         $todos= array();
         $faileds= array();
@@ -102,12 +103,16 @@ class IssueController extends AbstractController {
                     break;
             }
         }
-        return $this->render('issue/issue_test_details.html.twig', [
-            'project' => $this->projectRepository->find( $id_project),
+        $project = $this->projectRepository->find( $id_project);
+        $statusStat = $testRepository->getProportionStatusByIssue($project, $issue);
+
+        return $this->render('issue/issue_details.html.twig', [
+            'project' => $project,
             'issue' => $issue,
             'todos' => $todos,
             'faileds'=> $faileds,
             'succeededs'=>$succeededs,
+            'statusStat'=>$statusStat,
             'user' => $this->getUser(),
 
         ]);
@@ -171,7 +176,7 @@ class IssueController extends AbstractController {
 
      /**
      * Displays the issue details page.
-     * @Route("/project/{id_project}/issues/{id_issue}/task", name="issueDetailsTask", methods={"GET"})
+     * @Route("/project/{id_project}/issues/{id_issue}/tasks", name="issueDetailsTask", methods={"GET"})
      */
     public function viewIssueTask(Request $request, TaskRepository $taskRepository, $id_project,$id_issue): Response
     {
@@ -198,7 +203,7 @@ class IssueController extends AbstractController {
         $memberStat = $taskRepository->getProportionMembersAssociatedByIssue($issue);
         $memberMansDayStat = $taskRepository->getProportionMansDPerMembersAssociatedByIssue($issue);
 
-        return $this->render('issue/issue_task_details.html.twig', [
+        return $this->render('issue/issue_details.html.twig', [
             'project' => $this->projectRepository->find($id_project),
             'issue' => $issue,
             'user' => $this->getUser(),

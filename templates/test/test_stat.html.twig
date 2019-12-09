@@ -1,0 +1,9 @@
+<div id="chart" class="container" style="min-width:500px; min-height:300px; max-height:400px; width:80%; margin: auto; margin-top:10%; justify-content:center;"></div>
+
+{% set data = {
+    title: 'Statut',
+    datasetTitle: 'Nombre pour ce statut',
+    dataset: statusStat,
+} %}
+
+<div id="data" data-status="{{ data | json_encode }}" class="d-none"></div>

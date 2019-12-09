@@ -1,18 +1,19 @@
 <div class="container">
     {% if todos is not empty or faileds is not empty or succeededs is not empty %}
         <div class="row">
-            <div class="col-12 px-0 px-lg-1 text-center mb-2">
-                <h3>Les tests liées à cet issue</h3>
-            </div>
+            {% if issue is defined %}
+                <div class="col-12 px-0 px-lg-1 text-center mb-2">
+                    <h3>Les tests liées à cette issue</h3>
+                </div>
+            {% endif %}
             <div class="col-lg-4 px-0 px-lg-1 my-lg-0 my-1">
-                <div class="card card-height" style="overflow-y: scroll; height: 450px;">
-                    <div class="card-body">
+                <div class="card card-height dropping-card" style="overflow-y: scroll; height: 450px;">
+                    <div class="card-body todo">
                         <h3 class= "{{ getClassForTestStatus("todo")}} badge" style="display: block; font-size: 110%;">A faire</h3>
                         <div class="container-fluid">
                             <ul class="list-unstyled">
                                 {% for test in todos %}
-                                    {% embed 'test/_test_details.html.twig' %}
-                                    {% endembed %}
+                                    {% include 'test/_test_details.html.twig' %}
                                 {% endfor %}
                             </ul>
                         </div>
@@ -26,8 +27,7 @@
                         <div class="container-fluid">
                             <ul class="list-unstyled">
                                 {% for test in succeededs %}
-                                    {% embed 'test/_test_details.html.twig' %}
-                                    {% endembed %}
+                                    {% include 'test/_test_details.html.twig' %}
                                 {% endfor %}
                             </ul>
                         </div>
@@ -41,8 +41,7 @@
                         <div class="container-fluid">
                             <ul class="list-unstyled">
                                 {% for test in faileds %}
-                                    {% embed 'test/_test_details.html.twig' %}
-                                    {% endembed %}
+                                    {% include 'test/_test_details.html.twig' %}
                                 {% endfor %}
                             </ul>
                         </div>
@@ -60,3 +59,7 @@
         </div>
     {% endif %}
 </div>
+
+{% if statusStat is defined and issue is defined %}
+    {% include 'test/test_stat.html.twig' %}
+{% endif %}

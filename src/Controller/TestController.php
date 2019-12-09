@@ -74,10 +74,28 @@ class TestController extends AbstractController {
         
         $statusStat = $this->testRepository->getProportionStatus($project);
 
+        $todos= array();
+        $faileds= array();
+        $succeededs= array();
+        foreach ($project->getTests() as $test) {
+            switch($test->getState()) {
+                case 'todo':
+                    $todos[]=$test;
+                    break;
+                case 'failed':
+                    $faileds[]=$test;
+                    break;
+                case 'succeeded':
+                    $succeededs[]=$test;
+                    break;
+            }
+        }
+
         return $this->render('test/test_list.html.twig', [
             'project'=> $project,
-            'statusStat' => $statusStat,
-            'tests' => $project->getTests(),
+            'statusStat' => $statusStat,'todos' => $todos,
+            'faileds'=> $faileds,
+            'succeededs'=>$succeededs,
             'user' => $this->getUser()
         ]);
     }
@@ -132,6 +150,29 @@ class TestController extends AbstractController {
                 $this->notifications->addError($e->getMessage());
             }
         }
+        return $this->redirectToRoute('testsList', [
+            'id_project' => $id_project
+        ]);
+    }
+
+    /**
+     * Handles the edition of a test's state.
+     * @Route("/project/{id_project}/test/{id_test}/{state}", name="changeTestState", requirements={
+     *     "status"="^todo|failed|succeeded$"
+     * })
+     */
+    public function changeTaskStatus($id_project,$id_test, $state)
+    {
+        $test = $this->testRepository->find($id_test);
+
+        try {
+            $test->setState($state);
+            $this->entityManager->flush();
+        }
+        catch (\Exception $e) {
+            $this->notifications->addError($e->getMessage());
+        }
+
         return $this->redirectToRoute('testsList', [
             'id_project' => $id_project
         ]);
