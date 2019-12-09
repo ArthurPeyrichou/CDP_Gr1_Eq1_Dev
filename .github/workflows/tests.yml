@@ -8,16 +8,22 @@ jobs:
     env:
       DATABASE_URL: mysql://root:root@127.0.0.1:3306/bd_cdp_test
     steps:
-    - uses: actions/checkout@v1
-    - name: Validate composer.json and composer.lock
-      run: composer validate --no-check-publish
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist && npm install
-    - name: Compile resources
-      run: npm run build
-    - name: Create Database
-      run: php bin/console doctrine:database:create && php bin/console doctrine:migration:migrate
-    - name: Load test database fixtures
-      run: php bin/console doctrine:fixtures:load --no-interaction
-    - name: Execute tests via PHPUnit
-      run: php bin/phpunit
+      - uses: actions/checkout@v1
+      - name: Validate composer.json and composer.lock
+        run: composer validate --no-check-publish
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist && npm install
+      - name: Compile resources
+        run: npm run build
+      - name: Create Database
+        run: php bin/console doctrine:database:create && php bin/console doctrine:migration:migrate
+      - name: Load test database fixtures
+        run: php bin/console doctrine:fixtures:load --no-interaction
+      - name: Execute unit tests
+        run: php bin/phpunit --testsuite unit
+      - name: Execute integration tests
+        run: php bin/phpunit --testsuite integration
+      - name: Run server for e2e tests
+        run: php -S 127.0.0.1:9543 -t public -d variables_order=GPCES &
+      - name: Execute e2e tests
+        run: node_modules/.bin/mocha --timeout 30000 --recursive tests/EndToEnd
