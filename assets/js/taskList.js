@@ -1,4 +1,5 @@
 import {showBarChart} from './graph';
+import {itemDragStart, itemDrop, itemAllowDrop} from './dragDrop';
 
 const ChartNames = {
     STATUS: 'Status',
@@ -40,41 +41,14 @@ document.getElementById('select-chart').addEventListener('change',
 
 showSpecificChart(ChartNames.STATUS);
 
-
-function taskDragStart(event) {
-    event.dataTransfer.setData('text/plain', event.target.id);
-}
-
-function taskAllowDrop(event) {
-    event.preventDefault();
-}
-
-function taskDrop(event) {
-    event.preventDefault();
-    const data = event.dataTransfer.getData('text/plain');
-    const toMove = document.getElementById(data);
-    let ref = toMove.getAttribute('data-link');
-    if(event.target.classList.contains('doing')){
-        ref = ref.replace('done','doing');
-    }
-
-    fetch(ref).then(
-        response => {
-            if (response.ok) {
-                event.target.children[1].children[0].appendChild(toMove);
-            }
-        }
-    );
-}
-
 document.querySelectorAll('li.todo, li.doing').forEach(
-    element => element.addEventListener('dragstart', taskDragStart)
+    element => element.addEventListener('dragstart', itemDragStart)
 );
 
 document.querySelectorAll('.dropping-card').forEach(
     element => {
-        element.addEventListener('drop', taskDrop);
-        element.addEventListener('dragover', taskAllowDrop);
+        element.addEventListener('drop', itemDrop);
+        element.addEventListener('dragover', itemAllowDrop);
     }
 );
 
