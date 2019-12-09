@@ -91,6 +91,14 @@ class InvitationController extends AbstractController
                 $project->getOwner()->addNotification($notif);
                 $this->entityManager->persist($notif);
 
+                foreach($project->getMembers() as $member) {
+                    if($this->getUser()->getId() != $member->getId()){
+                        $notif = new Notification("{$member->getName()} à rejoins le projet {$project->getName()}.");
+                        $project->getOwner()->addNotification($notif);
+                        $this->entityManager->persist($notif);
+                    }
+                }
+
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("Vous venez d'accepter l'invitation de {$project->getOwner()->getName()} à rejoindre son projet");
             } catch(\Exception $e) {

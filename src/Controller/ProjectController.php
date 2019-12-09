@@ -104,27 +104,7 @@ class ProjectController extends AbstractController {
                 $issue->setDifficulty($amount / $cpt);
                 $entityManager->persist($issue);
                 $entityManager->flush();
-                $message = "Fin du planning poker pour l'issue {$issue->getNumber()}.";
-                foreach($project->getMembers() as $member) {
-                    if($member->getId() == $user->getId() ){
-                        $this->notifications->addInfo($message);
-                    } else {
-                        $notif = new Notification($message);
-                        $member->addNotification($notif);
-                        $entityManager->persist($notif);
-                        $entityManager->flush();
-                    }
-                }
-
-                if($project->getOwner()->getId() == $user->getId() ){
-                    $this->notifications->addInfo($message);
-                } else {
-                    $notif = new Notification($message);
-                    $project->getOwner()->addNotification($notif);
-                    $this->entityManager->persist($notif);
-                    $this->entityManager->flush();
-                }
-
+                $this->notifications->notifAllmemberFromProject($this->entityManager, $user, $project, "Fin du planning poker pour l'issue {$issue->getNumber()}.");
             }
         }
         foreach($project->getSprints() as $sprint) {
@@ -203,7 +183,7 @@ class ProjectController extends AbstractController {
         try {
             $this->entityManager->remove($project);
             $this->entityManager->flush();
-            $this->notifications->addSuccess("Suppression du projet {$project->getName()} réussie");
+            $this->notifications->notifAllmemberFromProject($this->entityManager, $this->getUser(), $project, "Le projet {$project->getName()} a été suprimmé.");
             return $this->redirectToRoute('dashboard');
         } catch (\Exception $e) {
             $this->notifications->addError($e->getMessage());
@@ -236,13 +216,25 @@ class ProjectController extends AbstractController {
         else {
             try {
                 $project->removeMember($member);
-                $this->entityManager->flush();
                 if($project->getOwner() != $user) {
                     $this->notifications->addSuccess("Vous venez de quitter le projet {$project->getName()}");
                     return $this->redirectToRoute('dashboard');
                 } else {
                     $this->notifications->addSuccess("{$member->getName()} a été retiré du projet avec succès");
                 }
+                foreach($project->getMembers() as $member) {
+                    if($this->getUser()->getId() != $member->getId()){
+                        $notif = new Notification("{$member->getName()} ne fait plus parti du projet {$project->getName()}.");
+                        $project->getOwner()->addNotification($notif);
+                        $this->entityManager->persist($notif);
+                    }
+                }
+                if($this->getUser()->getId() != $project->getOwner()->getId()){
+                    $notif = new Notification("{$member->getName()} ne fait plus parti du projet {$project->getName()}.");
+                    $project->getOwner()->addNotification($notif);
+                    $this->entityManager->persist($notif);
+                }
+                $this->entityManager->flush();
             } catch (\Exception $e) {
                 $this->notifications->addError($e->getMessage());
             }
