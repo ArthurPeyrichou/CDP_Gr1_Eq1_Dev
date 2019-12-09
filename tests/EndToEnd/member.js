@@ -13,7 +13,7 @@ describe('Member management tests', function() {
     let db;
 
     before(async function() {
-        chrome = await puppeteer.launch();
+        chrome = await puppeteer.launch({headless: false, slowMo: 20});
         db = dbConnection.connectToDatabase();
     });
 

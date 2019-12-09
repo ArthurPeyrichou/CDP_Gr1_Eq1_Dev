@@ -26,4 +26,4 @@ jobs:
       - name: Run server for e2e tests
         run: php -S 127.0.0.1:9543 -t public -d variables_order=GPCES &
       - name: Execute e2e tests
-        run: node_modules/.bin/mocha --timeout 30000 --recursive tests/EndToEnd
+        run: node_modules/.bin/mocha --timeout 15000 --recursive tests/EndToEnd

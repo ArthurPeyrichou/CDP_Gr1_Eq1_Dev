@@ -16,7 +16,7 @@ describe('Project management tests', function() {
     let db;
 
     before(async function() {
-        chrome = await puppeteer.launch();
+        chrome = await puppeteer.launch({headless: false, slowMo: 20});
         db = dbConnection.connectToDatabase();
     });
 
@@ -115,7 +115,7 @@ describe('Project management tests', function() {
 
             await page.waitForSelector('header > nav');
 
-            const queryResult = helpers.databaseQuery(db, `SELECT * FROM project WHERE \`name\` = '${NAME}'`);
+            const queryResult = await helpers.databaseQuery(db, `SELECT * FROM project WHERE \`name\` = '${NAME}'`);
 
             assert(queryResult.length === 0);
         });
