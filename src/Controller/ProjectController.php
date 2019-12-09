@@ -101,8 +101,8 @@ class ProjectController extends AbstractController {
                     $this->entityManager->flush();
                 }
                 $issue->setDifficulty($amount / $cpt);
-                $entityManager->persist($issue);
-                $entityManager->flush();
+                $this->entityManager->persist($issue);
+                $this->entityManager->flush();
                 $this->notifications->notifAllmemberFromProject($this->entityManager, $user, $project, "Fin du planning poker pour l'issue {$issue->getNumber()}.");
             }
         }
