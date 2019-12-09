@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Issue;
 use App\Entity\PlanningPoker;
 use App\Entity\Notification;
+use App\Entity\Task;
+use App\Entity\Test;
 use App\Form\IssueType;
 use App\Form\PlanningPokerType;
 use App\Repository\IssueRepository;
@@ -42,7 +44,7 @@ class IssueController extends AbstractController {
     {
         $project = $this->projectRepository->find( $id_project);
         $nextNumber = $this->issueRepository->getNextNumber($project);
-        
+
         $form = $this->createForm(IssueType::class, ['number' => $nextNumber], [
             IssueType::PROJECT => $project
         ]);
@@ -84,22 +86,24 @@ class IssueController extends AbstractController {
      * @Route("/project/{id_project}/issues/{id_issue}/tests", name="issueDetailsTest", methods={"GET"})
      */
     public function viewIssueTest(Request $request, $id_project,$id_issue, TestRepository $testRepository): Response
-    {   
-        $todos= array();
-        $faileds= array();
-        $succeededs= array();
+    {
+        $todos = [];
+        $faileds = [];
+        $succeededs = [];
         $issue = $this->issueRepository->find($id_issue);
-        $tests=$issue->getTests();
+        $tests = $issue->getTests();
         foreach ($tests as $test) {
             switch($test->getState()) {
-                case 'todo':
-                    $todos[]=$test;
+                case Test::TODO:
+                    $todos[] = $test;
                     break;
-                case 'failed':
-                    $faileds[]=$test;
+                case Test::FAILED:
+                    $faileds[] = $test;
                     break;
-                case 'succeeded':
-                    $succeededs[]=$test;
+                case Test::SUCCEEDED:
+                    $succeededs[] = $test;
+                    break;
+                default:
                     break;
             }
         }
@@ -174,27 +178,29 @@ class IssueController extends AbstractController {
         ]);
     }
 
-     /**
+    /**
      * Displays the issue details page.
      * @Route("/project/{id_project}/issues/{id_issue}/tasks", name="issueDetailsTask", methods={"GET"})
      */
     public function viewIssueTask(Request $request, TaskRepository $taskRepository, $id_project,$id_issue): Response
     {
         $issue=$this->issueRepository->find($id_issue);
-        $todos = array();
-        $doings = array();
-        $dones = array();
+        $todos = [];
+        $doings = [];
+        $dones = [];
         foreach($issue->getTasks() as $task){
             switch($task->getStatus()){
-                case "todo":
-                    $todos[]=$task;
-                break;
-                case "doing":
-                    $doings[]=$task;
-                break;
-                case "done":
-                    $dones[]=$task;
-                break;
+                case Task::TODO:
+                    $todos[] = $task;
+                    break;
+                case Task::DOING:
+                    $doings[] = $task;
+                    break;
+                case Task::DONE:
+                    $dones[] = $task;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -233,7 +239,7 @@ class IssueController extends AbstractController {
                 foreach($issue->getTasks() as $task) {
                     $task->removeRelatedIssue($issue);
                     $this->entityManager->persist($task);
-                    $this->entityManager->flush();  
+                    $this->entityManager->flush();
                 }
                 foreach($planningPokerRepository->getPlanningPokerByIssue($issue) as $planningPoker) {
                     $this->entityManager->remove($planningPoker);
@@ -242,7 +248,7 @@ class IssueController extends AbstractController {
 
                 $this->entityManager->remove($issue);
                 $this->entityManager->flush();
-                
+
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} supprimée avec succés.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());

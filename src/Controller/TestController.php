@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\RenderService;
 
 class TestController extends AbstractController {
 
@@ -36,7 +35,7 @@ class TestController extends AbstractController {
     public function viewCreationTest(Request $request, $id_project) : Response
     {
         $project = $this->projectRepository->find( $id_project);
-        
+
         $form = $this->createForm(TestType::class, [], [
             TestType::PROJECT => $project
         ]);
@@ -71,22 +70,24 @@ class TestController extends AbstractController {
      */
     public function viewTests(Request $request, $id_project) {
         $project = $this->projectRepository->find($id_project);
-        
+
         $statusStat = $this->testRepository->getProportionStatus($project);
 
-        $todos= array();
-        $faileds= array();
-        $succeededs= array();
+        $todos = [];
+        $faileds = [];
+        $succeededs = [];
         foreach ($project->getTests() as $test) {
             switch($test->getState()) {
-                case 'todo':
-                    $todos[]=$test;
+                case Test::TODO:
+                    $todos[] = $test;
                     break;
-                case 'failed':
-                    $faileds[]=$test;
+                case Test::FAILED:
+                    $faileds[] = $test;
                     break;
-                case 'succeeded':
-                    $succeededs[]=$test;
+                case Test::SUCCEEDED:
+                    $succeededs[] = $test;
+                    break;
+                default:
                     break;
             }
         }
@@ -108,7 +109,7 @@ class TestController extends AbstractController {
     {
         $test = $this->testRepository->find($id_test);
         $project = $this->projectRepository->find( $id_project);
-        
+
         $form = $this->createForm(TestType::class, $test, [
             TestType::PROJECT => $project
         ]);

@@ -12,7 +12,6 @@ use App\Repository\ProjectRepository;
 use App\Repository\InvitationRepository;
 use App\Repository\MemberRepository;
 use App\Repository\PlanningPokerRepository;
-use App\Repository\IssueRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
