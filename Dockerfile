@@ -6,7 +6,7 @@ COPY  package.json package-lock.json webpack.config.js ./
 COPY assets ./assets
 
 RUN mkdir public
-RUN npm install
+RUN npm install --only=prod
 RUN npm run build
 
 FROM php:7.3-apache
