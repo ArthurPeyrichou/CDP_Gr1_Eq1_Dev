@@ -1,4 +1,4 @@
-FROM node:12.13 AS builder
+FROM node:lts-alpine AS builder
 
 WORKDIR /build
 
