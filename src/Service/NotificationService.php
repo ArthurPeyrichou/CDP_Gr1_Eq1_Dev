@@ -65,26 +65,22 @@ class NotificationService
         $this->addMessage($message, self::INFO);
     }
 
-    public function notifAllmemberFromProject(EntityManagerInterface $entityManager, Member $sourceMember, Project $project, string $message) {
-
-        foreach($project->getMembers() as $member) {
+    /**
+     * Posts a new message to all members of a project.
+     * @param Member $sourceMember The member who the message originates from.
+     * @param Project $project The project to use to retrieve members.
+     * @param string $message The message to post.
+     */
+    public function notifAllProjectMembers(Member $sourceMember, Project $project, string $message): void
+    {
+        foreach($project->getMembersAndOwner() as $member) {
             if($member->getId() == $sourceMember->getId()){
                 $this->addInfo($message);
             } else {
                 $notif = new Notification($message);
                 $member->addNotification($notif);
-                $entityManager->persist($notif);
             }
         }
-
-        if($project->getOwner()->getId() == $sourceMember->getId() ){
-            $this->addInfo($message);
-        } else {
-            $notif = new Notification($message);
-            $project->getOwner()->addNotification($notif);
-            $entityManager->persist($notif);
-        }
-        $entityManager->flush();
     }
 
     private function addMessage(string $message, string $type): void
