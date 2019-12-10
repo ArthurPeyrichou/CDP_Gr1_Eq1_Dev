@@ -5,9 +5,15 @@ function ajaxRequest(url) {
 }
 
 function deleteItem(element){
-    ajaxRequest(element.getAttribute("data-link"));
-    let itemToRemove = document.getElementById("item-" + element.getAttribute("data-id"));
-    itemToRemove.parentNode.removeChild(itemToRemove);
+    
+    fetch(element.getAttribute("data-link")).then(
+        response => {
+            if (response.ok) {
+                let itemToRemove = document.getElementById("item-" + element.getAttribute("data-id"));
+                itemToRemove.parentNode.removeChild(itemToRemove);
+            }
+        }
+    );
 }
 
 document.querySelectorAll('button.delete-item').forEach(

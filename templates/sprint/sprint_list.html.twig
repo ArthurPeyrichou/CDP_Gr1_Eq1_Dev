@@ -44,13 +44,13 @@
                                             <a class="btn btn-light my-auto mr-1" title="Editer" href="{{ path('editSprint', {'id_project': project.id, 'id_sprint' : sprint.id}) }}">
                                                 <img src="{{ asset('build/images/edit.svg') }}" style="max-width: 30px;">
                                             </a>
-                                            <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#sprint-delete-confirm">
+                                            <button class="btn btn-light my-auto ml-1" title="Supprimer" data-toggle="modal" data-target="#sprint-delete-confirm{{ index }}">
                                                 <img src="{{ asset('build/images/delete.svg') }}" style="max-width: 30px;">
                                             </button>
                                         </div>
                                 </div>
                             </li>
-                            {% embed 'components/_modal.html.twig' with {'modalId': "sprint-delete-confirm"} %}
+                            {% embed 'components/_modal.html.twig' with {'modalId': "sprint-delete-confirm#{index}"} %}
                                 {% block header %}
                                     <h3>Veuillez confirmer la suppression</h3>
                                 {% endblock %}
@@ -59,7 +59,7 @@
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                    <button type="button" data-dismiss="modal" data-link="{{ path('deleteSprint', {'id_project' : project.id,'id_sprint' : sprint.id }) }}" data-id="{{ project.id }}"
+                                    <button type="button" data-dismiss="modal" data-link="{{ path('deleteSprint', {'id_project' : project.id,'id_sprint' : sprint.id }) }}" data-id="{{ sprint.id }}"
                                             class="btn btn-primary delete-item">Oui</button>
                                 {% endblock %}
                             {% endembed %}

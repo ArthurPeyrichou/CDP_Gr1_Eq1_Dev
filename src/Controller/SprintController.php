@@ -160,7 +160,7 @@ class SprintController extends AbstractController {
             try {
                 //les issues on les des lis
                 foreach($sprint->getIssues() as $issue) {
-                    $issue->setSprint(null);
+                    $issue->removeSprint($sprint);
                 }
                 //les tahces on les supprime
                 foreach($sprint->getTasks() as $task) {
