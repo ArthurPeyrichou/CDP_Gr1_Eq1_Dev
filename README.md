@@ -9,6 +9,8 @@ qui peut être consulté à cette addresse : [Dépôt de release](https://github
 
 Le guide d'installation est disponible ici : [docs/install.md](docs/install.md).
 
+De plus, une guide pour lancer les tests est disponible ici : [docs/tests.md](docs/tests.md).
+
 ## Documentation
 
 * Une documentation utilisateur pour débuter sur l'application est disponible ici : [docs/get_started.md](docs/get_started.md).
