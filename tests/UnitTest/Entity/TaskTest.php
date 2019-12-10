@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Tests\UnitTest;
+namespace App\Tests\UnitTest\Entity;
 
 
 use App\Entity\Member;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Tests\UnitTest;
+namespace App\Tests\UnitTest\Entity;
 
 
 use App\Entity\Member;
@@ -9,7 +9,6 @@ use App\Entity\Project;
 use App\Entity\Task;
 use App\Entity\Issue;
 use App\Entity\Sprint;
-use App\EntityException\InvalidStatusTransitionException;
 use PHPUnit\Framework\TestCase;
 
 class IssueTest extends TestCase
@@ -52,16 +51,16 @@ class IssueTest extends TestCase
 
         $task1->begin();
         $this->assertEquals(Issue::DOING, $issue->getStatus());
-        
+
         $task1->finish();
         $this->assertEquals(Issue::DONE, $issue->getStatus());
-        
+
         $task2 = new Task(2, 'efgh', 2.0, array($issue), null, $sprint);
         $this->assertEquals(Issue::DOING, $issue->getStatus());
-        
+
         $task2->begin();
         $this->assertEquals(Issue::DOING, $issue->getStatus());
-        
+
         $task2->finish();
         $this->assertEquals(Issue::DONE, $issue->getStatus());
     }
@@ -70,33 +69,33 @@ class IssueTest extends TestCase
         $sprint = $this->getTestSprint();
         $issue = $this->getTestIssue();
 
-        $this->assertEquals("0%", $issue->getProportionOfDone());
+        $this->assertEquals(0, $issue->getProportionOfDone());
         $task1 = new Task(1, 'abcd', 1.0, array($issue), null, $sprint);
-        $this->assertEquals("0%", $issue->getProportionOfDone());
+        $this->assertEquals(0, $issue->getProportionOfDone());
 
         $task1->begin();
-        $this->assertEquals("0%", $issue->getProportionOfDone());
-        
+        $this->assertEquals(0, $issue->getProportionOfDone());
+
         $task1->finish();
-        $this->assertEquals("100%", $issue->getProportionOfDone());
-        
+        $this->assertEquals(1, $issue->getProportionOfDone());
+
         $task2 = new Task(2, 'efgh', 2.0, array($issue), null, $sprint);
-        $this->assertEquals("50%", $issue->getProportionOfDone());
-        
+        $this->assertEquals(0.5, $issue->getProportionOfDone());
+
         $task2->begin();
-        $this->assertEquals("50%", $issue->getProportionOfDone());
-        
+        $this->assertEquals(0.5, $issue->getProportionOfDone());
+
         $task2->finish();
-        $this->assertEquals("100%", $issue->getProportionOfDone());
+        $this->assertEquals(1, $issue->getProportionOfDone());
 
         $task3 = new Task(2, 'efgh', 5.0, array($issue), null, $sprint);
-        $this->assertEquals("66%", $issue->getProportionOfDone());
-        
+        $this->assertEquals(0.67, $issue->getProportionOfDone());
+
         $task3->begin();
-        $this->assertEquals("66%", $issue->getProportionOfDone());
-        
+        $this->assertEquals(0.67, $issue->getProportionOfDone());
+
         $task3->finish();
-        $this->assertEquals("100%", $issue->getProportionOfDone());
+        $this->assertEquals(1.0, $issue->getProportionOfDone());
     }
 
 }

@@ -157,48 +157,22 @@ class Issue
         return $count;
     }
 
-    public function getProportionOfDone(): string
+    public function getProportionOfDone(): float
     {
         if (count($this->tasks) == 0) {
-            return "0%";
+            return 0;
         }
 
-        $cptDone = 0;
-        foreach ($this->tasks as $task) {
-            if ($task->getStatus() == Task::DONE) {
-                $cptDone+=1;
-            }
-        }
-
-        return intval($cptDone / count($this->tasks) * 100.0) . "%";
+        return round($this->getTasksNumberByStatus(Task::DONE) / count($this->tasks), 2);
     }
 
-    public function getProportionOfDoing(): string
+    public function getProportionOfDoing(): float
     {
         if (count($this->tasks) == 0) {
-            return "0%";
+            return 0;
         }
 
-        $cptDone = 0;
-        foreach ($this->tasks as $task) {
-            if ($task->getStatus() == Task::DOING) {
-                $cptDone+=1;
-            }
-        }
-
-        return intval($cptDone / count($this->tasks) * 100.0) . "%";
-    }
-
-    public function getSprint(): ?Sprint
-    {
-        return $this->sprint;
-    }
-
-    public function setSprint(?Sprint $sprint): self
-    {
-        $this->sprint = $sprint;
-
-        return $this;
+        return round($this->getTasksNumberByStatus(Task::DOING) / count($this->tasks), 2);
     }
 
     public function getProject(): ?Project

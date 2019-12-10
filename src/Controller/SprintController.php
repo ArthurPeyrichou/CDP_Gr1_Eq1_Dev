@@ -39,7 +39,7 @@ class SprintController extends AbstractController {
     public function viewCreationSprint(Request $request, $id_project) : Response
     {
         $project = $this->projectRepository->find($id_project);
-        
+
         $nextNumber = $this->sprintRepository->getNextNumber($project);
         $form = $this->createForm(SprintType::class, ['number' => $nextNumber]);
         $form->handleRequest($request);
@@ -71,10 +71,10 @@ class SprintController extends AbstractController {
      */
     public function viewSprints(Request $request, IssueRepository $issueRepository, $id_project) {
         $project = $this->projectRepository->find($id_project);
-        
+
         $burnDownStat = $this->sprintRepository->getBurnDownStat($project);
         $burnDownTheoricStat = $this->sprintRepository->getBurnDownTheoricStat($project);
-        
+
         return $this->render('sprint/sprint_list.html.twig', [
             'project'=> $project,
             'sprints' => $project->getSprints(),
@@ -92,7 +92,7 @@ class SprintController extends AbstractController {
     {
         $project = $this->projectRepository->find($id_project);
         $sprint=$this->sprintRepository->find($id_sprint);
-        
+
         $taskTodos = $taskRepository->getToDo($sprint);
         $taskDoings = $taskRepository->getDoing($sprint);
         $taskDones = $taskRepository->getDone($sprint);
@@ -123,7 +123,7 @@ class SprintController extends AbstractController {
     public function editSprint(Request $request, $id_sprint, $id_project): Response
     {
         $sprint = $this->sprintRepository->find($id_sprint);
-        
+
         $form = $this->createForm(SprintType::class, $sprint);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -198,7 +198,7 @@ class SprintController extends AbstractController {
                 foreach($sprint_source->getIssues() as $issue) {
                     if(!$issue->getSprints()->contains($sprint_target)){
                         $sprint_target->addIssue($issue);
-                        if($issue->getProportionOfDoing() == "0%") {
+                        if($issue->getProportionOfDoing() == 0) {
                             $sprint_source->removeIssue($issue);
                         }
                     }
@@ -210,7 +210,7 @@ class SprintController extends AbstractController {
                         $sprint_target->addTask($task);
                     }
                 }
-                $this->entityManager->flush();  
+                $this->entityManager->flush();
                 $this->notifications->addSuccess("Contenu du sprint {$sprint_source->getNumber()} migré avec succés vers {$sprint_target->getNumber()}.");
             } catch(\Exception $e) {
                 $this->notifications->addError($e->getMessage());
