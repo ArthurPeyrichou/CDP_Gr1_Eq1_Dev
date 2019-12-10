@@ -18,7 +18,7 @@ function getDatabaseCredentials() {
     } else if (fs.existsSync(pathToLocalTestEnv)) {
         credentials = getDatabaseCredentialsFromFile(pathToLocalTestEnv) ||
             getDatabaseCredentialsFromFile(pathToTestEnv);
-    } else {
+    } else if (fs.existsSync(pathToTestEnv)) {
         credentials = getDatabaseCredentialsFromFile(pathToTestEnv);
     }
     return credentials;
