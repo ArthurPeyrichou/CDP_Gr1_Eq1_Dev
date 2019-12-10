@@ -37,16 +37,8 @@ describe('Member management tests', function() {
 
     describe('Tests user creation', function() {
         it('Should create user', async function() {
-            await page.goto('http://127.0.0.1:9543/register');
-            await page.waitForSelector('body > div > div > div > form');
-            await page.type('#registration_name', LOGIN);
-            await page.type('#registration_emailAddress', EMAIL);
-            await page.type('#registration_password_first', PW);
-            await page.type('#registration_password_second', PW);
+            await helpers.register(page, LOGIN, EMAIL, PW);
 
-            await page.click('body > div > div > div > form > button');
-
-            await page.waitForSelector('header > nav');
 
             const queryResult = await helpers.databaseQuery(db, `SELECT * FROM member WHERE \`name\` = '${LOGIN}'`);
 

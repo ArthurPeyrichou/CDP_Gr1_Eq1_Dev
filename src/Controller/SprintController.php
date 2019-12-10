@@ -128,7 +128,6 @@ class SprintController extends AbstractController {
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->entityManager->persist($sprint);
                 $sprint->setBurnDownChart();
                 $this->entityManager->flush();
                 $this->notifications->addSuccess("Sprint {$sprint->getNumber()} éditée avec succés.");

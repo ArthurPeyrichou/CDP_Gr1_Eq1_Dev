@@ -35,7 +35,7 @@ class Member implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Project", mappedBy="owner")
+     * @ORM\OneToMany(targetEntity="App\Entity\Project", mappedBy="owner", cascade={"persist", "remove"})
      */
     private $ownedProjects;
 
@@ -45,12 +45,12 @@ class Member implements UserInterface
     private $contributedProjects;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PlanningPoker", mappedBy="member")
+     * @ORM\OneToMany(targetEntity="App\Entity\PlanningPoker", mappedBy="member", cascade={"persist", "remove"})
      */
     private $planningPokers;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="member")
+     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="member", cascade={"persist", "remove"})
      */
     private $notifications;
 

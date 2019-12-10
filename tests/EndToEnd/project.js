@@ -3,12 +3,12 @@ const puppeteer = require('puppeteer');
 const dbConnection = require('./databaseConnection');
 const helpers = require('./helpers');
 
-const EMAIL = 'member1@domain.com';
-const PW = 'someReallySecurePassword';
+const LOGIN = 'A random user';
+const EMAIL = 'randomuser@random.com';
+const PW = 'randomPass';
 
-const NAME = 'Some random project';
-const DESC = 'As the title says, this is some random project';
-const EDITED_DESC = 'This is now some random edited project';
+const RANDOM = helpers.generateRandomString();
+const RANDOM_EDITED = helpers.generateRandomString();
 
 describe('Project management tests', function() {
     let chrome;
@@ -26,30 +26,31 @@ describe('Project management tests', function() {
             width: 1280,
             height: 720
         });
-        await helpers.login(page, EMAIL, PW);
     });
 
     afterEach(async function() {
-        await helpers.logout(page);
         await page.close();
     });
 
     after(async function() {
         await chrome.close();
+        db.query(`DELETE FROM member WHERE \`name\` = '${LOGIN}'`);
         db.end();
     });
 
     describe('Tests project creation', function() {
         it('Should create a project', async function() {
+            await helpers.register(page, LOGIN, EMAIL, PW);
+            await helpers.login(page, EMAIL, PW);
             await page.click('#navbarContent > div.navbar-nav.mr-auto > a:nth-child(2)');
 
             await page.waitForSelector('header > nav');
-            await page.type('#project_name', NAME);
-            await page.type('#project_description', DESC);
+            await page.type('#project_name', RANDOM);
+            await page.type('#project_description', RANDOM);
             await page.click('body > div > div > div > form > button');
 
             const queryResult = await helpers.databaseQuery(db,
-                `SELECT * FROM project WHERE \`name\` = '${NAME}' AND  \`description\` = '${DESC}'`);
+                `SELECT * FROM project WHERE \`name\` = '${RANDOM}' AND  \`description\` = '${RANDOM}'`);
 
             assert(queryResult.length !== 0);
         });
@@ -72,8 +73,8 @@ describe('Project management tests', function() {
                 ).textContent.trim()
             );
 
-            assert(projectTitle === NAME);
-            assert(projectDesc.includes(DESC));
+            assert(projectTitle === RANDOM);
+            assert(projectDesc.includes(RANDOM));
         });
     });
 
@@ -88,14 +89,16 @@ describe('Project management tests', function() {
             await page.click('#content > div.container > div > div.col-sm-6.col-lg-8 > div > div > a');
 
             await page.waitForSelector('header > nav');
+            await page.evaluate(() => document.querySelector('#project_name').value = '');
             await page.evaluate(() => document.querySelector('#project_description').value = '');
-            await page.type('#project_description', EDITED_DESC);
+            await page.type('#project_name', RANDOM_EDITED);
+            await page.type('#project_description', RANDOM_EDITED);
             await page.click('#content > div > div > div > form > button');
 
             await page.waitForSelector('header > nav');
 
             const queryResult = await helpers.databaseQuery(db,
-                `SELECT * FROM project WHERE \`name\` = '${NAME}' AND  \`description\` = '${EDITED_DESC}'`);
+                `SELECT * FROM project WHERE \`name\` = '${RANDOM_EDITED}' AND  \`description\` = '${RANDOM_EDITED}'`);
 
             assert(queryResult.length !== 0);
         });
@@ -111,13 +114,16 @@ describe('Project management tests', function() {
             await page.waitForSelector('header > nav');
             await page.click('#content > div.container > div > div.col-sm-6.col-lg-8 > div > div > button');
             await page.waitForSelector('#project-delete-confirm > div > div > div.modal-footer > a', {visible: true});
+            await page.waitFor(500);
             await page.click('#project-delete-confirm > div > div > div.modal-footer > a');
+            await page.waitFor(500);
 
             await page.waitForSelector('header > nav');
 
-            const queryResult = await helpers.databaseQuery(db, `SELECT * FROM project WHERE \`name\` = '${NAME}'`);
+            const queryResult = await helpers.databaseQuery(db, `SELECT * FROM project WHERE \`name\` = '${RANDOM_EDITED}'`);
 
             assert(queryResult.length === 0);
+            await helpers.logout(page);
         });
     });
 });

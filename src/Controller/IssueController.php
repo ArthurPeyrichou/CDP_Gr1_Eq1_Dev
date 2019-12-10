@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Issue;
+use App\Entity\Member;
 use App\Entity\PlanningPoker;
 use App\Entity\Task;
 use App\Entity\Test;
@@ -267,6 +268,7 @@ class IssueController extends AbstractController {
     public function plannigPokerForIssue(Request $request, PlanningPokerRepository $planningPokerRepository, $id_project, $id_issue)
     {
         $project = $this->projectRepository->find($id_project);
+        /**@var $member Member*/
         $member = $this->getUser();
         $issue = $this->issueRepository->findOneBy([
             'id' => $id_issue,
@@ -286,14 +288,14 @@ class IssueController extends AbstractController {
                 $value = $data['value'];
                 $planningPoker->setValue($value);
                 $this->entityManager->persist($planningPoker);
-                $this->entityManager->flush();
                 $this->notifications->addSuccess("Issue {$issue->getNumber()} évaluée avec succés.");
 
                 if($planningPokerRepository->isPlanningPokerDoneByIssue($issue) ) {
                     $this->calculateIssueDifficultyFromPP($planningPokerRepository, $issue);
-                    $this->notifications->notifAllmemberFromProject($this->entityManager, $member, $project, "Fin du planning poker pour l'issue {$issue->getNumber()}.");
+                    $this->notifications->notifAllProjectMembers($member, $project, "Fin du planning poker pour l'issue {$issue->getNumber()}.");
                 }
 
+                $this->entityManager->flush();
                 return $this->redirectToRoute('issuesList', [
                     'id_project' => $id_project
                 ]);

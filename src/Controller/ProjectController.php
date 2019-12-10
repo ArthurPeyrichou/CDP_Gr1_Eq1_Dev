@@ -102,8 +102,8 @@ class ProjectController extends AbstractController {
                 }
                 $issue->setDifficulty($amount / $cpt);
                 $this->entityManager->persist($issue);
+                $this->notifications->notifAllProjectMembers($user, $project, "Fin du planning poker pour l'issue {$issue->getNumber()}.");
                 $this->entityManager->flush();
-                $this->notifications->notifAllmemberFromProject($this->entityManager, $user, $project, "Fin du planning poker pour l'issue {$issue->getNumber()}.");
             }
         }
         foreach($project->getSprints() as $sprint) {
@@ -181,8 +181,8 @@ class ProjectController extends AbstractController {
         }
         try {
             $this->entityManager->remove($project);
+            $this->notifications->notifAllProjectMembers($this->getUser(), $project, "Le projet {$project->getName()} a été suprimmé.");
             $this->entityManager->flush();
-            $this->notifications->notifAllmemberFromProject($this->entityManager, $this->getUser(), $project, "Le projet {$project->getName()} a été suprimmé.");
             return $this->redirectToRoute('dashboard');
         } catch (\Exception $e) {
             $this->notifications->addError($e->getMessage());
