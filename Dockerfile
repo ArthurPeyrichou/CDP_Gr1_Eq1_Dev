@@ -32,7 +32,6 @@ WORKDIR /var/www/firescrum/
 COPY docker/apache-config/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY . .
 COPY --from=builder /build/public/build ./public/build
-RUN rm -f .env*
 
 RUN composer install
 
