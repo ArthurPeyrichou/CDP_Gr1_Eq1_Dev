@@ -69,16 +69,19 @@ class Issue
 
 
 
-    public function __construct(int $number, string $description, int $difficulty, string $priority, Project $project, ?array $sprints = null)
+    public function __construct(int $number, string $description, int $difficulty, string $priority, Project $project, ?Sprint $sprint = null)
     {
         $this->number = $number;
         $this->description = $description;
         $this->difficulty = $difficulty;
         $this->priority = $priority;
         $this->project = $project;
-        $this->sprints = $sprints;
         $this->tasks = new ArrayCollection();
         $this->tests = new ArrayCollection();
+        $this->sprints = new ArrayCollection();
+        if ($sprint) {
+            $this->addSprint($sprint);
+        }
     }
     public function getId(): ?int
     {
@@ -227,6 +230,7 @@ class Issue
     {
         if (!$this->sprints->contains($sprint)) {
             $this->sprints[] = $sprint;
+            $sprint->addIssue($this);
         }
 
         return $this;
@@ -236,6 +240,7 @@ class Issue
     {
         if ($this->sprints->contains($sprint)) {
             $this->sprints->removeElement($sprint);
+            $sprint->removeIssue($this);
         }
 
         return $this;

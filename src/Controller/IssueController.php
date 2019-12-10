@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Issue;
 use App\Entity\PlanningPoker;
-use App\Entity\Notification;
 use App\Entity\Task;
 use App\Entity\Test;
 use App\Form\IssueType;
@@ -55,12 +54,12 @@ class IssueController extends AbstractController {
             if (count($project->getMembers()) > 0) {
                 $difficulty = 0;
             }
-            $issue = new Issue($nextNumber, $data['description'], $difficulty, $data['priority'], $project, array($data['sprints']) );
+            $issue = new Issue($nextNumber, $data['description'], $difficulty, $data['priority'], $project, $data['sprints']);
             $this->entityManager->persist($issue);
 
             if (count($project->getMembers()) > 0) {
                 foreach($project->getMembersAndOwner() as $member) {
-                    $planningPoker = new PlanningPoker($issue, $member);  
+                    $planningPoker = new PlanningPoker($issue, $member);
                     if ($member->getId() == $this->getUser()->getId()){
                         $planningPoker->setValue($data['difficulty']);
                     }
