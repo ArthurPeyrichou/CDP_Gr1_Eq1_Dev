@@ -118,20 +118,20 @@ class Sprint
         return $this;
     }
 
-    public function isFinish(): bool
+    public function isFinished(): bool
     {
-        $endDate = date('Y-m-d', strtotime($this->startDate->format('Y-m-d') . ' +' . $this->durationInDays. ' day'));
-        return date('Y-m-d') > $endDate;
+        $today = new \DateTimeImmutable('today');
+        return $today > $this->getEndDate();
     }
 
-    public function getEndDate($format): string
+    public function getEndDate(): \DateTimeInterface
     {
-        return date($format, strtotime($this->startDate->format('Y-m-d') . ' +' . $this->durationInDays. ' day'));
+        return (new \DateTimeImmutable($this->startDate->format('Y-m-d')))->modify("+ {$this->durationInDays} day");
     }
 
     public function setBurnDownChart(): self
     {
-        if($this->isFinish()){
+        if($this->isFinished()){
             if( $this->doneDiff < 0 ) {
                 $doneDiff = 0;
                 $theoricDoneDiff = 0;

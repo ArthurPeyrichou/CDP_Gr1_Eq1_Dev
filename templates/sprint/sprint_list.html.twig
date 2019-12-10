@@ -22,14 +22,14 @@
                                             </div>
                                             <div class="text-muted small">
                                                 <span>Période ({{sprint.durationInDays}}j) :</span>
-                                                <span class="font-weight-bold">{{ sprint.startDate.format("d/m/Y") }} - {{ sprint.getEndDate("d/m/Y") }}</span>
+                                                <span class="font-weight-bold">{{ sprint.startDate|date("d/m/Y") }} - {{ sprint.endDate|date("d/m/Y") }}</span>
                                                 <span> | Issues : {{ sprint.getIssues()|length }}</span>
                                                 <span> | Tâches : {{ sprint.getTasks()|length }}</span>
-                                                {% if sprint.isFinish() %}
+                                                {% if sprint.isFinished() %}
                                                     <span> | </span>
                                                     <span class="font-weight-bold green badge" style="font-size: 110%;">Fini</span>
                                                     {% if  sprint.containsNotDoneTask() %}
-                                                       <button class="btn btn-warning my-auto ml-1" data-toggle="modal" data-target="#sprint-migrate-confirm">Migrer</button> 
+                                                       <button class="btn btn-warning my-auto ml-1" data-toggle="modal" data-target="#sprint-migrate-confirm">Migrer</button>
                                                     {% endif %}
                                                 {% else %}
                                                     {% if "now"|date('Y-m-d') >= sprint.startDate|date('Y-m-d') %}
@@ -59,7 +59,7 @@
                                 {% endblock %}
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                    <button type="button" data-dismiss="modal" data-link="{{ path('deleteSprint', {'id_project' : project.id,'id_sprint' : sprint.id }) }}" data-id="{{ project.id }}" 
+                                    <button type="button" data-dismiss="modal" data-link="{{ path('deleteSprint', {'id_project' : project.id,'id_sprint' : sprint.id }) }}" data-id="{{ project.id }}"
                                             class="btn btn-primary delete-item">Oui</button>
                                 {% endblock %}
                             {% endembed %}
@@ -74,7 +74,7 @@
                                 {% block footer %}
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
                                     {% for sprintT in sprints %}
-                                        {% if sprintT.isFinish() == false %}
+                                        {% if sprintT.isFinished() == false %}
                                              <a class="btn btn-primary my-auto mr-1" href="{{ path('migrateSprint', {'id_project' : project.id,'id_source' : sprint.id,'id_target' : sprintT.id }) }}">
                                              Oui</a>
                                         {% endif %}

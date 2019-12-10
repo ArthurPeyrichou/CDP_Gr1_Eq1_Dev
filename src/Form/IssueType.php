@@ -23,7 +23,7 @@ class IssueType extends AbstractType
         $project = $options[self::PROJECT];
         $validSprints = [];
         foreach($project->getSprints() as $sprint) {
-            if(!$sprint->isFinish()) {
+            if(!$sprint->isFinished()) {
                 $validSprints[] = $sprint;
             }
         }

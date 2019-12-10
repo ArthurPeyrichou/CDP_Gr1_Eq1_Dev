@@ -9,7 +9,7 @@
                 <h3>Les tâches liées à cette issue</h3>
                 {% endif %}
             </div>
-            {% if sprint is defined and sprint.isFinish() == false %}
+            {% if sprint is defined and not sprint.isFinished() %}
             <div class="col-12 px-0 px-lg-1 text-center mb-2">
                     <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
             </div>
@@ -62,7 +62,7 @@
             <div class="card-body">
                 <h3 class="mb-4">Tâches</h3>
                 <p>Vous n'avez pour l'instant créé aucune tâche.</p>
-                {% if sprint is defined and sprint.isFinish() == false %}
+                {% if sprint is defined and not sprint.isFinished() %}
                     <a class="btn btn-primary mt-3" href="{{ path('createTask', {'id_project' : project.id, 'id_sprint':sprint.id}) }}">Créer une tâche</a>
                 {% endif %}
             </div>
