@@ -4,7 +4,6 @@
 namespace App\Tests\UnitTest\Entity;
 
 
-use App\Entity\Member;
 use App\Entity\Project;
 use App\Entity\Task;
 use App\Entity\Issue;
@@ -13,36 +12,24 @@ use PHPUnit\Framework\TestCase;
 
 class IssueTest extends TestCase
 {
-
-    private $testProject;
-
-    private $testSprint;
-
-    public function getTestProject(): Project
+    private function getMockProject(): Project
     {
-        if (!$this->testProject) {
-            $member = new Member('name', 'email@email.com', 'pass');
-            $this->testProject = new Project($member, 'projName', 'projDesc', new \DateTimeImmutable());
-        }
-        return $this->testProject;
+        return $this->createStub(Project::class);
     }
 
-    public function getTestIssue(): Issue
+    private function getMockSprint(): Sprint
     {
-        $sprints = array($this->getTestSprint());
-        return new Issue(0, "Une desc", 10, Issue::PRIORITY_MEDIUM, $this->getTestProject(), $sprints);
+        return $this->createStub(Sprint::class);
     }
 
-    public function getTestSprint(): Sprint
+    private function getTestIssue(): Issue
     {
-        if (!$this->testSprint) {
-            $this->testSprint = new Sprint($this->getTestProject(), 0, 'A test sprint', new \DateTimeImmutable('2019-01-01'), 14);
-        }
-        return $this->testSprint;
+        return new Issue(0, "Une desc", 10, Issue::PRIORITY_MEDIUM, $this->getMockProject(),
+            $this->getMockSprint());
     }
 
     public function testgetStatus() {
-        $sprint = $this->getTestSprint();
+        $sprint = $this->getMockSprint();
         $issue = $this->getTestIssue();
 
         $this->assertEquals(Issue::TODO, $issue->getStatus());
@@ -66,7 +53,7 @@ class IssueTest extends TestCase
     }
 
     public function testgetProportionOfDone() {
-        $sprint = $this->getTestSprint();
+        $sprint = $this->getMockSprint();
         $issue = $this->getTestIssue();
 
         $this->assertEquals(0, $issue->getProportionOfDone());
